@@ -1,0 +1,27 @@
+{
+  "product": "AE BOSS Omega",
+  "foundation": "v8",
+  "status": "node-certified",
+  "liveAfterEffectsCertification": "not-claimed",
+  "controls": [
+    "durable-hmac-approval",
+    "plan-integrity-hash",
+    "durable-idempotency-fingerprint",
+    "fsync-hash-chain-journal",
+    "restart-hydration",
+    "risk-action-sandbox-admission",
+    "parameter-size-limit",
+    "execution-timeout-unknown-state",
+    "reconciliation-before-retry"
+  ],
+  "entrypoints": {
+    "orchestrator": "foundation-v8/orchestration/execution-orchestrator-v8.js",
+    "journal": "foundation-v8/journal/persistent-operation-journal-v3.js",
+    "approval": "foundation-v8/approval/approval-store-v2.js",
+    "idempotency": "foundation-v8/idempotency/store-v4.js",
+    "policy": "foundation-v8/control/admission-policy-v8.js",
+    "facade": "foundation-v8/index.js"
+  },
+  "migration": "tools/migrate-v7-to-v8.js",
+  "certification": "certification/run-foundation-v8.ps1"
+}

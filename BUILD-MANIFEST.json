@@ -1,0 +1,474 @@
+{
+  "schemaVersion": "6.0.0",
+  "release": "Foundation v6 \u2014 Autonomous Execution Orchestrator",
+  "fileCount": 93,
+  "files": [
+    {
+      "path": ".codex-plugin/plugin.json",
+      "bytes": 985,
+      "sha256": "d7f0c1094c602fd38e08fc6812dad403fc1eb11b8339fb394fe36110a02bacf6"
+    },
+    {
+      "path": "AE_TITAN_PROJECT_CONTEXT_PROMPT.md",
+      "bytes": 10164,
+      "sha256": "c233de70a2cd6ecfc5af9895fc12af02c9c9577b8c6646bd7d07e11237696192"
+    },
+    {
+      "path": "CSXS/manifest.xml",
+      "bytes": 1716,
+      "sha256": "82cc5fe61eac29da95420fb0c1521d318092f09cfcc8b989731519ec9edd3643"
+    },
+    {
+      "path": "FOUNDATION_V3_RELEASE_NOTES.md",
+      "bytes": 591,
+      "sha256": "c9390d8fbc6ae54991aee697be7b8ca8feecf863a0076848ce84bee990d39340"
+    },
+    {
+      "path": "FOUNDATION_V4_RELEASE_NOTES.md",
+      "bytes": 719,
+      "sha256": "0d13a4da8f6e132f1647dde228cc04e3319478aea70daca683ab15a5f126b58c"
+    },
+    {
+      "path": "FOUNDATION_V5_RELEASE_NOTES.md",
+      "bytes": 668,
+      "sha256": "94114d4b3d36f37be84f1d20d63db0e1fff0ff73f18dc76a262eb8ded7e586d0"
+    },
+    {
+      "path": "FOUNDATION_V6_RELEASE_NOTES.md",
+      "bytes": 756,
+      "sha256": "e14d02be4998205657dc10644cfc578f410476937a92df7a8270f5ea97ba85ae"
+    },
+    {
+      "path": "PRODUCT_BLUEPRINT.md",
+      "bytes": 14670,
+      "sha256": "bf787c70672ae60968c548fe4775ff17a3e6aef5a3edb50aff7973302b57386b"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1995,
+      "sha256": "9028082723b47439f9834609a4fdae33992e390d428f73e26097df8a3eaf75ea"
+    },
+    {
+      "path": "README_V6.md",
+      "bytes": 946,
+      "sha256": "8f28a96bb3d028eccca6dc8b52e286976ddb753be8a7c927edcdd444615e0734"
+    },
+    {
+      "path": "approval/approval-token-v1.js",
+      "bytes": 1436,
+      "sha256": "6e073be0b0c3ca7cc7722b0ff4d86000084f2fd778a7cab7b378d37b7e9b0b06"
+    },
+    {
+      "path": "audit/audit-chain.js",
+      "bytes": 646,
+      "sha256": "fb9901d107f5de24e2d55a0ac3043feb8a2eaf00eb18f7fd3c0cb0d45e4f7619"
+    },
+    {
+      "path": "capability/capability-registry-v1.js",
+      "bytes": 634,
+      "sha256": "348906fd2d925231e9f6720f0ed793f85ddb63f5cf2ef5e095882e3c29fb3cd7"
+    },
+    {
+      "path": "certification/run-foundation-v2-1.ps1",
+      "bytes": 484,
+      "sha256": "2490eea22b48f16cbb4371c2865caf965043503500ba23bca53bb516370e781b"
+    },
+    {
+      "path": "certification/run-foundation-v3.ps1",
+      "bytes": 397,
+      "sha256": "c52ea20da429459e78b2a0709bd9a68c9bb11ce379be39df83f43cd14d3b6d08"
+    },
+    {
+      "path": "certification/run-foundation-v4.ps1",
+      "bytes": 849,
+      "sha256": "2639f3b50c754e23086e235d22aca696f27a10c088c70074e9ba40400d685d3a"
+    },
+    {
+      "path": "certification/run-foundation-v5.ps1",
+      "bytes": 883,
+      "sha256": "81e92faa3adc9e76598c2d93718f426a0744ba49c778113a1d693f0f822a21dd"
+    },
+    {
+      "path": "certification/run-foundation-v6.ps1",
+      "bytes": 784,
+      "sha256": "517b79a83c6f0806920c9b98bd7154c91e1ebe54600a795186c33ec52bf2978c"
+    },
+    {
+      "path": "contracts/README.md",
+      "bytes": 307,
+      "sha256": "f47fefba30772c9c76b5d19fb73b9fda8de15a1806082796545a069aea600dd4"
+    },
+    {
+      "path": "contracts/action-envelope.schema.json",
+      "bytes": 916,
+      "sha256": "0d36348c96cb73163be97f32dd19c9da50215135c39ad72b150ced85c52f3c3f"
+    },
+    {
+      "path": "contracts/action-envelope.v2.schema.json",
+      "bytes": 2691,
+      "sha256": "d0bcfac7e0c38a36b449a83c3964a93fb40605e38237f7b398d6991320de2e67"
+    },
+    {
+      "path": "contracts/ae-boss-envelope.v2.schema.json",
+      "bytes": 1769,
+      "sha256": "f16a9fb3cfe46dec65e9f481c6232601da5c4c51eec19ffbca35de4e27080d35"
+    },
+    {
+      "path": "contracts/ae-bridge-envelope.v1.schema.json",
+      "bytes": 1208,
+      "sha256": "4dd4656a7bbc12a43348823ed8ec66cbf2d6d1592ccef63f93acda20a87c5dab"
+    },
+    {
+      "path": "contracts/ae-runtime.v1.schema.json",
+      "bytes": 1031,
+      "sha256": "fe658397e895284f5b572af07b139764a02eefb00b31cb881903414c103abc0d"
+    },
+    {
+      "path": "css/panel.css",
+      "bytes": 15479,
+      "sha256": "8669667f5346a76e39889decb53f5a3f93182425cfdade8b83a3646a18909f31"
+    },
+    {
+      "path": "docs/AE_TITAN_PROJECT_AUDIT.md",
+      "bytes": 16881,
+      "sha256": "0609accd9d063a0fac2e48156c69e9b0b2fe3388f61acdb6f8eba65bed42e6d2"
+    },
+    {
+      "path": "docs/FOUNDATION_V2.md",
+      "bytes": 1325,
+      "sha256": "d5cc962fb91144c77087748859469c0bdf62df99ac384873e9cddde38f2557ae"
+    },
+    {
+      "path": "docs/FOUNDATION_V2_1.md",
+      "bytes": 609,
+      "sha256": "7a4fa457365f5b2ba80d2ae7dcbadacf1d7c3f753ca68aa04b09f0d58daf4310"
+    },
+    {
+      "path": "docs/FOUNDATION_V3_AE_RUNTIME.md",
+      "bytes": 1176,
+      "sha256": "fd65e437d560cf1517c558d95094b343f06a942248d4f9a18b11c7896812ba4a"
+    },
+    {
+      "path": "docs/FOUNDATION_V4_REAL_AE_BRIDGE.md",
+      "bytes": 1708,
+      "sha256": "871ef7626c7e1de8e74ee701b364fc27707bb986c848dd6fe218372cf4cb1349"
+    },
+    {
+      "path": "docs/FOUNDATION_V5_CONTROL_PLANE.md",
+      "bytes": 1274,
+      "sha256": "c088eae31f67e90f9cc22220c20a8118510da1dd974294472711df25dd512db6"
+    },
+    {
+      "path": "docs/FOUNDATION_V6_ORCHESTRATION.md",
+      "bytes": 949,
+      "sha256": "2ca4b5639c4a4d14362287e65a59a45e706de7fdc25c6e8cf55b63bce92c95ae"
+    },
+    {
+      "path": "evidence/evidence-store.js",
+      "bytes": 1176,
+      "sha256": "e5fa7156df5f9ffee2a7335b8c409a6e9fc324fc092fe9529e37f4bfcd3c6719"
+    },
+    {
+      "path": "health/heartbeat-monitor-v1.js",
+      "bytes": 739,
+      "sha256": "b35d299763e09feecd3ad8c79acd3df8280e801e0b77ba58d607b3f7a6d1de7a"
+    },
+    {
+      "path": "html/index.html",
+      "bytes": 9773,
+      "sha256": "f84a44a0e106882a8ecae7f09bd6dc138c8f2096c09f37e2caf85ce6c9519e09"
+    },
+    {
+      "path": "idempotency/store-v2.js",
+      "bytes": 337,
+      "sha256": "d358e51a42b1acf4e2fabce689135baef5af2309a9626694ed68a06c3b9610de"
+    },
+    {
+      "path": "install-dev.ps1",
+      "bytes": 1669,
+      "sha256": "07536f322c3b0546ef4b07f7b8af304b7102002b99f08037162f301feebfd57b"
+    },
+    {
+      "path": "journal/persistent-operation-journal-v1.js",
+      "bytes": 1642,
+      "sha256": "ef01fc92d43755f61127f7ee801b81ac62976704cd5a41eb0badf52b2d189eff"
+    },
+    {
+      "path": "js/CSInterface.js",
+      "bytes": 42759,
+      "sha256": "3c45400984772b88cdf4604b4763a29219f8071fdedb9a1fa19d997349003783"
+    },
+    {
+      "path": "js/aepipe.js",
+      "bytes": 4067,
+      "sha256": "8f4be248180737ab8a6b964fe74c3c73bdfc32a91b083555c733e6fb6acd94a9"
+    },
+    {
+      "path": "js/app.js",
+      "bytes": 125409,
+      "sha256": "11aa4aa3890a0a5fec076b4f76d43a4eabc854bfcdc846739f45739af9931a22"
+    },
+    {
+      "path": "jsx/host.jsx",
+      "bytes": 47117,
+      "sha256": "ebb3efe679497cc584ae99bd2da8c7473457fa232691a7c3cced47fe3ce83cac"
+    },
+    {
+      "path": "kernel/aepipe/aepipe-core.js",
+      "bytes": 8158,
+      "sha256": "976232d64f5692408c1f08153a816f5d111eda27a4ca06da07be67d701519425"
+    },
+    {
+      "path": "kernel/crypto/canonical.js",
+      "bytes": 453,
+      "sha256": "e3b107d9291888597bf18e466a90fd7734fb5a95fdbcf887a2cd1d242cfc114b"
+    },
+    {
+      "path": "kernel/execution/governed-executor.js",
+      "bytes": 1978,
+      "sha256": "87d22b91e56746095eed63fcc803c0aa33b5bea70946bc237f4c4a35be7baa00"
+    },
+    {
+      "path": "kernel/idempotency/store.js",
+      "bytes": 862,
+      "sha256": "4ed70defaec24bbd14f3934f6f39fb3ab6eedb9e9857853bd3278bff58eb16b4"
+    },
+    {
+      "path": "kernel/policy/policy-engine.js",
+      "bytes": 1207,
+      "sha256": "d6d90802b452fe2d808ece6faeef3f224047f1f7443e7fe411d5dcfad75b9839"
+    },
+    {
+      "path": "orchestration/execution-orchestrator-v6.js",
+      "bytes": 5755,
+      "sha256": "3deb5ea04c9a548f3f279714f81bb5b2ec1910a1c0d23de445f8299f70a78865"
+    },
+    {
+      "path": "package.json",
+      "bytes": 434,
+      "sha256": "462c8ec6f4369edb9a8c3e51a2a89d85f084d784661909ac286872f56e1d4e4a"
+    },
+    {
+      "path": "prepare-test-package.ps1",
+      "bytes": 1116,
+      "sha256": "7c9197466336a16082781d5fac159b6b438432d95ed4c2ee0ae164bc56200fe4"
+    },
+    {
+      "path": "recovery/crash-recovery-v2.js",
+      "bytes": 553,
+      "sha256": "754cf4c5b3a0c44aa60996979126a0fe8873020a4b4436071c72693b6e974196"
+    },
+    {
+      "path": "recovery/recovery-manager.js",
+      "bytes": 496,
+      "sha256": "7bbc4e699811de416ce2144aed570971593a7f1386946008c35c3ac1231868ca"
+    },
+    {
+      "path": "runtime/ae/ae-runtime-v3.js",
+      "bytes": 5619,
+      "sha256": "24c3e016d85d0225bd0617e52ce8002415a4edb5e504495320025eb1d20b5be4"
+    },
+    {
+      "path": "runtime/ae/bridge/bridge-protocol-v1.js",
+      "bytes": 2497,
+      "sha256": "87a3437d0cbf702582063098a55dc6ae4c49a4f2bfd87dd81aec06207af5beba"
+    },
+    {
+      "path": "runtime/ae/bridge/governed-ae-adapter.js",
+      "bytes": 1480,
+      "sha256": "b02a80f81852196bdeec8af8cdc9c367976e1036eb092cc8d7071071f0f0fe25"
+    },
+    {
+      "path": "runtime/ae/bridge/host-governor.jsx",
+      "bytes": 2327,
+      "sha256": "bd77634c4cda16655bc3a3c94d3d2d77a1fbc01f128dfbe7bdfbc0a7274fb9c1"
+    },
+    {
+      "path": "runtime/ae/commands/command-registry.json",
+      "bytes": 1187,
+      "sha256": "b637ef4f295e61816a32e41896c79f39d9e50cf2b907a5499c835e1d52e5a739"
+    },
+    {
+      "path": "runtime/ae/readback/ae-readback.jsx",
+      "bytes": 1700,
+      "sha256": "ff7cacfefd5f35c70a19df696ce9c07a6c434c5cbf8ccc4c2c58b26bbd70c0e3"
+    },
+    {
+      "path": "runtime/ae/recovery/recovery-manager.js",
+      "bytes": 428,
+      "sha256": "9236f2b76f77e0c91e33e0abe1cdbf7c5476d508bf4049f0832e13efa5915b42"
+    },
+    {
+      "path": "runtime/ae/recovery/transaction-v1.js",
+      "bytes": 1821,
+      "sha256": "2172b05defdc6d1fdf4287484037e6aa081083894fc1a41b8fe73c642b74ff0d"
+    },
+    {
+      "path": "runtime/ae/twin/digital-twin-v2.js",
+      "bytes": 1157,
+      "sha256": "cc4dfac45e8cf1b2e403e63c81bcbd65d6eb5656b7d1d830cb47571d39365ceb"
+    },
+    {
+      "path": "runtime/control/command-authorizer-v2.js",
+      "bytes": 650,
+      "sha256": "738754b9dc2a02e7785b954e020f2e445ca5f1df65068f82facefe0eea60560f"
+    },
+    {
+      "path": "runtime/control/evidence-ledger-v2.js",
+      "bytes": 1089,
+      "sha256": "29b62d4236cb138a845879800c2d73b77d65660bc6845af3b9b745926f012058"
+    },
+    {
+      "path": "runtime/control/governed-controller-v5.js",
+      "bytes": 2752,
+      "sha256": "da86ae966ac0cd050e079f6206c5bf363601e078a8d1064e0e563115c8bfff08"
+    },
+    {
+      "path": "runtime/control/lease-manager-v2.js",
+      "bytes": 1665,
+      "sha256": "64f0a8d0eaae69b5b41ee8d2ba5b472dfee73c28b7807100d43bd5258899f253"
+    },
+    {
+      "path": "runtime/control/transaction-v2.js",
+      "bytes": 1589,
+      "sha256": "8ffe9704731e680e4bbbf617bcb0cfb9d0dd2941af0362ae1f1f96fb6a628626"
+    },
+    {
+      "path": "setup-media-tools.ps1",
+      "bytes": 2069,
+      "sha256": "bc274042ec1cec396cc076e089e967c199177c61c18539f92f2163b3ca399206"
+    },
+    {
+      "path": "start-ai-bridge.ps1",
+      "bytes": 765,
+      "sha256": "db90ea85d2009dee294c2632dece117441d362e227854b13e594615e162ba5a8"
+    },
+    {
+      "path": "start-hadi-bridge.ps1",
+      "bytes": 590,
+      "sha256": "40336e124be94f5f8421481b51608618b7e2dda11cca7389371935425e30ec40"
+    },
+    {
+      "path": "start-ollama-bridge.ps1",
+      "bytes": 51,
+      "sha256": "2cfa93bd99852b681baba112f13641a34a1885f186857661150c0cd2d8a718f1"
+    },
+    {
+      "path": "test/TITAN_HARNESS_RUNNER.jsx",
+      "bytes": 4947,
+      "sha256": "5ab3ee6ec25706454931c35e65fc28ad19ab670a9c97a6b0aeaf8c9051566333"
+    },
+    {
+      "path": "test/ae-runtime/ae-runtime-v3.test.js",
+      "bytes": 1644,
+      "sha256": "2584500d6d10f01b8461c400338a4707774685415df58ede013f61f9efebfc1f"
+    },
+    {
+      "path": "test/ae-runtime/ae-runtime-v4.test.js",
+      "bytes": 1785,
+      "sha256": "97ffc009a14203fbfeca9bab177251c30b7de759bbf805cc4ff627c2ed52108e"
+    },
+    {
+      "path": "test/ae-runtime/golden-project-v1.json",
+      "bytes": 1005,
+      "sha256": "3e902cdd5ec800d93a70a443cdef105cc3f88a96d75e638becb61e84d557c711"
+    },
+    {
+      "path": "test/aepipe.test.js",
+      "bytes": 1040,
+      "sha256": "892bf80c120fba5cced1a9569428f4a10d4388b9e03c0cd0f6ce8b7008ea5456"
+    },
+    {
+      "path": "test/foundation/aepipe-foundation-v2.test.js",
+      "bytes": 1383,
+      "sha256": "f9c13bf595ec0d177d92990c865a1fcf8439f0d78297e8c8aaebea4323181a80"
+    },
+    {
+      "path": "test/foundation/foundation-v2-1.test.js",
+      "bytes": 1663,
+      "sha256": "a33951be6f6fe1e9e54b57c1d8293b3362a4684f22ba6dd48276cfb9ef639c63"
+    },
+    {
+      "path": "test/foundation-v5/foundation-v5.test.js",
+      "bytes": 2498,
+      "sha256": "e39e484480fdd10359a0aaa4d6b3f91798830c7a5ab61e871b411fd9023135d8"
+    },
+    {
+      "path": "test/foundation-v6/foundation-v6.test.js",
+      "bytes": 3299,
+      "sha256": "fca6de66ea368cf79992298088c0b31e6fd1707347bbc562d7a91b663757ca90"
+    },
+    {
+      "path": "test/real-ae-smoke-result.txt",
+      "bytes": 202,
+      "sha256": "ab5c650fbfa05e502fae8101991f9663bd095d09d1a5ab0e5601d3f2ce3464c8"
+    },
+    {
+      "path": "test/real-ae-smoke.jsx",
+      "bytes": 2955,
+      "sha256": "a0bc65af9a54ff10786edf1755736727f81d93d6cc754a040cbf0025acf626ac"
+    },
+    {
+      "path": "test/run-foundation-v2.ps1",
+      "bytes": 340,
+      "sha256": "d06f680f942931d9063095deddb88aea2ef4b63a3f23a8f4fdc7c393a0300ee1"
+    },
+    {
+      "path": "twin/digital-twin.js",
+      "bytes": 651,
+      "sha256": "3be29901baf90befdbbcf18a67152d8d16dafa0909fb8d68f58705d475a8b374"
+    },
+    {
+      "path": "uninstall-dev.ps1",
+      "bytes": 322,
+      "sha256": "9d9fdc5fde78fb621f7b4ffe9851c263466156fc6a48b8e5790b2cc17a2174c5"
+    },
+    {
+      "path": "vscode-copilot-bridge/extension.js",
+      "bytes": 13998,
+      "sha256": "2d3cc6d16802c17494c19d61662941e4c1554cf0299305c97b40769b8bdb94f9"
+    },
+    {
+      "path": "vscode-copilot-bridge/local-providers.js",
+      "bytes": 7648,
+      "sha256": "fb9607c7ff2b1c6eaa4b00ce406e942774f3fc270be284c7402822143abb074b"
+    },
+    {
+      "path": "vscode-copilot-bridge/media-tools.js",
+      "bytes": 2147,
+      "sha256": "5e7c37a0d51cee401f5fa470e0fe54e959ece083ec014f2b0bfc5b136c8b4405"
+    },
+    {
+      "path": "vscode-copilot-bridge/ollama-standalone.js",
+      "bytes": 6007,
+      "sha256": "28fee373297c49171bab8b429db81c24faad33501cdbf9db1877a7e8dcc7f67f"
+    },
+    {
+      "path": "vscode-copilot-bridge/package.json",
+      "bytes": 1179,
+      "sha256": "0c981ed92ed31ab1a9042b10f602f46aa57b5909ca9a0d34c8eba9dcc2a7f8b1"
+    },
+    {
+      "path": "vscode-copilot-bridge/project-repository.js",
+      "bytes": 5477,
+      "sha256": "60906604643f33cf7beeaaf7612dfc630c1bdecc6b0dca586d46f05ebd7b6fcd"
+    },
+    {
+      "path": "vscode-copilot-bridge/shared-memory.js",
+      "bytes": 1657,
+      "sha256": "0c5783d70055cdb7cae93a66cc4e114914525cdb550b89a93a7ecc909a66e4c7"
+    },
+    {
+      "path": "vscode-copilot-bridge/systemPrompt.config.js",
+      "bytes": 6741,
+      "sha256": "dcfd90272a7b0249bb754a0fadbc089d2bd6d9638f33eabc010f08bc7715db35"
+    },
+    {
+      "path": "vscode-copilot-bridge/web-tools.js",
+      "bytes": 3245,
+      "sha256": "78e14665ef6afdb294e4b4ad504a237ef6e5ffe2db196fea0e28f17e8024b420"
+    }
+  ],
+  "version": "24.0.0",
+  "foundation": "v24"
+}

@@ -1,0 +1,3 @@
+const assert=require('assert');const {certify,validateEvidence}=require('../runtime/live-certification');
+const e={schemaVersion:'1.0',environment:{afterEffectsVersion:'2026',os:'Windows 11'},bridge:{version:'v48'},operations:[{id:'1',name:'Create Composition',status:'PASS',readback:{name:'Test'}},{id:'2',name:'Create Layer',status:'PASS',readback:{index:1}}],result:{status:'PASS'}};
+assert.strictEqual(validateEvidence(e).ok,true);const c=certify(e);assert.strictEqual(c.certified,true);assert.ok(c.certificateId);assert.ok(c.evidenceHash);assert.strictEqual(certify({...e,result:{status:'PARTIAL'}}).certified,false);assert.strictEqual(validateEvidence({}).ok,false);console.log('v57 PASS');

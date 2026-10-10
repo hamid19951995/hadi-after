@@ -1,0 +1,1 @@
+const assert=require('assert');const {compact}=require('../runtime/checkpoint-compactor');const x=compact([{key:'a',value:1},{key:'a',value:2}]);assert.equal(x.state.a,2);assert.equal(x.hash.length,64);console.log('v103 PASS');

@@ -1,0 +1,1 @@
+const assert=require('assert');const {DeterministicClock}=require('../runtime/deterministic-clock');const c=new DeterministicClock(100);assert.equal(c.now(),100);assert.equal(c.advance(25),125);assert.deepEqual(c.snapshot(),{time:125});assert.throws(()=>c.advance(-1));console.log('v136 PASS');

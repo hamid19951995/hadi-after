@@ -1,0 +1,19 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"offline-production-plan.v1",
+  "type":"object",
+  "required":["kind","engine","engineVersion","sceneDuration","characters","props","actions","interactions"],
+  "properties":{
+    "kind":{"const":"offline-production-plan.v1"},
+    "engine":{"type":"string"},
+    "engineVersion":{"const":"32.0.0"},
+    "sceneDuration":{"type":"number","exclusiveMinimum":0},
+    "characters":{"type":"array"},
+    "props":{"type":"array"},
+    "actions":{"type":"array"},
+    "interactions":{"type":"array"},
+    "propActions":{"type":"array"},
+    "fingerprint":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+  },
+  "additionalProperties":true
+}

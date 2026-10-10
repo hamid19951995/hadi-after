@@ -1,0 +1,2 @@
+'use strict'; const v33=require('../../foundation-v33');
+function runBatch(plans,options={}){const results=[]; for(const plan of plans||[]){const r=v33.executeProductionPlan(plan,options); results.push(r); if(!r.ok&&options.stopOnFailure) break;} return {ok:results.every(x=>x.ok),total:results.length,completed:results.filter(x=>x.ok).length,failed:results.filter(x=>!x.ok).length,results};} module.exports={runBatch};

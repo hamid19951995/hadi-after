@@ -1,0 +1,8 @@
+{
+  "version": "1.0.0",
+  "mode": "offline-first",
+  "network": {"required": false, "default": "disabled", "core": "never"},
+  "python": {"min": "3.10", "thirdPartyDependencies": false},
+  "features": ["rig validation", "action compilation", "prop validation", "intent inference", "project audit", "fingerprints"],
+  "cloudProviders": "optional and explicit only"
+}

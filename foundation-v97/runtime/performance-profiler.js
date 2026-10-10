@@ -1,0 +1,1 @@
+function summarize(samples){const a=[...samples].sort((x,y)=>x-y);const avg=a.reduce((x,y)=>x+y,0)/a.length;const q=p=>a[Math.min(a.length-1,Math.floor((a.length-1)*p))];return {count:a.length,avg,p50:q(.5),p95:q(.95),max:a[a.length-1]}}module.exports={summarize};

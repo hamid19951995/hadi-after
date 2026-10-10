@@ -1,0 +1,1 @@
+'use strict'; function createQueue(){const q=[]; return {enqueue(job){q.push(job);return q.length;},dequeue(){return q.shift()||null;},size(){return q.length;},snapshot(){return q.slice();}};} module.exports={createQueue};

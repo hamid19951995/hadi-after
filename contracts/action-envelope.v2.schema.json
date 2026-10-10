@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aeboss.local/contracts/action-envelope.v2.schema.json",
+  "title": "AEPIPE PRIME Action Envelope v2",
+  "type": "object",
+  "required": [
+    "version",
+    "id",
+    "operationId",
+    "action",
+    "intent",
+    "scope",
+    "authority",
+    "policy",
+    "idempotencyKey",
+    "preconditions",
+    "postconditions",
+    "verification",
+    "state"
+  ],
+  "properties": {
+    "version": {
+      "const": "2.0.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 8
+    },
+    "operationId": {
+      "type": "string",
+      "minLength": 8
+    },
+    "action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intent": {
+      "type": "object",
+      "required": [
+        "source",
+        "command",
+        "payload"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "required": [
+        "host",
+        "project"
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "modelMayPropose",
+        "agentMayPlan",
+        "runtimeMustAuthorize",
+        "aepipeMustAuthorize",
+        "userApprovalRequired"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "mode",
+        "failClosed",
+        "reversible",
+        "risk",
+        "maxDurationMs"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "DRY_RUN",
+            "APPLY"
+          ]
+        },
+        "failClosed": {
+          "const": true
+        },
+        "reversible": {
+          "type": "boolean"
+        },
+        "risk": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL"
+          ]
+        },
+        "maxDurationMs": {
+          "type": "integer",
+          "minimum": 1000
+        }
+      }
+    },
+    "lease": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "idempotencyKey": {
+      "type": "string",
+      "minLength": 8
+    },
+    "preconditions": {
+      "type": "array"
+    },
+    "postconditions": {
+      "type": "array"
+    },
+    "verification": {
+      "type": "object",
+      "required": [
+        "required",
+        "strategy"
+      ]
+    },
+    "state": {
+      "enum": [
+        "PROPOSED",
+        "SCOPE_VALIDATED",
+        "PREFLIGHT",
+        "SIMULATED",
+        "DRY_RUN",
+        "APPROVAL_REQUIRED",
+        "LEASED",
+        "APPLYING",
+        "READBACK",
+        "VERIFYING",
+        "SUCCESS",
+        "FAILED",
+        "UNKNOWN",
+        "CANCELLED",
+        "FROZEN",
+        "ROLLED_BACK"
+      ]
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "audit": {
+      "type": "array"
+    }
+  }
+}

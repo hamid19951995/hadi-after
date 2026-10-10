@@ -1,0 +1,2 @@
+function normalize(v){if(Array.isArray(v))return v.map(normalize).sort((a,b)=>JSON.stringify(a).localeCompare(JSON.stringify(b)));if(v&&typeof v==='object'){const o={};Object.keys(v).sort().forEach(k=>o[k]=normalize(v[k]));return o}return v}
+function equal(a,b){return JSON.stringify(normalize(a))===JSON.stringify(normalize(b))}function compare(a,b){return {equal:equal(a,b),expected:normalize(a),actual:normalize(b)}}module.exports={compare};

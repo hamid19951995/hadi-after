@@ -1,0 +1,11 @@
+"use strict";
+const assert=require("assert"); const v=require("../foundation-v28");
+const plan=v.planAdvancedRigJob({text:"یک شخصیت راه برود و دست تکان دهد",duration:5,fps:30,character:{id:"demo",style:"modern"},variantCount:3,rigActions:[{action:"walk",start:0,duration:3},{action:"wave",start:3,duration:2}]});
+assert.equal(plan.character.spec.id,"demo");
+assert.equal(plan.advancedRig.kind,"advanced-rig-plan.v1");
+assert.equal(plan.advancedRig.engine,"Advanced Rig Engine");
+assert.ok(plan.advancedRig.keyframes.length>0);
+assert.equal(plan.advancedRig.bindings.length,11);
+assert.ok(v.validateAdvancedRigPlan(plan.advancedRig));
+assert.equal(v.validateCharacter(plan.character),true);
+console.log("Foundation v28 Advanced Rig Engine tests: PASS");

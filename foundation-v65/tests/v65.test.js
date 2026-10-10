@@ -1,0 +1,1 @@
+const assert=require('assert');const x=require('../runtime/replay-corpus');const c=x.build([{environment:{ae:26},operations:[1]},{environment:{ae:25},operations:[2]}]);assert.equal(x.select(c,z=>z.environment.ae===26).length,1);console.log('v65 PASS');

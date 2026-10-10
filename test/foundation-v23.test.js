@@ -1,0 +1,13 @@
+"use strict";
+const assert = require("assert");
+const v = require("../foundation-v23");
+const env = v.createVoiceEnvelope({ transcript: "  یک  ویدیوی  ۱۰ ثانیه ای بساز  ", confidence: 0.91, source: "test" });
+assert.strictEqual(env.language, "fa");
+assert.strictEqual(env.transcript, "یک ویدیوی ۱۰ ثانیه ای بساز");
+assert.strictEqual(v.isSafeVoiceEnvelope(env), true);
+const intent = v.voiceToJobIntent(env);
+assert.strictEqual(intent.source, "voice");
+assert.strictEqual(intent.text, env.transcript);
+assert.strictEqual(v.detectLanguage("Create a logo animation"), "en");
+assert.throws(() => v.createVoiceEnvelope({ transcript: " " }), /VOICE_TRANSCRIPT_REQUIRED/);
+console.log("Foundation v23 voice runtime tests: PASS");

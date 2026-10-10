@@ -1,0 +1,35 @@
+{
+  "name": "ae-boss-omega",
+  "version": "1.1.0",
+  "description": "AEPIPE PRIME governed Adobe After Effects CEP production panel.",
+  "author": {
+    "name": "CEP Resources"
+  },
+  "license": "MIT",
+  "keywords": [
+    "after-effects",
+    "cep",
+    "aepipe",
+    "motion-design"
+  ],
+  "interface": {
+    "displayName": "AE BOSS Ω",
+    "shortDescription": "Governed After Effects production workspace",
+    "longDescription": "Windows-first After Effects CEP panel with AEPIPE PRIME authorization, dry-run, lease, verification, evidence, audit and recovery controls.",
+    "developerName": "CEP Resources",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Governed Execution",
+      "Crash Recovery",
+      "Host Heartbeat",
+      "Capability Discovery"
+    ],
+    "defaultPrompt": [
+      "Inspect the active After Effects project",
+      "Create a governed cinematic composition",
+      "Show AEPIPE audit evidence"
+    ]
+  }
+}

@@ -1,0 +1,1 @@
+function evaluate({tests,integrity,transcript,simulator}){const checks={tests:tests===true,integrity:integrity===true,transcript:transcript===true,simulator:simulator===true};const ok=Object.keys(checks).every(k=>checks[k]);return {status:ok?'LOCAL_HARDENED':'BLOCKED',checks};}module.exports={evaluate};

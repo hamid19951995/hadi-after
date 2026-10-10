@@ -1,0 +1,1 @@
+const x=require('../runtime/evidence-replay');const e={operations:[{id:'a',result:'PASS'}]};const r=x.replayEvidence(e,{a:()=>({result:'PASS'})});if(r.result!=='PASS'||x.diff(e,r).length)throw Error('v60');console.log('v60 PASS');

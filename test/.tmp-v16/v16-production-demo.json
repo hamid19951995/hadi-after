@@ -1,0 +1,25 @@
+{
+  "status": "DONE",
+  "jobId": "v16-production-demo",
+  "fingerprint": "a7ce6e37744af985a79c11b728db9f94ecb2aa52a73dbdd994873d5105416c86",
+  "completed": [
+    "001:project.new",
+    "002:folder.create",
+    "003:folder.create",
+    "004:folder.create",
+    "005:comp.create",
+    "006:layer.addSolid",
+    "007:layer.addText",
+    "008:property.keyframe",
+    "009:property.keyframe",
+    "010:render.enqueue",
+    "011:render.run",
+    "012:project.save"
+  ],
+  "output": "./output/v16-demo.mov",
+  "verified": {
+    "ok": true,
+    "path": "./output/v16-demo.mov"
+  },
+  "updatedAt": "2026-10-10T17:09:30.027Z"
+}

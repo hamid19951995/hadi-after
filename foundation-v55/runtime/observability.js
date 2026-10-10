@@ -1,0 +1,2 @@
+class EventBus{constructor(){this.events=[];this.listeners=[];} emit(type,data={}){const e={id:this.events.length+1,type,data,at:new Date().toISOString()};this.events.push(e);this.listeners.forEach(f=>f(e));return e;} subscribe(fn){this.listeners.push(fn);return()=>{this.listeners=this.listeners.filter(x=>x!==fn);};} query(type){return type?this.events.filter(e=>e.type===type):this.events.slice();} summary(){return this.events.reduce((a,e)=>(a[e.type]=(a[e.type]||0)+1,a),{});}}
+module.exports={EventBus};

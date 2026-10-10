@@ -1,0 +1,1 @@
+const assert=require('assert');const {seal,verify}=require('../runtime/proof-bundle');const b=seal({manifest:'m',replay:'r',journal:'j'});assert(verify(b));b.payload.replay='x';assert(!verify(b));console.log('v149 PASS');

@@ -1,0 +1,1 @@
+function campaign(run,seeds){const out=[];for(const seed of seeds){try{const r=run(seed);out.push({seed,status:r&&r.ok?'PASS':'FAIL'});}catch(e){out.push({seed,status:'ERROR',error:e.message});}}return {total:out.length,passed:out.filter(x=>x.status==='PASS').length,results:out};}module.exports={campaign};

@@ -1,0 +1,8 @@
+{
+  "duration": 10,
+  "characters": [
+    {"id":"farmer-presenter","position":[620,760],"actions":[{"action":"enter","start":0,"duration":1.5},{"action":"present","start":1.5,"duration":3}]},
+    {"id":"visitor","position":[1250,760],"actions":[{"action":"enter","start":0.5,"duration":1.5},{"action":"wave","start":2.5,"duration":1}]}
+  ],
+  "interactions": [{"type":"greeting","from":"farmer-presenter","to":"visitor","start":2.5}]
+}

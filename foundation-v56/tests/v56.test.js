@@ -1,0 +1,8 @@
+const assert=require('assert');const {assess}=require('../../foundation-v49/runtime/capability-matrix');const {lint}=require('../../foundation-v50/runtime/plan-linter');const {compare}=require('../../foundation-v51/runtime/deterministic-snapshot');const {IdempotencyGuard}=require('../../foundation-v52/runtime/idempotency-guard');const P=require('../../foundation-v53/runtime/policy-hardening');const {gate}=require('../../foundation-v54/runtime/release-gate');const {EventBus}=require('../../foundation-v55/runtime/observability');const {ProductionControlPlane}=require('../runtime/production-control-plane');
+assert(assess({type:'composition.create'},['aftereffects.runtime']).allowed);assert(!assess({type:'project.save'},['aftereffects.runtime']).allowed);
+assert(lint({operations:[{id:'a',type:'composition.create'}]}).ok);assert(compare({b:1,a:2},{a:2,b:1}).equal);
+let g=new IdempotencyGuard();assert(g.begin('x','h').execute);g.commit('x','h',{ok:true});assert(!g.begin('x','h').execute);
+assert(!P.authorize({type:'x',path:'/tmp/out'},{workspace:'/safe'}).ok);assert(P.redact('token=abc123').includes('[REDACTED]'));
+assert(!gate({readiness:{ready:true},tests:'PASS',manifestHash:'a',packageHash:'b',liveEvidence:false}).ok);
+let bus=new EventBus();bus.emit('X');assert.equal(bus.summary().X,1);
+let cp=new ProductionControlPlane();let plan={operations:[{id:'c1',type:'composition.create'}]};let ad=cp.admit(plan,{permissions:['aftereffects.runtime'],workspace:process.cwd()});assert(ad.ok);let n=0;let ex=cp.execute(plan.operations[0],{},()=>({n:++n}));assert.equal(ex.result.n,1);let again=cp.execute(plan.operations[0],{},()=>({n:++n}));assert(again.skipped);console.log('v56 hardening suite: PASS');

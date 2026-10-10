@@ -1,0 +1,1 @@
+function diagnose({bridge,queue,storage,audit}){const checks={bridge:!!bridge,queue:queue>=0,storage:!!storage,audit:!!audit};return {ok:Object.values(checks).every(Boolean),checks};}module.exports={diagnose};

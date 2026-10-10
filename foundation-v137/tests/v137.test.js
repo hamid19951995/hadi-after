@@ -1,0 +1,1 @@
+const assert=require('assert');const {run}=require('../runtime/deterministic-scheduler');const r=run([{id:'b',at:5,value:2},{id:'a',at:5,value:1},{id:'c',at:1,value:3}]);assert.deepEqual(r.map(x=>x.id),['c','a','b']);assert.deepEqual(r.map(x=>x.time),[1,5,5]);console.log('v137 PASS');

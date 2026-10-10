@@ -1,0 +1,3 @@
+# Intentionally empty.
+# AE BOSS OMEGA Offline Core uses Python standard library only.
+# No pip download and no internet connection are required.

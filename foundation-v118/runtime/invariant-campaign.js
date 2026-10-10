@@ -1,0 +1,5 @@
+const {DeterministicAE}=require('../../foundation-v112/runtime/deterministic-ae-simulator');
+function makeOps(seed,count){let x=seed>>>0;const rnd=()=>{x=(x*1664525+1013904223)>>>0;return x;};const ops=[];for(let i=0;i<count;i++){if(i===0||rnd()%5===0)ops.push({type:'CREATE_COMP',name:'C'+i});else ops.push({type:'ADD_TEXT',text:'T'+(rnd()%100)});}return ops;}
+function check(seed,count=20){const ae=new DeterministicAE();for(const op of makeOps(seed,count)){const r=ae.execute(op);if(!r.ok)return {seed,ok:false,error:r.error};}const s=ae.snapshot();const seen=new Set();for(const c of s.items){if(seen.has(c.id))return {seed,ok:false,error:'DUP_COMP'};seen.add(c.id);const ids=new Set();for(const l of c.layers){if(ids.has(l.id))return {seed,ok:false,error:'DUP_LAYER'};ids.add(l.id);}}return {seed,ok:true};}
+function campaign(seeds,count){const results=seeds.map(s=>check(s,count));return {total:results.length,passed:results.filter(x=>x.ok).length,results};}
+module.exports={makeOps,check,campaign};

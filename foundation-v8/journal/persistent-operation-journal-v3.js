@@ -1,0 +1,11 @@
+"use strict";
+const fs=require("fs"),path=require("path"),crypto=require("crypto");const {sha256,canonicalize}=require("../../kernel/crypto/canonical");
+class PersistentOperationJournalV3{
+ constructor({file=".aeboss/operation-journal-v3.ndjson",clock=()=>Date.now()}={}){this.file=file;this.clock=clock;fs.mkdirSync(path.dirname(file),{recursive:true});this.lastHash=this._readLastHash();}
+ _readLastHash(){try{const rows=this.readAll();return rows.at(-1)?.hash||"0".repeat(64);}catch{return "0".repeat(64);}}
+ append(operation,event,data={},extra={}){const rows=this.readAll();const record={schemaVersion:"3.0.0",recordId:crypto.randomUUID(),seq:rows.length+1,operationId:operation.operationId,action:operation.action||null,target:operation.target||null,parameters:operation.parameters||null,expectedState:operation.expectedState,event,at:new Date(this.clock()).toISOString(),state:operation.state,data,attempt:operation.attempt||0,prevHash:this.lastHash,...extra};record.hash=sha256(canonicalize(record));const line=JSON.stringify(record)+"\n";const fd=fs.openSync(this.file,"a");try{fs.writeSync(fd,line,null,"utf8");fs.fsyncSync(fd);}finally{fs.closeSync(fd);}this.lastHash=record.hash;return record;}
+ readAll(){if(!fs.existsSync(this.file))return [];return fs.readFileSync(this.file,"utf8").split(/\r?\n/).filter(Boolean).map(JSON.parse);}
+ verify(){let prev="0".repeat(64),expectedSeq=1;const lastByOperation=new Map();for(const r of this.readAll()){const copy={...r};delete copy.hash;if(r.schemaVersion!=="3.0.0"||r.seq!==expectedSeq||r.prevHash!==prev||sha256(canonicalize(copy))!==r.hash)return {ok:false,reason:"CHAIN_INTEGRITY_FAILURE",at:r.seq};prev=r.hash;expectedSeq++;lastByOperation.set(r.operationId,r);}return {ok:true,records:expectedSeq-1,operations:lastByOperation.size,lastByOperation:Object.fromEntries([...lastByOperation].map(([k,v])=>[k,v.state]))};}
+ load(operationId){const rows=this.readAll().filter(x=>x.operationId===operationId);if(!rows.length)return null;const first=rows[0],last=rows.at(-1);return {operationId,action:first.action,target:first.target,parameters:first.parameters,expectedState:first.expectedState,state:last.state,attempt:last.attempt,createdAt:first.at,events:rows};}
+}
+module.exports={PersistentOperationJournalV3};

@@ -1,0 +1,1 @@
+const assert=require('assert');const {evaluate}=require('../runtime/assurance-gate');assert.strictEqual(evaluate({eventLog:true,snapshotDelta:true,replayEquivalent:true,proofBundle:true}).status,'LIVE_INTEGRATION_REQUIRED');assert.strictEqual(evaluate({eventLog:true}).status,'LOCAL_ASSURANCE_INCOMPLETE');console.log('v150 PASS');

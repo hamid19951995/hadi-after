@@ -1,0 +1,1 @@
+function resolve(profile,capabilities){const enabled={},blocked=[];for(const f of profile.features||[]){if((capabilities||[]).indexOf(f)>=0)enabled[f]=true;else blocked.push(f)}return {enabled,blocked,compatible:blocked.length===0}}module.exports={resolve};

@@ -1,0 +1,1 @@
+const assert=require('assert');const {generate,fingerprint}=require('../runtime/property-corpus');const a=generate(42,5),b=generate(42,5);assert.deepStrictEqual(a,b);assert.equal(fingerprint(a),fingerprint(b));console.log('v132 PASS');

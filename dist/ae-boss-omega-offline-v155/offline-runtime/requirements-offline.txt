@@ -1,0 +1,2 @@
+# v32 offline runtime intentionally uses Python standard library only.
+# No pip packages or network downloads are required.

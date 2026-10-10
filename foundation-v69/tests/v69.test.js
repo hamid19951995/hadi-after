@@ -1,0 +1,1 @@
+const assert=require('assert');const {redact}=require('../runtime/privacy-redaction');const r=redact({token:'abc',path:'C:\\Users\\x\\a'});assert.equal(r.token,'<REDACTED>');assert.equal(r._path,'<PATH>');console.log('v69 PASS');

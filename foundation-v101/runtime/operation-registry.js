@@ -1,0 +1,2 @@
+class OperationRegistry { constructor(){this.m=new Map()} register(type, spec){ if(!type||this.m.has(type)) throw new Error('invalid or duplicate operation'); this.m.set(type,Object.freeze({...spec,type})); return this.get(type)} get(type){return this.m.get(type)||null} validate(op){const s=this.get(op.type); if(!s)return {ok:false,reason:'UNKNOWN_OPERATION'}; for(const k of s.required||[]) if(!(k in (op.input||{}))) return {ok:false,reason:'MISSING_INPUT:'+k}; return {ok:true,spec:s}} }
+module.exports={OperationRegistry};

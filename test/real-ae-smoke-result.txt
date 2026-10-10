@@ -1,0 +1,1 @@
+{"timestamp":"Sun Sep 06 2026 18:13:57 GMT-0700","extendscript_runtime":"PASS","file_io_permissions":"FAIL","comp_creation":"FAIL","bridge_socket_status":"OFFLINE_GRACEFUL_SKIP","overall_status":"FAIL"}

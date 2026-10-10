@@ -1,0 +1,8 @@
+const assert=require('assert');let t=0;const {LeaseManager}=require('../../foundation-v79/runtime/lease-manager');const l=new LeaseManager({now:()=>t});assert(l.acquire('j','a',10));assert.equal(l.acquire('j','b',10),null);t=11;assert(l.acquire('j','b',10));
+const {DeadLetterQueue}=require('../../foundation-v80/runtime/dead-letter');const d=new DeadLetterQueue();d.push('j','FAIL');assert.equal(d.list().length,1);assert.equal(d.requeue(0).job,'j');
+const {BackpressureController}=require('../../foundation-v81/runtime/backpressure');const bp=new BackpressureController({high:10,low:5});bp.update(10);assert(!bp.admit());bp.update(5);assert(bp.admit());
+const tr=require('../../foundation-v82/runtime/trace-context');const r=tr.root(),c=tr.child(r);assert.equal(c.traceId,r.traceId);assert(tr.header(c).startsWith('00-'));
+const {score}=require('../../foundation-v83/runtime/health-model');assert.equal(score({bridge:true,heartbeatAgeMs:0,queueDepth:0}).status,'HEALTHY');assert.equal(score({bridge:false,heartbeatAgeMs:5000,maxHeartbeatAgeMs:5000,queueDepth:100,maxQueueDepth:100}).status,'UNHEALTHY');
+const {diff}=require('../../foundation-v84/runtime/contract-diff');assert(diff({a:1},{a:2,b:3}).length===2);
+const rs=require('../../foundation-v85/runtime/replay-selector');assert.equal(rs.select([{environment:{ae:'26'},status:'PASS'}],{ae:'26'}).length,1);assert.equal(rs.summary([{status:'PASS'},{status:'FAIL'}]).passRate,.5);
+const {ProductionControlPlaneV2}=require('../runtime/production-control-plane-v2');const p=new ProductionControlPlaneV2({backpressure:new BackpressureController({high:2,low:1})});assert(p.admit({queueDepth:0,health:{bridge:true}}).ok);assert(!p.admit({queueDepth:2,health:{bridge:true}}).ok);console.log('v86 PASS');

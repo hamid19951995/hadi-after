@@ -1,0 +1,1 @@
+const assert=require('assert');const {CancellationRegistry}=require('../runtime/cancellation');const r=new CancellationRegistry();r.cancel('j','STOP');assert.throws(()=>r.token('j').throwIfCancelled(),/STOP/);console.log('v88 PASS');

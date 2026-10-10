@@ -1,0 +1,30 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"com.aeboss.omega/contracts/ae-bridge-envelope.v1.schema.json",
+  "title":"AE BOSS Omega Governed AE Bridge Envelope v1",
+  "type":"object",
+  "required":["protocolVersion","messageId","operationId","nonce","timestamp","phase","action","authorization"],
+  "properties":{
+    "protocolVersion":{"const":"1.0"},
+    "messageId":{"type":"string","minLength":16},
+    "operationId":{"type":"string","minLength":8},
+    "nonce":{"type":"string","minLength":16},
+    "timestamp":{"type":"string","format":"date-time"},
+    "phase":{"enum":["HELLO","CAPABILITY","PREFLIGHT","DRY_RUN","APPLY","READBACK","CANCEL","HEARTBEAT"]},
+    "action":{"type":"string","minLength":1},
+    "target":{"type":"object"},
+    "parameters":{"type":"object"},
+    "authorization":{
+      "type":"object",
+      "required":["leaseId","scopeHash"],
+      "properties":{
+        "leaseId":{"type":"string","minLength":8},
+        "scopeHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+      },
+      "additionalProperties":true
+    },
+    "specHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "payload":{"type":"object"}
+  },
+  "additionalProperties":false
+}

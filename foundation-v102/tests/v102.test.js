@@ -1,0 +1,1 @@
+const assert=require('assert');const {OperationRegistry}=require('../../foundation-v101/runtime/operation-registry');const {preflight}=require('../runtime/preflight');const r=new OperationRegistry();r.register('X',{required:['a']});assert(preflight({operations:[{id:'1',type:'X',input:{a:1}}]},r).ok);console.log('v102 PASS');

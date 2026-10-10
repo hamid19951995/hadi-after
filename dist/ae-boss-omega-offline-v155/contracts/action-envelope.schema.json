@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AEPIPE PRIME Action Envelope",
+  "type": "object",
+  "required": ["id", "action", "intent", "scope", "authority", "policy", "state"],
+  "properties": {
+    "id": {"type": "string", "minLength": 8},
+    "action": {"type": "string", "minLength": 1},
+    "intent": {"type": "object", "required": ["source", "command", "payload"]},
+    "scope": {"type": "object", "required": ["host", "project"]},
+    "authority": {"type": "object", "required": ["modelMayPropose", "runtimeMustAuthorize", "userApprovalRequired"]},
+    "policy": {"type": "object", "required": ["mode", "failClosed", "reversible"]},
+    "state": {"enum": ["PROPOSED", "PREFLIGHT", "DRY_RUN", "APPROVAL_REQUIRED", "LEASED", "APPLYING", "VERIFYING", "SUCCESS", "FAILED", "UNKNOWN", "CANCELLED"]},
+    "lease": {"type": ["object", "null"]},
+    "evidence": {"type": "array"}
+  }
+}

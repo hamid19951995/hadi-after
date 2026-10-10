@@ -1,0 +1,4 @@
+function rgbaStats(pixels){let n=0,sum=0,transparent=0,black=0;for(const p of pixels||[]){const r=p[0]||0,g=p[1]||0,b=p[2]||0,a=p.length>3?p[3]:255;n++;sum+=(r+g+b)/3;if(a===0)transparent++;if(r<5&&g<5&&b<5)black++;}return {pixels:n,mean:n?sum/n:0,transparentRatio:n?transparent/n:1,blackRatio:n?black/n:1};}
+function validateFrame(pixels,rules={}){const s=rgbaStats(pixels);const issues=[];if(!s.pixels)issues.push('EMPTY_FRAME');if(s.blackRatio>(rules.maxBlackRatio??0.98))issues.push('MOSTLY_BLACK');if(s.transparentRatio>(rules.maxTransparentRatio??0.98))issues.push('MOSTLY_TRANSPARENT');return {ok:issues.length===0,issues,stats:s};}
+function validateTimeline(comp){const issues=[];for(const l of comp.layers||[]){if(l.outPoint<=l.inPoint)issues.push({layer:l.name,issue:'INVALID_LAYER_RANGE'});if(l.enabled===false)issues.push({layer:l.name,issue:'LAYER_DISABLED'});}return {ok:issues.length===0,issues};}
+module.exports={rgbaStats,validateFrame,validateTimeline};

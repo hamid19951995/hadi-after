@@ -1,0 +1,99 @@
+{
+  "formatVersion": 1,
+  "source": "runtime/offline-core.js",
+  "vectors": [
+    {
+      "name": "hash-nested-project-object",
+      "kind": "hash",
+      "input": {
+        "value": {
+          "version": "offline-core.v1",
+          "project": {
+            "name": "Omega Launch",
+            "frameRate": 30,
+            "dimensions": [
+              1920,
+              1080
+            ]
+          },
+          "layers": [
+            {
+              "id": "title-01",
+              "type": "text",
+              "duration": 4.5
+            },
+            {
+              "id": "logo-01",
+              "type": "shape",
+              "duration": 3
+            }
+          ]
+        }
+      },
+      "expectedFingerprint": "293e9c8c-ce"
+    },
+    {
+      "name": "hash-array-order",
+      "kind": "hash",
+      "input": {
+        "value": [
+          "composition",
+          "text-layer",
+          "render"
+        ]
+      },
+      "expectedFingerprint": "8fdc7322-25"
+    },
+    {
+      "name": "plan-create-composition",
+      "kind": "plan",
+      "input": {
+        "request": "create composition 1280x720 8 seconds 24 fps",
+        "context": {
+          "lastComposition": "Benchmark_Sequence",
+          "activeProject": "Omega Launch"
+        }
+      },
+      "expectedFingerprint": "818fc1db-303"
+    },
+    {
+      "name": "plan-add-text",
+      "kind": "plan",
+      "input": {
+        "request": "add text: Golden fingerprint baseline",
+        "context": {
+          "activeComposition": "Launch_Intro",
+          "selectedLayers": []
+        }
+      },
+      "expectedFingerprint": "b308f28b-274"
+    },
+    {
+      "name": "checkpoint-after-verification",
+      "kind": "checkpoint",
+      "input": {
+        "request": "add text: Golden fingerprint baseline",
+        "context": {
+          "activeComposition": "Launch_Intro",
+          "selectedLayers": []
+        },
+        "jobId": "golden-job-01",
+        "currentStep": "verify",
+        "completedSteps": [
+          "create_text"
+        ],
+        "contextSnapshot": {
+          "activeComposition": "Launch_Intro",
+          "createdLayer": "Title"
+        },
+        "verificationResults": [
+          {
+            "check": "layer.exists",
+            "ok": true
+          }
+        ]
+      },
+      "expectedFingerprint": "007f74aa-ec"
+    }
+  ]
+}

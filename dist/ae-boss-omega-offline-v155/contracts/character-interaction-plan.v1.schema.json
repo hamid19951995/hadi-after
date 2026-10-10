@@ -1,0 +1,12 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"character-interaction-plan.v1",
+  "type":"object",
+  "required":["kind","engine","engineVersion","fps","sceneDuration","characters","defaults","interactions","conflicts","fingerprint"],
+  "properties":{
+    "kind":{"const":"character-interaction-plan.v1"},"engine":{"const":"Character Interaction Engine"},"engineVersion":{"type":"string"},
+    "fps":{"type":"number","exclusiveMinimum":0},"sceneDuration":{"type":"number","exclusiveMinimum":0},
+    "characters":{"type":"array","items":{"type":"string"},"minItems":1},
+    "defaults":{"type":"object"},"interactions":{"type":"array"},"conflicts":{"type":"array"},"fingerprint":{"type":"string","minLength":24}
+  }
+}

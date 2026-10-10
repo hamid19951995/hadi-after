@@ -1,0 +1,1 @@
+const crypto=require('crypto');function hash(value){return crypto.createHash('sha256').update(typeof value==='string'?value:JSON.stringify(value)).digest('hex');}function provenance({artifact,inputs=[],producer,version}){return {artifactHash:hash(artifact),inputHashes:inputs.map(hash),producer,version,createdAt:new Date().toISOString()};}module.exports={hash,provenance};

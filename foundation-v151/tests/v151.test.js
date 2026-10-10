@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {normalize,digest}=require('../runtime/trace-normalizer');const a=[{b:2,timestamp:1,a:1},{a:3,pid:9}],b=[{a:1,b:2,timestamp:99},{pid:2,a:3}];assert.deepStrictEqual(normalize(a),normalize(b));assert.strictEqual(digest(a),digest(b));console.log('v151 PASS');

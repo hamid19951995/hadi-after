@@ -1,0 +1,2 @@
+class ResourceScheduler { constructor({limits={ae:1,python:2,shell:1}}={}){this.limits={...limits};this.active={};this.queue=[];} _used(k){return this.active[k]||0;} canStart(job){return Object.entries(job.resources||{}).every(([k,n])=>this._used(k)+n<=(this.limits[k]??0));} start(job){if(!this.canStart(job)) return false; for(const[k,n] of Object.entries(job.resources||{})) this.active[k]=this._used(k)+n; return true;} finish(job){for(const[k,n] of Object.entries(job.resources||{})) this.active[k]=Math.max(0,this._used(k)-n);} }
+module.exports={ResourceScheduler};

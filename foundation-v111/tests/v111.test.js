@@ -1,0 +1,1 @@
+const assert=require('assert');const {fuzz}=require('../runtime/bridge-contract-fuzzer');const r=fuzz(x=>typeof x.requestId==='string'&&typeof x.command==='string',{requestId:'r1',command:'PING'},40);assert.equal(r.count,40);assert(r.accepted<40);console.log('v111 PASS');

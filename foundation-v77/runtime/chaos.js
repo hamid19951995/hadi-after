@@ -1,0 +1,1 @@
+function injectScenario({name,at,operation}){return {name,at,operation,active:true,createdAt:new Date().toISOString()};}function shouldInject(scenario,index){return !!scenario.active && scenario.at===index;}module.exports={injectScenario,shouldInject};

@@ -1,0 +1,1 @@
+function normalize(s){return {project:s.project||null,activeComp:s.activeComp||null,selectedLayers:s.selectedLayers||[],time:s.time||0,bridge:s.bridge||'UNKNOWN',health:s.health||'UNKNOWN'}}module.exports={normalize};

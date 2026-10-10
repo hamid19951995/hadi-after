@@ -1,0 +1,1 @@
+const crypto=require('crypto');function hash(files){return crypto.createHash('sha256').update(JSON.stringify([...files].sort())).digest('hex')}function build({version,files,compatibility,tests}){return {version,files:[...files].sort(),compatibility,tests,manifestHash:hash(files)}}function verify(m){return m.manifestHash===hash(m.files)}module.exports={build,verify};

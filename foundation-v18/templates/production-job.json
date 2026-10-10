@@ -1,0 +1,1 @@
+{"jobId":"v18-demo","project":{"name":"Autonomous Production"},"comps":[{"name":"MAIN","width":1920,"height":1080,"duration":5,"fps":30}],"layers":[{"comp":"MAIN","type":"solid","name":"BG"},{"comp":"MAIN","type":"text","name":"TITLE","text":"AE BOSS OMEGA"}],"output":{"path":"./output/v18-demo.mov"},"retry":{"maxAttempts":3}}

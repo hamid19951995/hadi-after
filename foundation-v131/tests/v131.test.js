@@ -1,0 +1,1 @@
+const assert=require('assert');const {sequence}=require('../runtime/deterministic-rng');assert.deepStrictEqual(sequence(7,8,10),sequence(7,8,10));assert.notDeepStrictEqual(sequence(7,8,10),sequence(8,8,10));console.log('v131 PASS');

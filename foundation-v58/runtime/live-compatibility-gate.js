@@ -1,0 +1,7 @@
+const crypto=require('crypto');
+function canonical(v){if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+canonical(v[k])).join(',')+'}';return JSON.stringify(v);}
+function sha(v){return crypto.createHash('sha256').update(canonical(v)).digest('hex');}
+function validateEvidence(e){const errors=[];for(const k of ['host','environment','operations'])if(!(k in e))errors.push('missing:'+k);if(!Array.isArray(e.operations)||!e.operations.length)errors.push('operations-empty');for(const [i,o] of (e.operations||[]).entries()){if(!o.id)errors.push(`op[${i}].id`);if(o.status!=='PASS')errors.push(`op[${i}].status`);if(!o.readback)errors.push(`op[${i}].readback`);}return {valid:!errors.length,errors};}
+function compareProfile(profile,e){const mismatches=[];for(const [k,expected] of Object.entries(profile.require||{})){const actual=e.environment?.[k] ?? e.host?.[k];if(expected!==actual)mismatches.push({field:k,expected,actual});}return {compatible:!mismatches.length,mismatches};}
+function gate(profile,evidence){const ev=validateEvidence(evidence);const cp=ev.valid?compareProfile(profile,evidence):{compatible:false,mismatches:[]};const status=ev.valid&&cp.compatible?'CERTIFIABLE':'BLOCKED';return {status,evidenceHash:sha(evidence),profileHash:sha(profile),validation:ev,compatibility:cp};}
+module.exports={canonical,sha,validateEvidence,compareProfile,gate};

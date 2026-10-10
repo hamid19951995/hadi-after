@@ -1,0 +1,34 @@
+{
+  "name": "ae-studio-copilot-bridge",
+  "displayName": "AE Studio Copilot Bridge",
+  "description": "Local bridge between the AE Studio CEP panel and GitHub Copilot in VS Code.",
+  "version": "0.1.0",
+  "publisher": "ae-studio",
+  "engines": { "vscode": "^1.90.0" },
+  "extensionDependencies": ["github.copilot-chat"],
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "aeStudio.startCopilotBridge", "title": "AE Studio: Start Copilot Bridge" },
+      { "command": "aeStudio.stopCopilotBridge", "title": "AE Studio: Stop Copilot Bridge" }
+    ],
+    "configuration": {
+      "properties": {
+        "aeStudio.copilotBridgePort": {
+          "type": "number",
+          "default": 43127,
+          "minimum": 1024,
+          "maximum": 65535,
+          "description": "Loopback port used by the AE Studio CEP panel."
+        },
+        "aeStudio.repositoryRoot": {
+          "type": "string",
+          "default": "",
+          "description": "Optional root folder for the local large-project repository. Leave empty to use the first VS Code workspace folder."
+        }
+      }
+    }
+  }
+}

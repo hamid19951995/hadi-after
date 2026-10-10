@@ -1,0 +1,1 @@
+const assert=require('assert');const {prove,verify}=require('../runtime/execution-proof');const p=prove({b:2,a:{z:1,y:0}});assert(verify(p));p.payload.a.y=9;assert(!verify(p));console.log('v140 PASS');

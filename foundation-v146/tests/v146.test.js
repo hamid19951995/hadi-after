@@ -1,0 +1,1 @@
+const assert=require('assert');const {build,verify}=require('../runtime/event-log');const l=build([{b:2,a:1},{x:'ok'}]);assert(verify(l));l[1].event.x='tampered';assert(!verify(l));console.log('v146 PASS');

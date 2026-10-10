@@ -1,0 +1,56 @@
+{
+  "version": "10.0.0",
+  "generatedAt": "2026-09-11T09:57:46.292Z",
+  "files": [
+    {
+      "path": "foundation-v10/assets/asset-graph-v10.js",
+      "sha256": "621b0e979b825004c7b2f7c1622633f86f02026b7268d4dbe24c11219c9d92d3",
+      "bytes": 840
+    },
+    {
+      "path": "foundation-v10/certification/certify-v10.js",
+      "sha256": "ced303c18eb684295b8b1d9e72a7a02e23fed1da4ccabb8da2a9b9402cf1f241",
+      "bytes": 873
+    },
+    {
+      "path": "foundation-v10/index.js",
+      "sha256": "a6f84634a432640e9c9e1a8e0535010fcd4310a30bc3e5c13303f672be6cb65e",
+      "bytes": 397
+    },
+    {
+      "path": "foundation-v10/jobs/job-scheduler-v10.js",
+      "sha256": "4c5d2fba7e08a0e9c1d555a79403f7da650799908c92353f4421d93dbb479f6b",
+      "bytes": 931
+    },
+    {
+      "path": "foundation-v10/project/snapshot-manager-v10.js",
+      "sha256": "02f86e8d02d0db185b2ca868c5f713e7fda1f9786a09c47117ca40186ed44ef2",
+      "bytes": 1255
+    },
+    {
+      "path": "foundation-v10/recovery/recovery-coordinator-v10.js",
+      "sha256": "7df45895341952594c852d0a23f4dd3ee510ab60e0bfc776de4459773899c009",
+      "bytes": 793
+    },
+    {
+      "path": "foundation-v10/render/render-queue-v10.js",
+      "sha256": "ee4e711fa4a793be7eddc869d22ed26fd78f7eeb1062e8ce0222477ed74a3f14",
+      "bytes": 601
+    },
+    {
+      "path": "foundation-v10/runtime/production-runtime-v10.js",
+      "sha256": "22a17a52a89809f19e78a59e2d8fc9081059cf5a97b2c56bf117d420d6784748",
+      "bytes": 3173
+    },
+    {
+      "path": "foundation-v10/security/audit-ledger-v10.js",
+      "sha256": "8e6e7519d8aa50c24eeec255a0edfb7becd4f92301bcc8163c4f41cb35628180",
+      "bytes": 1161
+    },
+    {
+      "path": "foundation-v10/security/capability-guard-v10.js",
+      "sha256": "fec3219341c8b103f44c4f36ec9b720e7dbe5fe0ae24c2ed91b4f314f0574f68",
+      "bytes": 674
+    }
+  ]
+}

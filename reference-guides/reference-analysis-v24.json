@@ -1,0 +1,59 @@
+{
+  "version": "24.0.0",
+  "purpose": "Reference-guided motion graphics planning using user-supplied visual references; generates original compositions rather than copying a branded template.",
+  "referenceObservations": {
+    "isfahanIllustration": {
+      "style": "flat vector city/architecture illustration",
+      "traits": [
+        "layered skyline",
+        "simple geometric shapes",
+        "muted pastel palette",
+        "foreground/midground/background depth"
+      ]
+    },
+    "azadiPSD": {
+      "style": "layered landmark illustration",
+      "traits": [
+        "separable visual parts",
+        "geometric symmetry",
+        "architectural line detail",
+        "asset suitable for parallax/assembly animation"
+      ]
+    },
+    "elementGuide": {
+      "catalogs": [
+        "characters",
+        "character actions",
+        "props",
+        "backgrounds",
+        "icons",
+        "shape elements",
+        "UI/other elements"
+      ],
+      "traits": [
+        "modular reusable assets",
+        "pose/action variants",
+        "scene assembly from semantic asset groups"
+      ]
+    },
+    "diagramVideo": {
+      "style": "minimal animated chart/diagram",
+      "traits": [
+        "data bars",
+        "progressive reveal",
+        "clean background",
+        "accent colors",
+        "time-based growth animation"
+      ]
+    }
+  },
+  "families": [
+    "character-explainer",
+    "architectural-landmark",
+    "infographic-chart",
+    "product-promo",
+    "corporate-story",
+    "logo-reveal"
+  ],
+  "originalityRule": "Use references as style and structural guidance only; do not reproduce protected branded layouts, logos, characters, or exact templates."
+}

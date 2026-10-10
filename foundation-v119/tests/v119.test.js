@@ -1,0 +1,1 @@
+const assert=require('assert');const {record,replay}=require('../runtime/record-replay');const ex=o=>({ok:true,value:o.n*2});const r=record([{n:1},{n:2}],ex);assert(replay(r,ex).match);assert(!replay(r,o=>({ok:true,value:o.n*3})).match);console.log('v119 PASS');

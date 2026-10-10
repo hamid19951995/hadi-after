@@ -1,0 +1,4 @@
+const crypto=require('crypto');
+function mutate(obj,seed){const s=JSON.parse(JSON.stringify(obj)); const h=crypto.createHash('sha256').update(String(seed)).digest(); const modes=['drop','type','extra','truncate']; const mode=modes[h[0]%modes.length]; const keys=Object.keys(s); if(!keys.length)return s; const k=keys[h[1]%keys.length]; if(mode==='drop')delete s[k]; else if(mode==='type')s[k]=h[2]%2?'INVALID':12345; else if(mode==='extra')s.__unexpected=h.toString('hex').slice(0,8); else if(typeof s[k]==='string')s[k]=s[k].slice(0,1); return s;}
+function fuzz(validate,base,count=32){const results=[];for(let i=0;i<count;i++){const c=mutate(base,i);let ok=false,err=null;try{ok=!!validate(c)}catch(e){err=e.message;}results.push({i,ok,err,case:c});}return {count,accepted:results.filter(x=>x.ok).length,results};}
+module.exports={mutate,fuzz};

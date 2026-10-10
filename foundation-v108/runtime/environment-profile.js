@@ -1,0 +1,1 @@
+const crypto=require('crypto');function profile(env){const p={ae:String(env.ae||''),os:String(env.os||''),cep:String(env.cep||''),features:[...(env.features||[])].sort()};return {...p,fingerprint:crypto.createHash('sha256').update(JSON.stringify(p)).digest('hex')}}module.exports={profile};

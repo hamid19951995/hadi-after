@@ -1,0 +1,3 @@
+const crypto=require('crypto');
+function readiness(report){const required=['bridge','assets','render','visualQA','recovery','rollback','modules','diagnostics'];const missing=required.filter(k=>!report[k]||report[k].ok===false);return {ready:missing.length===0,missing,checkedAt:new Date().toISOString(),fingerprint:crypto.createHash('sha256').update(JSON.stringify(report)).digest('hex')};}
+module.exports={readiness};

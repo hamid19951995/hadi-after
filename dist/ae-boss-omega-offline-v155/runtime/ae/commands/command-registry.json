@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "commands": {
+    "project.inspect": {"mutates": false, "risk": "READ_ONLY", "readback": true},
+    "composition.inspect": {"mutates": false, "risk": "READ_ONLY", "readback": true},
+    "layer.inspect": {"mutates": false, "risk": "READ_ONLY", "readback": true},
+    "renderQueue.inspect": {"mutates": false, "risk": "READ_ONLY", "readback": true},
+    "composition.create": {"mutates": true, "risk": "LOW", "readback": true, "rollback": "snapshot"},
+    "layer.create": {"mutates": true, "risk": "LOW", "readback": true, "rollback": "snapshot"},
+    "layer.update": {"mutates": true, "risk": "MEDIUM", "readback": true, "rollback": "snapshot"},
+    "keyframe.create": {"mutates": true, "risk": "MEDIUM", "readback": true, "rollback": "snapshot"},
+    "effect.add": {"mutates": true, "risk": "MEDIUM", "readback": true, "rollback": "snapshot"},
+    "renderQueue.configure": {"mutates": true, "risk": "HIGH", "readback": true, "approval": true, "rollback": "snapshot"},
+    "project.save": {"mutates": true, "risk": "MEDIUM", "readback": true},
+    "script.execute": {"mutates": true, "risk": "CRITICAL", "approval": true, "sandbox": true, "readback": true}
+  }
+}

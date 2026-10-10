@@ -1,0 +1,1 @@
+const assert=require('assert');const {append,verify}=require('../runtime/causal-journal');let j=[];j=append(j,{type:'A'});j=append(j,{type:'B'});assert(verify(j));j[1].event.type='X';assert(!verify(j));console.log('v139 PASS');

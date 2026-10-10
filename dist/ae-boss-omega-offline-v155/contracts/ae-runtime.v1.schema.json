@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "com.aeboss.omega/contracts/ae-runtime.v1.schema.json",
+  "title": "AE BOSS Omega AE Runtime Contract v1",
+  "type": "object",
+  "required": ["operationId","action","target","authorization","execution","verification"],
+  "properties": {
+    "operationId": {"type":"string","minLength":8},
+    "action": {"type":"string","minLength":1},
+    "target": {"type":"object"},
+    "authorization": {
+      "type":"object",
+      "required":["leaseId","scopeHash"],
+      "properties":{
+        "leaseId":{"type":"string","minLength":8},
+        "scopeHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}
+      },
+      "additionalProperties":true
+    },
+    "execution": {
+      "type":"object",
+      "required":["mode"],
+      "properties":{"mode":{"enum":["DRY_RUN","APPLY"]}}
+    },
+    "verification": {
+      "type":"object",
+      "required":["readbackRequired"],
+      "properties":{"readbackRequired":{"const":true}}
+    }
+  },
+  "additionalProperties": true
+}

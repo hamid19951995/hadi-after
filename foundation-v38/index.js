@@ -1,0 +1,1 @@
+'use strict';const v37=require('../foundation-v37');const {WorkspaceManager,NAMES}=require('./workspace/workspace-manager');const {TaskQueue,STATES}=require('./queue/task-queue');const {SecureAgent}=require('./agent/secure-agent');module.exports={...v37,version:'38.0.0',WorkspaceManager,workspaceNames:NAMES,TaskQueue,taskStates:STATES,SecureAgent};

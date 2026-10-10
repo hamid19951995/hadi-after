@@ -1,0 +1,1 @@
+const assert=require('assert');const {diff,apply}=require('../runtime/snapshot-delta');const a={a:1,b:{x:2}},b={a:1,b:{x:3},c:true};const d=diff(a,b);assert.deepStrictEqual(apply(a,d),b);console.log('v147 PASS');

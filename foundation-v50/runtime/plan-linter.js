@@ -1,0 +1,2 @@
+function lint(plan){const issues=[];const ops=(plan&&plan.operations)||[];const ids=new Set();ops.forEach((o,i)=>{if(!o||!o.type)issues.push({code:'OP_TYPE_REQUIRED',index:i});if(o&&o.id){if(ids.has(o.id))issues.push({code:'DUPLICATE_OPERATION_ID',id:o.id});ids.add(o.id);}if(o&&o.dependsOn)for(const d of o.dependsOn)if(!ids.has(d))issues.push({code:'FORWARD_OR_MISSING_DEPENDENCY',id:o.id,dependency:d});});return {ok:issues.length===0,issues,count:ops.length};}
+module.exports={lint};

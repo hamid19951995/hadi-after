@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {assess}=require('../runtime/regression-budget');assert.strictEqual(assess({failures:0,p95:105},{p95:100}).ok,true);assert.strictEqual(assess({failures:1,p95:100},{p95:100}).ok,false);assert.strictEqual(assess({failures:0,p95:120},{p95:100}).ok,false);console.log('v154 PASS');

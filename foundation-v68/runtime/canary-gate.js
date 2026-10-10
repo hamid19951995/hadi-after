@@ -1,0 +1,1 @@
+function assess(results,{minRuns=3,maxFailureRate=0.1}={}){const n=results.length,fail=results.filter(x=>!x.pass).length,rate=n?fail/n:1;return {runs:n,failures:fail,failureRate:rate,approved:n>=minRuns&&rate<=maxFailureRate};}module.exports={assess};

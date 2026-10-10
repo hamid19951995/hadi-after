@@ -1,0 +1,1 @@
+'use strict'; const {ProductionRuntimeV18}=require('../../foundation-v18/runtime/production-runtime'); class ProductionRuntimeV19 extends ProductionRuntimeV18 { constructor(opts={}){super(opts);this.metricsV19={fencedCommits:0};} status(){return {...super.status(),...this.metricsV19};} } module.exports={ProductionRuntimeV19};

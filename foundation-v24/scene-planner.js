@@ -1,0 +1,16 @@
+"use strict";
+const {families,styles}=require("./motion-catalog");
+function norm(s){return String(s||"").toLowerCase();}
+function detectFamily(text,lang,override){if(override&&families[override])return override;const t=norm(text);if(/نمودار|چارت|داده|chart|diagram|data/.test(t))return"infographic-chart";if(/اصفهان|آزادی|معماری|ساختمان|landmark|architecture/.test(t))return"architectural-landmark";if(/شخصیت|کاراکتر|explainer|character/.test(t))return"character-explainer";if(/لوگو|logo/.test(t))return"logo-reveal";if(/شرکتی|corporate|داستان/.test(t))return"corporate-story";return"product-promo";}
+function detectStyle(text,lang,override){if(override&&styles[override])return override;const t=norm(text);if(/سینمایی|cinematic/.test(t))return"cinematic";if(/مینیمال|minimal/.test(t))return"minimal";if(/فلت|flat|وکتور|vector/.test(t))return"flat";if(/شرکتی|corporate/.test(t))return"corporate";return"modern";}
+function detectDuration(text,fallback){const m=String(text||"").match(/(\d+(?:\.\d+)?)\s*(?:ثانیه|second|sec|s\b)/i);return m?Number(m[1]):Number(fallback)||12;}
+function variationStyles(base,count){const all=Object.keys(styles);const first=base&&styles[base]?base:"modern";const out=[first];for(const s of all)if(out.length<count&&!out.includes(s))out.push(s);return out;}
+function sceneLayer(name,type,role,depth,props){return {name,type,role,depth,props:props||{}}}
+function planScene(brief,options){const style=styles[brief.style]||styles.modern;const family=families[brief.family]||families["product-promo"];const d=brief.duration;const scenes=[];
+ if(brief.family==="architectural-landmark") scenes.push({id:"scene-01",duration:d,layers:[sceneLayer("Sky","shape","sky",0,{color:style.palette[0]}),sceneLayer("Landmark","asset","landmark",2,{animation:"assemble+parallax"}),sceneLayer("Foreground","shape","foreground",3,{animation:"slide-in"}),sceneLayer("Title","text","title",4,{animation:"fade+position"})]});
+ else if(brief.family==="infographic-chart") scenes.push({id:"scene-01",duration:d,layers:[sceneLayer("Background","shape","background",0,{color:style.palette[3]}),sceneLayer("Chart","shape","chart",2,{animation:"bar-grow+stagger"}),sceneLayer("Labels","text","labels",3,{animation:"fade"}),sceneLayer("Callout","text","callout",4,{animation:"scale-in"})]});
+ else if(brief.family==="character-explainer") scenes.push({id:"scene-01",duration:d,layers:[sceneLayer("Background","shape","background",0,{}),sceneLayer("Character","asset","character",2,{action:options.action||"present"}),sceneLayer("Prop","asset","prop",3,{animation:"slide"}),sceneLayer("Caption","text","caption",4,{animation:"fade+position"})]});
+ else scenes.push({id:"scene-01",duration:d,layers:[sceneLayer("Background","shape","background",0,{color:style.palette[3]}),sceneLayer("Hero","asset","product",2,{animation:"scale-in+parallax"}),sceneLayer("Accent","shape","accent",3,{animation:"stagger"}),sceneLayer("Headline","text","headline",4,{animation:"fade+position"})]});
+ return {version:"scene-plan.v24",family:brief.family,style:brief.style,palette:style.palette,motion:style.motion,assetRoles:family.roles,actions:family.actions,scenes,referencePolicy:"style-guided-original-output",audio:{mode:"optional",syncMarkers:options.audioSync||[]}};
+}
+module.exports={detectFamily,detectStyle,detectDuration,variationStyles,planScene};

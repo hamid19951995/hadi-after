@@ -1,0 +1,1 @@
+const assert=require('assert');const {migrate,compatible}=require('../runtime/schema-evolution');const x=migrate({schemaVersion:1},3);assert.equal(x.schemaVersion,3);assert.deepStrictEqual(x.capabilities,[]);assert(compatible({schemaVersion:2}));console.log('v133 PASS');

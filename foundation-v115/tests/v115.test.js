@@ -1,0 +1,1 @@
+const assert=require('assert');const {evaluate}=require('../runtime/local-certification-gate');assert.equal(evaluate({tests:true,integrity:true,transcript:true,simulator:true}).status,'LOCAL_HARDENED');assert.equal(evaluate({tests:true,integrity:false,transcript:true,simulator:true}).status,'BLOCKED');console.log('v115 PASS');

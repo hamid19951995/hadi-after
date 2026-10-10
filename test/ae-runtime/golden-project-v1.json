@@ -1,0 +1,15 @@
+{
+  "name":"AE_BOSS_OMEGA_GOLDEN_001",
+  "purpose":"Minimum real-host certification",
+  "steps":[
+    {"action":"project.inspect","expect":"project readable"},
+    {"action":"composition.create","parameters":{"name":"BOSS_GOLDEN","width":1920,"height":1080,"duration":5,"frameRate":25},"expect":"composition exists"},
+    {"action":"layer.create","parameters":{"type":"TEXT","name":"BOSS_TEST"},"expect":"layer exists"},
+    {"action":"layer.update","parameters":{"name":"BOSS_TEST","position":[960,540]},"expect":"position readback matches"},
+    {"action":"keyframe.create","parameters":{"property":"Opacity","time":0,"value":0},"expect":"keyframe exists"},
+    {"action":"keyframe.create","parameters":{"property":"Opacity","time":1,"value":100},"expect":"keyframe exists"},
+    {"action":"renderQueue.inspect","expect":"render queue readable"},
+    {"action":"project.save","expect":"project path/readback verified"}
+  ],
+  "releaseGate":"Every mutation must have independent readback and evidence."
+}

@@ -1,0 +1,15 @@
+{
+  "version": "25.0.0",
+  "edition": "Autonomous Character & Motion Studio",
+  "capabilities": [
+    "voice-to-character",
+    "natural-language-action-planning",
+    "original-2d-puppet-generation",
+    "action-sequencing",
+    "deterministic-operation-keys",
+    "rig-schema",
+    "reconciliation-metadata",
+    "after-effects-extendscript-runtime"
+  ],
+  "referencePolicy": "external-reference-only; original generated output; no third-party rig/assets embedded"
+}

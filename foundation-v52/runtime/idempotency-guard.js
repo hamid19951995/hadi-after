@@ -1,0 +1,2 @@
+class IdempotencyGuard{constructor(){this.done=new Map();} begin(key,payloadHash){const prior=this.done.get(key);if(prior)return {execute:false,reason:prior.payloadHash===payloadHash?'ALREADY_APPLIED':'KEY_CONFLICT',record:prior};return {execute:true};} commit(key,payloadHash,result){const record={payloadHash,result,at:new Date().toISOString()};this.done.set(key,record);return record;} clear(key){this.done.delete(key);}}
+module.exports={IdempotencyGuard};

@@ -1,0 +1,4 @@
+const {preflight}=require('../../foundation-v102/runtime/preflight');
+const {batch}=require('../../foundation-v106/runtime/batch-planner');
+const {runWithTimeout}=require('../../foundation-v105/runtime/timeout-watchdog');
+async function execute(plan,{registry,policy,handler,timeoutMs=5000,batchSize=1,audit}){const p=preflight(plan,registry,policy);if(!p.ok)return {status:'BLOCKED',preflight:p};const results=[];for(const group of batch(plan.operations||[],batchSize)){for(const op of group){audit&&audit.append({type:'START',id:op.id});try{const r=await runWithTimeout(()=>handler(op),timeoutMs);results.push({id:op.id,status:'DONE',result:r});audit&&audit.append({type:'DONE',id:op.id})}catch(e){results.push({id:op.id,status:'FAILED',code:e.code||'ERROR'});audit&&audit.append({type:'FAILED',id:op.id,code:e.code||'ERROR'});return {status:'FAILED',results}}}}return {status:'COMPLETED',results};}module.exports={execute};

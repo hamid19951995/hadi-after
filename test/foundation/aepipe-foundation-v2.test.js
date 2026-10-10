@@ -1,0 +1,13 @@
+const assert=require('assert');
+const p=require('../../kernel/aepipe/aepipe-core');
+const policy=require('../../kernel/policy/policy-engine');
+const twin=require('../../twin/digital-twin');
+const audit=require('../../audit/audit-chain');
+const e=p.createAction('addTextLayer',{text:'Ω'},{source:'test'});
+p.runPreflight(e);p.dryRun(e,{plannedMutation:false});assert.equal(e.state,p.STATES.DRY_RUN);
+assert.equal(policy.evaluate(e).requiresApproval,true);p.approve(e,'test-user');p.issueLease(e,{ttlMs:5000});p.beginApply(e);p.recordReadback(e,{ok:true,layer:{name:'Ω'}});p.verify(e,{readback:{ok:true},postconditionsMet:true,healthOk:true});assert.equal(e.state,p.STATES.SUCCESS);
+const u=p.createAction('addTextLayer',{});p.runPreflight(u);p.dryRun(u,{});p.approve(u,'test');p.issueLease(u,{ttlMs:5000});p.beginApply(u);p.recordReadback(u,{ok:true});p.verify(u,{readback:{ok:true},postconditionsMet:false,healthOk:true});assert.equal(u.state,p.STATES.UNKNOWN);
+assert.throws(()=>p.beginApply(p.createAction('addTextLayer',{})),/APPLY requires LEASED/);
+const t=twin.snapshot({ok:true,layerCount:1});assert.equal(twin.diff(t.state,{ok:true,layerCount:2}).status,'DRIFT');
+const c=[];audit.append(c,'CREATE');audit.append(c,'VERIFY');assert.equal(audit.verify(c),true);c[1].event='TAMPERED';assert.equal(audit.verify(c),false);
+console.log('AE BOSS Ω Foundation v2 tests passed');

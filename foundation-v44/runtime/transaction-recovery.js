@@ -1,0 +1,5 @@
+const crypto=require('crypto');
+function id(){return crypto.randomBytes(8).toString('hex');}
+class TransactionManager{constructor(){this.transactions=new Map();} begin(label,checkpoint){const tx={id:id(),label,state:'OPEN',checkpoint,operations:[],createdAt:new Date().toISOString()};this.transactions.set(tx.id,tx);return tx;} record(txid,op){const tx=this.transactions.get(txid);if(!tx||tx.state!=='OPEN')throw new Error('TRANSACTION_NOT_OPEN');tx.operations.push(op);return tx;} commit(txid){const tx=this.transactions.get(txid);if(!tx||tx.state!=='OPEN')throw new Error('TRANSACTION_NOT_OPEN');tx.state='COMMITTED';return tx;} rollback(txid){const tx=this.transactions.get(txid);if(!tx||tx.state!=='OPEN')throw new Error('TRANSACTION_NOT_OPEN');tx.state='ROLLED_BACK';return {tx,restore:tx.checkpoint};}}
+function classifyRuntimeHeartbeat(lastSeen,now=Date.now(),timeoutMs=15000){return now-lastSeen>timeoutMs?'UNHEALTHY':'HEALTHY';}
+module.exports={TransactionManager,classifyRuntimeHeartbeat};

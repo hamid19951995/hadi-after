@@ -1,0 +1,4 @@
+'use strict';function canonical(x){if(Array.isArray(x))return x.map(canonical);if(x&&typeof x==='object'){const o={};Object.keys(x).sort().forEach(k=>o[k]=canonical(x[k]));return o;}return x;}
+function diff(a,b,p=''){a=canonical(a);b=canonical(b);const out=[];if(JSON.stringify(a)===JSON.stringify(b))return out;if(a&&b&&typeof a==='object'&&!Array.isArray(a)&&!Array.isArray(b)){const ks=[...new Set(Object.keys(a).concat(Object.keys(b)))].sort();ks.forEach(k=>out.push(...diff(a[k],b[k],p+'/'+k)));return out;}out.push({path:p||'/',before:a,after:b});return out;}
+function apply(base,delta){const out=canonical(base);for(const d of delta){const parts=d.path==='/'?[]:d.path.slice(1).split('/');if(!parts.length)return canonical(d.after);let cur=out;for(let i=0;i<parts.length-1;i++){if(!cur[parts[i]]||typeof cur[parts[i]]!=='object')cur[parts[i]]={};cur=cur[parts[i]];}cur[parts[parts.length-1]]=canonical(d.after);}return out;}
+module.exports={diff,apply};

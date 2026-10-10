@@ -1,0 +1,1 @@
+const x=require('../runtime/contract-migration');const r=x.migratePlan({operations:[{operation:'CREATE'}]});if(!x.validate(r.plan).valid||r.plan.contractVersion!=='v2')throw Error('v61');console.log('v61 PASS');

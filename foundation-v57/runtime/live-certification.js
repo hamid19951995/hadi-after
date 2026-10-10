@@ -1,0 +1,7 @@
+const crypto = require('crypto');
+function stable(v){if(Array.isArray(v))return v.map(stable);if(v&&typeof v==='object'){const o={};Object.keys(v).sort().forEach(k=>o[k]=stable(v[k]));return o;}return v;}
+function hash(v){return crypto.createHash('sha256').update(JSON.stringify(stable(v))).digest('hex');}
+function validateEvidence(e){const req=['schemaVersion','environment','bridge','operations','result'];const missing=req.filter(k=>!(k in e));if(missing.length)return {ok:false,errors:missing.map(k=>'missing:'+k)};const errors=[];if(e.schemaVersion!=='1.0')errors.push('unsupported-schema');if(!e.environment.afterEffectsVersion)errors.push('missing-ae-version');if(!e.environment.os)errors.push('missing-os');if(!Array.isArray(e.operations)||!e.operations.length)errors.push('missing-operations');for(const op of e.operations){if(!op.id||!op.name||!['PASS','FAIL','SKIP'].includes(op.status))errors.push('invalid-operation');if(op.status==='PASS'&&!op.readback)errors.push('pass-without-readback:'+op.id);}
+if(!['PASS','FAIL','PARTIAL'].includes(e.result.status))errors.push('invalid-result');return {ok:errors.length===0,errors};}
+function certify(e){const v=validateEvidence(e);const pass=v.ok&&e.result.status==='PASS'&&e.operations.every(x=>x.status==='PASS');return {certified:pass,validation:v,certificateId:pass?'AE-OMEGA-'+hash(e).slice(0,20).toUpperCase():null,evidenceHash:hash(e)};}
+module.exports={validateEvidence,certify,hash};

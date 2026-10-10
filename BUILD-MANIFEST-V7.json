@@ -1,0 +1,20 @@
+{
+  "product": "AE BOSS Omega",
+  "foundation": "v7",
+  "status": "locally-certified-node",
+  "liveAfterEffectsCertification": "not-claimed",
+  "majorControls": [
+    "explicit-human-approval",
+    "risk-and-sandbox-admission",
+    "persistent-idempotency",
+    "tamper-evident-hash-chain-journal",
+    "crash-reconciliation-before-retry",
+    "readback-and-expected-state-verification"
+  ],
+  "entrypoints": {
+    "orchestrator": "orchestration/execution-orchestrator-v7.js",
+    "journal": "journal/persistent-operation-journal-v2.js",
+    "idempotency": "idempotency/store-v3.js",
+    "policy": "runtime/control/admission-policy-v7.js"
+  }
+}

@@ -1,0 +1,3 @@
+'use strict';const crypto=require('crypto');const STATES=['CREATED','QUEUED','WAITING_DEPENDENCY','WAITING_PERMISSION','WAITING_CONFIRMATION','RUNNING','PAUSED','CHECKPOINTED','COMPLETED','FAILED','CANCELLED'];
+class TaskQueue{constructor(){this.tasks=[];}enqueue(task){const t={id:crypto.randomUUID?crypto.randomUUID():crypto.randomBytes(8).toString('hex'),priority:0,status:'QUEUED',dependsOn:[],...task};this.tasks.push(t);return {...t};}next(completed=new Set()){return this.tasks.filter(t=>t.status==='QUEUED'&&t.dependsOn.every(d=>completed.has(d))).sort((a,b)=>b.priority-a.priority)[0]||null;}list(){return this.tasks.map(t=>({...t}));}}
+module.exports={TaskQueue,STATES};

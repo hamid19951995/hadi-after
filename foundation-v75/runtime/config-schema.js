@@ -1,0 +1,2 @@
+function validateConfig(config,schema){const errors=[];for(const [key,rule] of Object.entries(schema.required||{})){if(!(key in config)) errors.push({key,error:'MISSING'}); else if(rule.type && typeof config[key]!==rule.type) errors.push({key,error:'TYPE'});}for(const key of Object.keys(config)){if(schema.additional===false && !(key in (schema.required||{})) && !(key in (schema.optional||{}))) errors.push({key,error:'UNKNOWN'});}return {ok:errors.length===0,errors};}
+module.exports={validateConfig};

@@ -1,0 +1,1 @@
+function evaluate(x){const checks={tests:!!x.tests,manifest:!!x.manifest,diagnostics:!!x.diagnostics,compatibility:!!x.compatibility,liveEvidence:!!x.liveEvidence,noDrift:!!x.noDrift,noDLQ:!(x.deadLetters>0)};const failures=Object.keys(checks).filter(k=>!checks[k]);return {ready:failures.length===0,checks,failures}}module.exports={evaluate};

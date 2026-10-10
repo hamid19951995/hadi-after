@@ -1,0 +1,1 @@
+const crypto=require('crypto');function snapshot(p){return {hash:crypto.createHash('sha256').update(JSON.stringify(p)).digest('hex'),state:JSON.parse(JSON.stringify(p))}}function restore(s){return JSON.parse(JSON.stringify(s.state))}module.exports={snapshot,restore};

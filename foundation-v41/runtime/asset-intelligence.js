@@ -1,0 +1,6 @@
+const crypto=require('crypto'); const fs=require('fs'); const path=require('path');
+function sha256File(file){const h=crypto.createHash('sha256');h.update(fs.readFileSync(file));return h.digest('hex');}
+function normalize(p){return path.resolve(p).toLowerCase();}
+function scanAssets(files){const seen={},assets=[];for(const file of files||[]){const n=normalize(file);const exists=fs.existsSync(file);const hash=exists&&fs.statSync(file).isFile()?sha256File(file):null;const a={path:file,normalized:n,exists,hash,status:exists?'ONLINE':'MISSING'};if(hash&&seen[hash]){a.status='DUPLICATE';a.duplicateOf=seen[hash];}else if(hash)seen[hash]=file;assets.push(a);}return {assets,missing:assets.filter(a=>!a.exists),duplicates:assets.filter(a=>a.status==='DUPLICATE')};}
+function buildDependencyGraph(project){const nodes={},edges=[];for(const c of project.compositions||[]){nodes[c.name]={type:'composition'};for(const l of c.layers||[]){if(l.source){nodes[l.source]=nodes[l.source]||{type:'asset'};edges.push({from:l.source,to:c.name,relation:'used-by'});}}}return {nodes,edges};}
+module.exports={scanAssets,buildDependencyGraph,sha256File};

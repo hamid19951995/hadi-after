@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {root,verify}=require('../runtime/merkle-manifest');const e=[{path:'b',digest:'2'},{path:'a',digest:'1'}];const r=root(e);assert(verify(e,r));e[0].digest='3';assert(!verify(e,r));console.log('v142 PASS');

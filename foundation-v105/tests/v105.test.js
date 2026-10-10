@@ -1,0 +1,1 @@
+const assert=require('assert');const {runWithTimeout}=require('../runtime/timeout-watchdog');(async()=>{assert.equal(await runWithTimeout(()=>1,10),1);try{await runWithTimeout(()=>new Promise(r=>setTimeout(r,30)),1);assert.fail()}catch(e){assert.equal(e.code,'TIMEOUT')}console.log('v105 PASS')})();

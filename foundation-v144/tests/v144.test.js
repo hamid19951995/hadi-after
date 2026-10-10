@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {can,advance}=require('../runtime/execution-state-machine');assert(can('NEW','ADMITTED'));assert.strictEqual(advance('ADMITTED','RUNNING'),'RUNNING');assert.throws(()=>advance('NEW','SUCCEEDED'),/INVALID_TRANSITION/);console.log('v144 PASS');

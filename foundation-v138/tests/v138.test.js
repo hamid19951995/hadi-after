@@ -1,0 +1,1 @@
+const assert=require('assert');const {ok,fail,unwrap}=require('../runtime/outcome-envelope');assert.equal(unwrap(ok(7)),7);const x=fail('X','bad');assert.equal(x.error.code,'X');assert.throws(()=>unwrap(x),e=>e.code==='X');console.log('v138 PASS');

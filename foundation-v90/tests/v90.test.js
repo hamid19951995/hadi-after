@@ -1,0 +1,1 @@
+const assert=require('assert');const {evaluate}=require('../runtime/release-readiness');assert(evaluate({tests:1,manifest:1,diagnostics:1,compatibility:1,liveEvidence:1,noDrift:1,deadLetters:0}).ready);assert(!evaluate({tests:1}).ready);console.log('v90 PASS');

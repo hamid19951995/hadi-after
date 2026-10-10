@@ -1,0 +1,15 @@
+{
+  "sceneDuration": 8,
+  "characters": [{"id":"hero"},{"id":"host"}],
+  "props": [{"id":"cup"}],
+  "actions": [
+    {"id":"a1","characterId":"hero","action":"walk","start":0,"duration":2},
+    {"id":"a2","characterId":"host","action":"present","start":2,"duration":2}
+  ],
+  "interactions": [
+    {"id":"i1","type":"approach","sourceCharacterId":"hero","targetCharacterId":"host","start":2,"duration":1}
+  ],
+  "propActions": [
+    {"id":"p1","characterId":"hero","propId":"cup","action":"pickUp","start":4,"duration":0.5}
+  ]
+}

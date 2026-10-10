@@ -1,0 +1,1 @@
+'use strict'; function buildReport(result){const entries=result.journal||[]; return {version:'34.0.0',ok:!!result.ok,jobId:result.job&&result.job.id,state:result.job&&result.job.state,completed:(result.completed||[]).length,journalEntries:entries.length,journalValid:!!result.journalValid,error:result.error||null};} module.exports={buildReport};

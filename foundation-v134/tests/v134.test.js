@@ -1,0 +1,1 @@
+const assert=require('assert');const {compare,canonicalEnv}=require('../runtime/hermetic-env');assert(compare({A:'1',NOISE:'x'},{A:'1',NOISE:'y'},['A']));assert(!compare({A:'1'},{A:'2'},['A']));assert.deepStrictEqual(canonicalEnv({B:2,A:1},['B','A']),{A:'1',B:'2'});console.log('v134 PASS');

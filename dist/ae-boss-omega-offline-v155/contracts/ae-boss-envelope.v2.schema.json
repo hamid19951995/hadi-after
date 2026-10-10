@@ -1,0 +1,40 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://aeboss-omega.local/contracts/ae-boss-envelope.v2.schema.json",
+  "title":"AE BOSS Omega Governed Envelope v2",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["protocolVersion","messageId","operationId","nonce","timestamp","phase","action","target","parameters","specHash","authorization","integrity"],
+  "properties":{
+    "protocolVersion":{"const":"2.0"},
+    "messageId":{"type":"string","minLength":8,"maxLength":128},
+    "operationId":{"type":"string","pattern":"^[A-Za-z0-9._:-]{8,128}$"},
+    "nonce":{"type":"string","minLength":32,"maxLength":128},
+    "timestamp":{"type":"string","format":"date-time"},
+    "phase":{"enum":["HELLO","CAPABILITY","PREFLIGHT","DRY_RUN","APPLY","READBACK","CANCEL","HEARTBEAT"]},
+    "action":{"type":"string","pattern":"^[A-Za-z][A-Za-z0-9._-]{2,127}$"},
+    "target":{"type":"object"},
+    "parameters":{"type":"object"},
+    "specHash":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"},
+    "authorization":{
+      "type":"object",
+      "additionalProperties":false,
+      "properties":{
+        "leaseId":{"type":["string","null"]},
+        "scopeHash":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"},
+        "approvedBy":{"type":["string","null"]},
+        "approvalHash":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"},
+        "expiresAt":{"type":["string","null"],"format":"date-time"}
+      }
+    },
+    "integrity":{
+      "type":"object",
+      "additionalProperties":false,
+      "required":["payloadHash"],
+      "properties":{
+        "payloadHash":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+        "previousMessageHash":{"type":["string","null"],"pattern":"^[a-f0-9]{64}$"}
+      }
+    }
+  }
+}

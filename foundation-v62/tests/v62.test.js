@@ -1,0 +1,1 @@
+const x=require('../runtime/fault-injection');const p=x.inject({operations:[{id:'a'},{id:'b'}]},{operationId:'b',kind:'CRASH'});const r=x.execute(p,()=>1);if(r.result!=='FAIL'||!r.operations[1].injected)throw Error('v62');console.log('v62 PASS');

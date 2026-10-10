@@ -1,0 +1,9 @@
+"use strict";
+const crypto=require("crypto");
+const sha256=v=>crypto.createHash("sha256").update(typeof v==="string"?v:JSON.stringify(v)).digest("hex");
+class TransactionEngineV9{
+ constructor({bridge,governor,readback,clock=()=>Date.now()}={}){for(const [k,v] of Object.entries({bridge,governor,readback}))if(!v)throw new TypeError(k+" required");this.bridge=bridge;this.governor=governor;this.readback=readback;this.clock=clock;}
+ async apply({operationId,plan,expectedState}){const lease=this.governor.acquireLease(operationId);const before=await this.readback.capture(expectedState);try{const response=await this.bridgeExecute(plan,lease);const after=await this.readback.capture(plan.expectedState||expectedState);const verified=await this.readback.verify({before,after,expected:plan.expectedState||expectedState,result:response});if(!verified.ok)throw Object.assign(new Error("READBACK_VERIFY_FAILED"),{code:"READBACK_VERIFY_FAILED",details:verified});return {status:"VERIFIED",operationId,before,after,response,evidenceHash:sha256({before,after,response})};}catch(error){let rollback=null;try{if(typeof plan.rollbackAction==="string")rollback=await this.bridgeExecute({action:plan.rollbackAction,parameters:plan.rollbackParameters||{}},lease);}catch(e){rollback={error:e.code||e.message};}return {status:rollback?"ROLLED_BACK":"RECOVERY_REQUIRED",operationId,error:{code:error.code||"TRANSACTION_ERROR",message:error.message},rollback};}finally{try{this.governor.releaseLease(lease);}catch(_){}}}
+ bridgeExecute(plan,lease){return new Promise((resolve,reject)=>{this.bridge.registeredExecution?this.bridge.registeredExecution(plan,lease).then(resolve,reject):reject(Object.assign(new Error("BRIDGE_EXECUTOR_UNAVAILABLE"),{code:"BRIDGE_EXECUTOR_UNAVAILABLE"}));});}
+}
+module.exports={TransactionEngineV9};

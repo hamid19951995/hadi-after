@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {evaluate}=require('../runtime/evidence-quorum');assert.strictEqual(evaluate([{valid:true,digest:'x',source:'a'},{valid:true,digest:'x',source:'b'}]).ok,true);assert.strictEqual(evaluate([{valid:true,digest:'x',source:'a'},{valid:true,digest:'y',source:'b'}]).ok,false);console.log('v153 PASS');

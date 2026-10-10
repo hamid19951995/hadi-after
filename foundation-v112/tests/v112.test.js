@@ -1,0 +1,1 @@
+const assert=require('assert');const {DeterministicAE}=require('../runtime/deterministic-ae-simulator');const a=new DeterministicAE();assert(a.execute({type:'CREATE_COMP',name:'A'}).ok);assert(a.execute({type:'ADD_TEXT',text:'Hi'}).ok);assert.equal(a.snapshot().items[0].layers.length,1);console.log('v112 PASS');

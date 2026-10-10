@@ -1,0 +1,2 @@
+const crypto=require('crypto');function id(x){return crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex').slice(0,16)}
+function build(evidence){const cases=evidence.map((e,i)=>({id:id(e),order:i,environment:e.environment,operations:e.operations||[]}));return {version:1,cases,hash:id(cases)};}function select(corpus,pred){return corpus.cases.filter(pred)}module.exports={build,select};

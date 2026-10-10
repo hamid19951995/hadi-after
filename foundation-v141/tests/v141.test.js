@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {ContentAddressedStore}=require('../runtime/content-addressed-store');const s=new ContentAddressedStore();const a=s.put({x:1});const b=s.put({x:1});assert.strictEqual(a,b);assert.strictEqual(s.size(),1);assert.deepStrictEqual(s.get(a),{x:1});console.log('v141 PASS');

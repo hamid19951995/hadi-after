@@ -1,0 +1,1 @@
+const assert=require('assert');const {OperationRegistry}=require('../runtime/operation-registry');const r=new OperationRegistry();r.register('X',{required:['a']});assert(r.validate({type:'X',input:{a:1}}).ok);assert(!r.validate({type:'X',input:{}}).ok);console.log('v101 PASS');

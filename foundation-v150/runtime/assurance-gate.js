@@ -1,0 +1,1 @@
+'use strict';function evaluate(input){const checks=['eventLog','snapshotDelta','replayEquivalent','proofBundle'];const missing=checks.filter(k=>!input[k]);return {status:missing.length?'LOCAL_ASSURANCE_INCOMPLETE':(input.liveEvidence?'LIVE_EVIDENCE_PRESENT':'LIVE_INTEGRATION_REQUIRED'),missing};}module.exports={evaluate};

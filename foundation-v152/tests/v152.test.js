@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {verify}=require('../runtime/causal-consistency');assert.deepStrictEqual(verify([{id:'a'},{id:'b',dependsOn:['a']}]),{ok:true});assert.strictEqual(verify([{id:'b',dependsOn:['a']}]).ok,false);assert.strictEqual(verify([{id:'a'},{id:'a'}]).reason,'DUPLICATE_EVENT');console.log('v152 PASS');

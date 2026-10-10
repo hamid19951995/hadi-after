@@ -1,0 +1,1 @@
+function certify(x){const required=['environment','hostTests','evidence','compatibility','regression'];const missing=required.filter(k=>!x[k]);return {status:missing.length?'BLOCKED':'CERTIFIED',missing}}module.exports={certify};

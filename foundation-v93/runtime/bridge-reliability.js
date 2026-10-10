@@ -1,0 +1,1 @@
+function correlate(req,res){return !!req&&!!res&&req.id===res.id&&res.ok===true}function retry(fn,n){let last;for(let i=0;i<n;i++){try{return fn(i)}catch(e){last=e}}throw last}module.exports={correlate,retry};

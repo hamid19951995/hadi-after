@@ -1,0 +1,2 @@
+'use strict';const crypto=require('crypto');function canonical(x){if(Array.isArray(x))return x.map(canonical);if(x&&typeof x==='object'){const o={};Object.keys(x).sort().forEach(k=>o[k]=canonical(x[k]));return o;}return x;}function digest(x){return crypto.createHash('sha256').update(JSON.stringify(canonical(x))).digest('hex');}
+function seal(parts){const payload=canonical(parts);return {payload,digest:digest(payload)};}function verify(bundle){return !!bundle&&digest(bundle.payload)===bundle.digest;}module.exports={seal,verify};

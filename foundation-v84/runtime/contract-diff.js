@@ -1,0 +1,2 @@
+function diff(a,b,path=''){const out=[];const keys=new Set([...Object.keys(a||{}),...Object.keys(b||{})]);for(const k of [...keys].sort()){const p=path?path+'.'+k:k;if(!(k in (a||{})))out.push({type:'ADDED',path:p});else if(!(k in (b||{})))out.push({type:'REMOVED',path:p});else if(typeof a[k]==='object'&&a[k]&&typeof b[k]==='object'&&b[k])out.push(...diff(a[k],b[k],p));else if(a[k]!==b[k])out.push({type:'CHANGED',path:p,before:a[k],after:b[k]});}return out;}
+module.exports={diff};

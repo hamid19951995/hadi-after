@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"AE BOSS Live AE Command v1","type":"object","required":["phase","operation"],"properties":{"phase":{"enum":["PREVIEW","APPLY","READBACK"]},"operation":{"type":"object","required":["operationId","action","target","fingerprint"]}},"additionalProperties":false}

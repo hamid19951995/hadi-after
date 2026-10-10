@@ -1,0 +1,1 @@
+const assert=require('assert');const {run,verify}=require('../runtime/model-oracle');const ops=[{type:'CREATE_COMP',name:'A'},{type:'ADD_TEXT',text:'Hi'}];const actual=run(ops);assert(verify(ops,actual).match);actual.events[1].ok=false;assert(!verify(ops,actual).match);console.log('v117 PASS');

@@ -1,0 +1,3 @@
+function validateManifest(m){const required=['id','version','entry','permissions'];for(const k of required)if(m[k]===undefined)throw new Error('MODULE_MANIFEST_REQUIRED:'+k);if(!Array.isArray(m.permissions))throw new Error('MODULE_PERMISSIONS_ARRAY_REQUIRED');return true;}
+class ModuleRegistry{constructor(){this.modules=new Map();} register(manifest,api){validateManifest(manifest);if(this.modules.has(manifest.id))throw new Error('MODULE_ALREADY_REGISTERED');this.modules.set(manifest.id,{manifest,api});return manifest.id;} resolve(id){return this.modules.get(id)||null;} list(){return [...this.modules.values()].map(x=>x.manifest);}}
+module.exports={validateManifest,ModuleRegistry};

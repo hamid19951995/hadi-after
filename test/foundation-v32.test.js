@@ -1,0 +1,10 @@
+'use strict';
+const assert=require('assert'); const fs=require('fs'); const path=require('path');
+const v32=require('../foundation-v32');
+const example=require('../examples/v32-production-plan.json');
+const built=v32.buildProductionPlan(example);
+assert.equal(built.engineVersion,'32.0.0'); assert.equal(built.execution.networkRequired,false); assert.match(built.fingerprint,/^[a-f0-9]{64}$/); assert.ok(Array.isArray(built.graph.nodes)); assert.equal(built.conflicts.length,0);
+const dir=path.join(__dirname,'tmp-cache'); fs.rmSync(dir,{recursive:true,force:true}); const cache=new v32.CacheStore(dir); const key=v32.createCacheKey('plan',built); cache.set(key,built.fingerprint); assert.equal(cache.get(key).value,built.fingerprint); assert.equal(cache.has(key),true);
+const cpDir=path.join(__dirname,'tmp-checkpoints'); fs.rmSync(cpDir,{recursive:true,force:true}); const cp=v32.createCheckpoint(cpDir,'job-1',{step:3,state:'running'}); assert.equal(v32.restoreCheckpoint(cpDir,'job-1').payload.state.step,3);
+let threw=false; try{v32.buildProductionPlan({...example,actions:[{...example.actions[0],action:'fly'}]});}catch(e){threw=true;} assert.equal(threw,true);
+console.log('v32 production intelligence: PASS'); fs.rmSync(dir,{recursive:true,force:true}); fs.rmSync(cpDir,{recursive:true,force:true});

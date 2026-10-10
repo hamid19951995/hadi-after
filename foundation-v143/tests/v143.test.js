@@ -1,0 +1,1 @@
+'use strict';const assert=require('assert');const {create,verify}=require('../runtime/replay-capsule');const c=create([{op:'x'}],{runtime:'local'},42);assert(verify(c));c.payload.seed=43;assert(!verify(c));console.log('v143 PASS');

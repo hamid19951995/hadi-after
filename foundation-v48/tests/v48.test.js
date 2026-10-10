@@ -1,0 +1,12 @@
+const assert=require('assert'),fs=require('fs'),os=require('os'),path=require('path');
+const A=require('../../foundation-v41/runtime/asset-intelligence'); const R=require('../../foundation-v42/runtime/render-pipeline'); const Q=require('../../foundation-v43/runtime/visual-qa'); const T=require('../../foundation-v44/runtime/transaction-recovery'); const M=require('../../foundation-v45/runtime/module-sdk'); const I=require('../../foundation-v46/runtime/intelligent-repair'); const D=require('../../foundation-v47/runtime/deployment-diagnostics'); const P=require('../runtime/production-readiness');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'omega-')); const f1=path.join(dir,'a.bin'),f2=path.join(dir,'b.bin'),out=path.join(dir,'out.mov');fs.writeFileSync(f1,'same');fs.writeFileSync(f2,'same');
+let s=A.scanAssets([f1,f2,path.join(dir,'missing')]);assert.equal(s.missing.length,1);assert.equal(s.duplicates.length,1);
+let g=A.buildDependencyGraph({compositions:[{name:'Comp',layers:[{source:'a.mov'}]}]});assert.equal(g.edges.length,1);
+let rq=new R.RenderQueue();assert.equal(rq.enqueue({outputPath:out}).state,'QUEUED');fs.writeFileSync(out,'x');assert(R.verifyOutput(out).ok);
+assert(!Q.validateFrame([[0,0,0,255],[0,0,0,255]]).ok);assert(Q.validateTimeline({layers:[{name:'x',inPoint:0,outPoint:1,enabled:true}]}).ok);
+let tm=new T.TransactionManager(),tx=tm.begin('x',{p:1});tm.record(tx.id,'op');assert.equal(tm.commit(tx.id).state,'COMMITTED');assert.equal(T.classifyRuntimeHeartbeat(Date.now()-99999),'UNHEALTHY');
+let reg=new M.ModuleRegistry();reg.register({id:'m',version:'1',entry:'x',permissions:[]},{});assert(reg.resolve('m'));
+assert.equal(I.planRepair('missing file',{candidates:['a']}).analysis.kind,'MISSING_RESOURCE');assert(D.diagnose({projectRoot:process.cwd()}).checks.length>=3);
+assert(P.readiness({bridge:{ok:true},assets:{ok:true},render:{ok:true},visualQA:{ok:true},recovery:{ok:true},rollback:{ok:true},modules:{ok:true},diagnostics:{ok:true}}).ready);
+console.log('v48 completion suite: PASS');

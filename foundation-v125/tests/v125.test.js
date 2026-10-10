@@ -1,0 +1,1 @@
+const {assess}=require('../runtime/final-gap-report'); const assert=require('assert'); const r=assess({liveAE:false,cep:false,jsx:false,render:false,evidence:false,localStatus:'LOCAL_ASSURANCE_MAX'}); assert.equal(r.status,'LIVE_GAPS_REMAIN'); assert.equal(r.missing.length,5); console.log('v125 PASS');

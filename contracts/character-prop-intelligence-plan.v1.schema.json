@@ -1,0 +1,20 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"character-prop-intelligence-plan.v1",
+  "type":"object",
+  "required":["kind","engine","engineVersion","fps","sceneDuration","characters","props","defaults","actions","attachments","conflicts","stateModel","fingerprint"],
+  "properties":{
+    "kind":{"const":"character-prop-intelligence-plan.v1"},
+    "engine":{"const":"Character + Prop Intelligence"},
+    "engineVersion":{"type":"string"},
+    "fps":{"type":"number","exclusiveMinimum":0},
+    "sceneDuration":{"type":"number","exclusiveMinimum":0},
+    "characters":{"type":"array","items":{"type":"string"},"minItems":1},
+    "props":{"type":"array","items":{"type":"object","required":["id","type","initialState","initialHolderCharacterId"]},"minItems":1},
+    "defaults":{"type":"object"},
+    "actions":{"type":"array","items":{"type":"object","required":["id","action","sourceCharacterId","propId","start","duration","operationKey","stateBefore","stateAfter"]}},
+    "attachments":{"type":"array"},"conflicts":{"type":"array"},
+    "stateModel":{"type":"object","required":["states","strict","finalStates","finalHolders"]},
+    "fingerprint":{"type":"string","minLength":24}
+  }
+}

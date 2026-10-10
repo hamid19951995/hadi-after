@@ -1,0 +1,1 @@
+const assert=require('assert');const {detect}=require('../runtime/config-drift');const r=detect({ae:{major:26},offline:true},{ae:{major:26},offline:false});assert(r.drifted&&r.changes[0].path==='offline');console.log('v64 PASS');

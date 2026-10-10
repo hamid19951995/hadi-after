@@ -1,0 +1,1 @@
+{"comp":"AutoComp","width":1920,"height":1080,"duration":5,"frameRate":30,"layer":"Background","color":[0.08,0.08,0.12],"position":[960,540],"keyframes":[{"time":0,"value":[0,540]},{"time":2.5,"value":[960,540]},{"time":5,"value":[1920,540]}],"output":"./output/auto-render.mov","projectPath":"./output/auto-project.aep"}

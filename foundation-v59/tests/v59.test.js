@@ -1,0 +1,1 @@
+const a=require('../runtime/compatibility-matrix'); const m=a.buildMatrix([{aeVersion:'26',osFamily:'Windows',cepVersion:'12',result:'PASS',operations:[{id:'x',result:'PASS'}]}]); if(m.length!==1||m[0].health!=='CERTIFIED_CANDIDATE'||!a.fingerprint(m))throw Error('v59'); console.log('v59 PASS');

@@ -1,0 +1,9 @@
+{
+  "characters":[{"id":"alice","style":"modern"},{"id":"bob","style":"corporate"}],
+  "props":[{"id":"phone","type":"phone","name":"Phone","position":{"x":300,"y":200},"grabbable":true,"interactable":true,"affordances":["carry","use","handoff"]}],
+  "propActions":[
+    {"id":"pickup-phone","action":"pickUp","sourceCharacterId":"alice","propId":"phone","start":0,"duration":0.5},
+    {"id":"use-phone","action":"use","sourceCharacterId":"alice","propId":"phone","start":0.5,"duration":2},
+    {"id":"handoff-phone","action":"handoff","sourceCharacterId":"alice","targetCharacterId":"bob","propId":"phone","start":2.5,"duration":0.75}
+  ]
+}

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AE BOSS Ω</title>
+    <link rel="stylesheet" href="../css/panel.css">
+</head>
+<body>
+    <div class="app-shell">
+        <header class="topbar">
+            <div class="brand-mark">◈</div>
+            <div class="brand-copy"><strong>AE BOSS OMEGA</strong><span>AI production assistant</span></div>
+            <div class="topbar-status"><i class="status-dot"></i><span id="minimalConnectionStatus">Ready</span></div>
+            <button class="language-button" id="languageButton" type="button" title="Switch language" aria-label="Switch language">فارسی</button><button class="icon-button" id="settingsButton" title="Settings" aria-label="Settings">⚙</button>
+        </header>
+        <section class="status-row">
+            <span id="statusDot" class="status-dot"></span><span id="connectionStatus">Connected to After Effects</span>
+            <span class="status-spacer"></span><span class="copilot-meter"><span class="meter-label">COPILOT</span><span id="tokenUsage" class="token-usage">0 tok</span></span><button id="connectCopilot" class="connect-button" type="button">Connect</button><span class="version-label">CEP 12 · OFFLINE CORE</span>
+        </section>
+        <section class="live-control-center" id="liveControlCenter" aria-label="AE BOSS OMEGA live control center">
+            <div class="live-center-heading"><div><strong>AE BOSS OMEGA</strong><span>PRODUCTION ASSISTANT · RUNTIME v155</span></div><span id="liveReadyStatus" class="live-ready"><i></i> READY</span></div>
+            <div class="live-context-grid">
+                <div><small>PROJECT</small><b id="liveProjectName">Untitled Project</b></div>
+                <div><small>ACTIVE COMP</small><b id="liveActiveComp">None</b></div>
+                <div><small>AE HOST</small><b id="liveHostStatus">Checking...</b></div>
+                <div><small>BRIDGE</small><b id="liveBridgeStatus">Checking...</b></div>
+                <div><small>POLICY</small><b>Offline Strict</b></div>
+            </div>
+            <div class="live-command-row">
+                <button type="button" data-live-command="create" class="live-command primary">CREATE</button>
+                <button type="button" data-live-command="text" class="live-command">ADD TEXT</button>
+                <button type="button" data-live-command="import" class="live-command">IMPORT</button>
+                <button type="button" data-live-command="animate" class="live-command">ANIMATE</button>
+                <button type="button" data-live-command="render" class="live-command">RENDER</button>
+            </div>
+            <div class="live-center-body">
+                <div><div class="live-section-title">PRODUCTION PLAN</div><ol id="livePlanList"><li class="pending">Create Composition</li><li class="pending">Add Text Layer</li><li class="pending">Animate Position</li><li class="pending">Read Project State</li></ol></div>
+                <div><div class="live-section-title">RUNTIME EVENTS</div><div id="liveEvents" class="live-events" role="log"><p>Waiting for a live host check...</p></div></div>
+            </div>
+            <div class="live-actions"><button type="button" id="liveRunPlan" class="live-command primary">RUN PLAN</button><button type="button" id="liveResume" class="live-command">RESUME</button><button type="button" id="liveDryRun" class="live-command">DRY RUN</button><button type="button" id="liveReadback" class="live-command">READ PROJECT STATE</button><button type="button" id="liveStop" class="live-command danger">STOP</button></div>
+            <pre id="liveReadbackOutput" class="live-readback" aria-live="polite">No readback yet.</pre>
+        </section>
+        <div class="studio-layout">
+            <aside class="studio-sidebar" aria-label="Studio tools">
+                <p class="sidebar-label">STUDIO</p>
+                <button class="studio-nav active" data-studio-view="create"><span>✦</span><b>Create</b><small>AI project builder</small></button>
+                <button class="studio-nav" data-studio-view="animate"><span>◌</span><b>Animate</b><small>Motion and timing</small></button>
+                <button class="studio-nav" data-studio-view="assets"><span>⌗</span><b>Assets</b><small>Import and generate</small></button>
+                <button class="studio-nav" data-studio-view="render"><span>▣</span><b>Render</b><small>Queue and export</small></button>
+                <div class="sidebar-divider"></div>
+                <p class="sidebar-label">PROJECT</p>
+                <div class="project-chip"><span class="project-status"></span><div><b id="sidebarProjectName">Untitled project</b><small id="sidebarProjectMeta">Ready for a new scene</small></div></div>
+                <button class="sidebar-link" data-prompt="Inspect the active After Effects project">◈ Inspect active project</button>
+                <button class="sidebar-link" data-prompt="Save the current After Effects project">↧ Save project</button>
+            </aside>
+            <main class="workspace">
+            <section class="studio-overview" aria-label="Studio overview">
+                <div><p class="eyebrow">AI PRODUCTION STUDIO</p><h2>Turn an idea into a scene.</h2><p>Build, animate, and prepare After Effects compositions with one conversational workspace.</p><div id="studioActivity" class="studio-activity" role="status">Ready for your next creative action.</div></div>
+                <div class="overview-stats"><div><strong id="sceneStat">01</strong><span>SCENE</span></div><div><strong id="layerStat">00</strong><span>LAYERS</span></div><div><strong id="renderStat">00</strong><span>QUEUED</span></div></div>
+            </section>
+            <section class="hero-intro minimal-command-intro">
+                <p class="eyebrow">AI PRODUCTION ASSISTANT</p>
+                <h1>What are we<br><em>making</em> today?</h1>
+                <p class="intro-copy">Describe the result you want. I will plan, build, verify, and prepare it inside After Effects.</p>
+            </section>
+            <section class="quick-actions" aria-label="Quick actions">
+                <button class="action-card" data-prompt="Create a 1920x1080 composition named Product Opener, 10 seconds at 30 fps"><span class="action-icon">＋</span><span><b>New project</b><small>Set up a composition</small></span></button>
+                <button class="action-card" data-prompt="Add a centered text layer that says AE Studio"><span class="action-icon">T</span><span><b>Add text</b><small>Build a text layer</small></span></button>
+                <button class="action-card" data-prompt="Inspect the active After Effects project"><span class="action-icon">◈</span><span><b>Inspect project</b><small>See active context</small></span></button>
+                <button class="action-card" data-prompt="ساخت یک تیزر صوتی 15 ثانیه‌ای با موسیقی سینمایی و عنوان معرفی محصول"><span class="action-icon">♫</span><span><b>Audio teaser</b><small>Generate sound and scene</small></span></button>
+                <button class="action-card" data-prompt="How do I build a complete After Effects project?"><span class="action-icon">?</span><span><b>Learn workflow</b><small>Project guide</small></span></button>
+            </section>
+            <section class="tool-deck" aria-label="AI production tools">
+                <button class="tool-card" data-prompt="Create a cinematic 1920x1080 composition named AI Storyboard, 8 seconds at 24 fps"><span class="tool-card-icon">✦</span><span><b>Scene builder</b><small>Generate a production-ready composition</small></span><i>→</i></button>
+                <button class="tool-card" data-prompt="Animate the selected layer opacity from 0 to 100 over 1 second"><span class="tool-card-icon">◌</span><span><b>Motion pass</b><small>Add a clean entrance animation</small></span><i>→</i></button>
+                <button class="tool-card" data-prompt="Import media from the file path I provide next"><span class="tool-card-icon">⌗</span><span><b>Asset import</b><small>Bring footage into the active scene</small></span><i>→</i></button>
+            </section>
+            <section class="chat-panel">
+                <div class="chat-header"><span>YOUR REQUEST</span><div><select id="chatMode" class="mode-select" title="Chat mode" aria-label="Chat mode"><option value="ask">Ask</option><option value="agent" selected>Agent</option><option value="script">Script</option></select><button id="journalButton" class="text-button" type="button">History</button><button id="clearButton" class="text-button" type="button">Clear</button></div></div>
+                <div id="messages" class="messages" aria-live="polite">
+                    <div class="message assistant"><div class="avatar">✦</div><div class="bubble">Hi. I can create compositions, add layers, inspect your project, or run ExtendScript. What should we make?</div></div>
+                </div>
+                <form id="chatForm" class="composer">
+                    <textarea id="promptInput" rows="1" placeholder="Describe what you want to create..." aria-label="Message"></textarea>
+                    <div class="composer-tools"><button id="attachButton" class="attach-button" type="button" title="Import image or video" aria-label="Import image or video">⌕</button><span class="hint">Enter to send · Shift+Enter for new line</span><button id="voiceButton" class="voice-button" type="button" title="Speak your command" aria-label="Speak your command">🎙</button><button class="send-button" type="submit" title="Send message" aria-label="Send message">↑</button></div>
+                </form>
+            </section>
+            <section class="minimal-suggestions" aria-label="Suggested creations"><span>Try a starting point</span><div><button type="button" data-minimal-prompt="Create a cinematic 10 second product intro">Intro</button><button type="button" data-minimal-prompt="Animate a character in the active composition">Character</button><button type="button" data-minimal-prompt="Create a polished motion graphic">Animation</button></div></section>
+            <section class="minimal-task" id="minimalTask" aria-live="polite" hidden>
+                <div class="minimal-task-heading"><span id="minimalTaskTitle">Working on your project</span><b id="minimalTaskPercent">0%</b></div>
+                <div class="minimal-progress"><span id="minimalProgressBar"></span></div>
+                <ol class="minimal-steps" id="minimalSteps"><li class="active">Understanding your request</li><li>Building the composition</li><li>Verifying the result</li><li>Preparing output</li></ol>
+                <button class="advanced-link" id="advancedToggle" type="button">Advanced details</button>
+            </section>
+            <section class="minimal-result" id="minimalResult" aria-live="polite" hidden>
+                <div class="result-check">✓</div><p class="eyebrow">READY</p><h2 id="minimalResultTitle">Your project is ready</h2><p id="minimalResultMeta">The verified After Effects result will appear here.</p><div class="result-actions"><button type="button" class="result-button" id="minimalViewButton">View</button><button type="button" class="result-button" id="minimalEditButton">Edit</button><button type="button" class="result-button primary" id="minimalRenderButton">Render</button></div><button class="advanced-link" id="resultAdvancedToggle" type="button">Advanced details</button>
+            </section>
+            </main>
+        </div>
+
+        <section class="omega-production-console" id="omegaProductionConsole" aria-label="AE BOSS production control center">
+          <div class="omega-console-head"><div><span class="omega-logo">Ω</span><strong>AE BOSS OMEGA v48</strong><small>LIVE PRODUCTION CONTROL · READINESS</small></div><span id="omegaLiveStatus" class="omega-live">● Connected</span></div>
+          <nav class="omega-tabs" aria-label="Production navigation"><button class="omega-tab active" data-omega-view="production">Production</button><button class="omega-tab" data-omega-view="assets">Assets</button><button class="omega-tab" data-omega-view="render">Render</button><button class="omega-tab" data-omega-view="ai">AI</button><button class="omega-tab" data-omega-view="settings">Settings</button><button class="omega-tab" data-omega-view="health">Health</button></nav>
+          <div class="omega-grid">
+            <section class="omega-assistant"><div class="omega-section-title">AI Production Assistant</div><div class="omega-request" id="omegaRequest">Describe a production request to generate a governed AE plan.</div><div id="omegaPlanSummary" class="omega-plan-summary">Ready for governed planning, asset health, render validation and production readiness checks.</div><div class="omega-actions"><button id="omegaPreview" class="omega-btn secondary">Preview Plan</button><button id="omegaExecute" class="omega-btn primary">Execute</button><button id="omegaEdit" class="omega-btn secondary">Edit</button></div></section>
+            <aside class="omega-plan"><div class="omega-section-title">Production Plan</div><ol id="omegaPlanList"><li class="pending">Create Composition</li><li class="pending">Add Background</li><li class="pending">Create Text / Shapes</li><li class="pending">Set Transform</li><li class="pending">Animate</li><li class="pending">Verify</li><li class="pending">Queue Render</li></ol></aside>
+          </div>
+          <section class="omega-terminal"><div class="omega-terminal-head"><span>Terminal</span><span id="omegaTerminalState">IDLE</span></div><pre id="omegaTerminalOutput">&gt;&gt; [SYSTEM] AE BOSS OMEGA v48 ready
+&gt;&gt; [BRIDGE] Waiting for production plan...</pre></section>
+          <div class="omega-bottom-grid"><section class="omega-progress"><div><span>Execution Progress</span><b id="omegaProgressText">0%</b></div><div class="omega-progress-track"><span id="omegaProgressBar"></span></div><small id="omegaProgressMeta">No production job running</small></section><section class="omega-output"><span>Output</span><b id="omegaOutputName">Not rendered</b><small id="omegaOutputMeta">Asset · Render · Visual QA · Recovery readiness tracked</small></section></div>
+        </section>
+        <nav class="minimal-nav" aria-label="Main navigation"><button class="active" data-minimal-nav="create">✦ <span>Create</span></button><button data-minimal-nav="projects">Projects</button><button data-minimal-nav="assets">Assets</button><button data-minimal-nav="settings">Settings</button></nav>
+        <footer class="footer"><span>Local bridge ready</span><span id="modeLabel">LOCAL / LIVE BRIDGE READY</span></footer>
+    </div>
+    <div id="settingsModal" class="modal-backdrop" hidden>
+        <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+            <div class="settings-heading"><div><p class="eyebrow">CONNECTION</p><h2 id="settingsTitle">AI provider</h2></div><button id="closeSettings" class="icon-button" aria-label="Close settings">×</button></div>
+            <label>Provider<select id="providerTypeInput"><option value="offline">Offline Core (Python)</option><option value="auto">Auto detect local AI</option><option value="ollama">Ollama</option><option value="gpt4all">GPT4All</option><option value="lm-studio">LM Studio</option><option value="hadi">HADI (VS Code)</option><option value="copilot">GitHub Copilot (VS Code)</option><option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option><option value="anthropic">Anthropic Claude</option><option value="google">Google Gemini</option><option value="openai-compatible">OpenAI-compatible</option></select></label>
+            <label>Model name<select id="modelInput"><option value="">Loading models...</option></select></label>
+            <label>Chat endpoint<input id="endpointInput" type="url" placeholder="Provider chat endpoint"></label>
+            <label>API key <span class="optional">required for cloud providers</span><input id="apiKeyInput" type="password" placeholder="Stored only in this panel"></label>
+            <label>Offline Core <span class="optional">no network required</span><select id="offlineModeInput"><option value="on">On — local only</option><option value="off">Off — allow providers</option></select></label>
+            <label>Session token budget <span class="optional">optional</span><input id="tokenBudgetInput" type="number" min="0" step="100" placeholder="No limit"></label>
+            <label>Temperature<input id="temperatureInput" type="number" min="0" max="2" step="0.1" placeholder="0.1"></label>
+            <p id="modelHelp" class="settings-note">Only models reported by the selected provider are shown. Cloud providers require an API key.</p>
+            <div class="settings-actions"><button id="refreshModels" class="secondary-button">Refresh models</button><button id="githubCopilotLink" class="secondary-button">Open GitHub Copilot</button><button id="hadiPreset" class="secondary-button">Use HADI</button><button id="copilotPreset" class="secondary-button">Use VS Code Copilot</button><button id="resetSettings" class="secondary-button">Use local commands</button><button id="saveSettings" class="primary-button">Save connection</button></div>
+        </section>
+    </div>
+    <script src="../js/CSInterface.js"></script>
+    <script src="../js/aepipe.js"></script>
+    <script src="../js/voice.js"></script>
+    <script src="../runtime/offline-core.js"></script>
+    <script src="../runtime/production-spec.js"></script>
+    <script src="../runtime/execution-core.js"></script>
+    <script src="../runtime/offline-cache.js"></script>
+    <script src="../js/offline-policy.js"></script>
+    <script src="../js/offline-engine.js"></script>
+    <script src="../js/production-engine.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/production-dashboard.js"></script>
+    <script src="../js/minimal-ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+class Saga { constructor(){this.completed=[];} async run(steps,ctx={}){for(const s of steps){try{await s.do(ctx);this.completed.push(s);}catch(err){const compensation=[];for(const done of [...this.completed].reverse()){if(done.undo){try{await done.undo(ctx);compensation.push({id:done.id,status:'COMPENSATED'});}catch(e){compensation.push({id:done.id,status:'COMPENSATION_FAILED',error:String(e)});}}}return {ok:false,error:String(err),compensation};}}return {ok:true,compensation:[]};}}
+module.exports={Saga};
