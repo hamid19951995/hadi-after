@@ -109,6 +109,14 @@ class AssetDownloader {
   async getAssetById(id) {
     const fp = this.filenameForId(id);
     const meta = this._readMeta(fp);
+    // If id is a URL and domain not allowed for this downloader, reject even cached
+    const isUrl = /^https?:\/\//i.test(String(id));
+    if (isUrl && !this._domainAllowed(id)) {
+      // If cached but policy forbids, consider as disallowed
+      if (fs.existsSync(fp)) return { status: 'DISALLOWED_DOMAIN', message: 'domain is not allowlisted (cached resource present, but policy forbids use)' };
+      return { status: "DISALLOWED_DOMAIN", message: "domain is not allowlisted" };
+    }
+
     if (fs.existsSync(fp) && meta) {
       const now = Date.now();
       const age = now - (meta.at || fs.statSync(fp).mtimeMs);
@@ -126,7 +134,7 @@ class AssetDownloader {
     if (this.offline) return { status: "OFFLINE_GRACEFUL_SKIP" };
 
     // If id looks like a URL, check allowlist
-    if (/^https?:\/\//i.test(String(id))) {
+    if (isUrl) {
       if (!this._domainAllowed(id)) return { status: "DISALLOWED_DOMAIN", message: "domain is not allowlisted" };
       if (!this.fetcher) return { status: "OFFLINE_GRACEFUL_SKIP" };
       try {
