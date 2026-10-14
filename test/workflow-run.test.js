@@ -1,0 +1,38 @@
+const assert = require('assert');
+const workflow = require('../runtime/workflow-run');
+
+const run = workflow.create('Create a title');
+workflow.record(run, 'phase', { phase: 'request', status: 'received' });
+const detail = { command: 'addTextLayer', status: 'verified' };
+workflow.record(run, 'step', detail);
+detail.status = 'failed';
+assert.strictEqual(run.events[1].detail.status, 'verified');
+assert.deepStrictEqual(run.events.map(event => event.sequence), [1, 2]);
+assert.throws(() => workflow.finish(run, 'verified', 'done'), /readback/);
+assert.strictEqual(run.status, 'running');
+const summary = { ok: true, project: '/work/title.aep', activeItem: 'Title', compositions: [{ name: 'Title', layers: 1, layerItems: [{ name: 'Title', text: 'Hello' }] }] };
+const health = { ok: true, issues: [], warnings: [] };
+const receipt = workflow.receipt(summary, health, summary.project);
+workflow.finish(run, 'verified', 'Saved and checked', receipt);
+summary.compositions[0].layerItems[0].text = 'Changed';
+assert.strictEqual(run.receipt.compositions[0].layerItems[0].text, 'Hello');
+assert.strictEqual(workflow.record(run, 'step', detail), null);
+assert.strictEqual(workflow.finish(run, 'failed', 'late callback').status, 'verified');
+const interrupted = workflow.create('Create a scene');
+assert.strictEqual(workflow.recover(interrupted).status, 'interrupted');
+assert.strictEqual(interrupted.status, 'running');
+assert.strictEqual(workflow.recover(run).status, 'verified');
+assert.strictEqual(workflow.recover({ version: 1 }), null);
+
+const before = { ok: true, project: 'Untitled project', activeItem: null, compositions: [], projectItems: [{ name: 'footage' }] };
+const after = { ...before, project: '/work/footage.aep' };
+const saved = { hostReadback: { verified: true, after: { project: after.project } } };
+assert.strictEqual(workflow.savedStateMatches(before, after, saved), true, 'saving projects without an active composition must work');
+assert.strictEqual(workflow.savedStateMatches(before, { ...after, projectItems: [] }, saved), false);
+assert.strictEqual(workflow.savedStateMatches(before, { ...after, project: '/other.aep' }, saved), false);
+assert.strictEqual(workflow.savedStateMatches(before, after, { hostReadback: { verified: false } }), false);
+const original = { ...summary, project: 'Untitled project' };
+const changed = JSON.parse(JSON.stringify(summary));
+changed.compositions[0].layerItems[0].text = 'Wrong output';
+assert.strictEqual(workflow.savedStateMatches(original, changed, { hostReadback: { verified: true, after: { project: changed.project } } }), false, 'equal layer counts alone cannot prove unchanged output');
+console.log('Workflow run evidence and save integrity tests passed');

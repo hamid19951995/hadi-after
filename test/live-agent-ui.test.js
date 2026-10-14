@@ -1,0 +1,52 @@
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+const root = path.join(__dirname, '..');
+const html = fs.readFileSync(path.join(root, 'html', 'index.html'), 'utf8');
+const app = fs.readFileSync(path.join(root, 'js', 'app.js'), 'utf8');
+const dashboard = fs.readFileSync(path.join(root, 'js', 'production-dashboard.js'), 'utf8');
+const minimalUi = fs.readFileSync(path.join(root, 'js', 'minimal-ui.js'), 'utf8');
+
+assert.match(html, /data-live-prompt=/, 'quick actions must use the conversational agent');
+assert.match(html, /id="liveStop"/, 'the live panel must expose a real stop control');
+assert.match(html, /id="liveReadback"/, 'the live panel must expose project readback');
+assert.match(html, /id="liveAgentNav"[^>]*aria-controls="liveControlCenter"/, 'the hidden live panel must have a discoverable navigation entry');
+assert.doesNotMatch(html, /omegaProductionConsole|liveRunPlan|liveDryRun|liveResume/, 'the obsolete scripted demo console must not be exposed');
+assert.match(app, /window\.AEBossAgentUI\s*=/, 'the app must expose its real agent actions to the live dashboard');
+assert.ok(app.indexOf('form.addEventListener("submit"') < app.indexOf('var offlineContextState'), 'chat submit must be registered before optional context initialization can fail');
+assert.match(app, /window\.addEventListener\("error"[\s\S]*reportPanelRuntimeError/, 'panel runtime errors must be surfaced in the conversation');
+assert.match(app, /function reportPanelRuntimeError\(message\)[\s\S]*pending = false/, 'runtime errors must release a stuck request state');
+assert.match(app, /typeof aeStudioCommand/, 'the app must probe whether the JSX bridge is loaded after a host evaluation failure');
+assert.match(app, /AE_HOST_SCRIPT_NOT_LOADED/, 'a missing JSX bridge must use a distinct error code');
+assert.match(app, /host script is not loaded in After Effects/i, 'a missing JSX bridge must tell users how to recover');
+assert.match(app, /publishAgentEvent\("step"/, 'agent step events must come from the execution loop');
+assert.match(app, /executePlan\(commands,\s*fromProvider,\s*index\s*\+\s*1,\s*0,\s*agentSession,\s*taskRequest\)/, 'the recursive plan executor must retain the agent session and reset repair allowance for the next command');
+assert.match(app, /function verifyCompletedPlan\(commands,\s*agentSession,\s*originalRequest\)/, 'verified batches must keep the agent session for its post-readback turn');
+assert.match(app, /The requested project is incomplete: the active composition exists but contains no verified layers/, 'non-agent builds must not report an empty composition as a complete project');
+assert.match(app, /publishWorkflowPhase\("inspect",\s*"running"\)/, 'mutating work must begin with a live project inspection');
+assert.match(app, /publishWorkflowPhase\("verify",\s*"running"\)/, 'completion must be driven by a final live verification phase');
+assert.match(app, /aeStudioCommand\('healthReport',\{\}\)[\s\S]*AEPipe\.failBeforeApply\(governance[\s\S]*invokeHost\(baselineHealth\)/, 'mutations must read a health baseline before host execution and fail closed if unavailable');
+assert.match(app, /function healthHasNoNewIssues\(after,\s*before\)/, 'final readback must distinguish pre-existing health issues from new ones');
+assert.match(app, /result\.status === "PREFLIGHT_FAILED"[\s\S]*NOT EXECUTED/i, 'a failed host preflight must stop without triggering model repair or a retry');
+assert.match(app, /hostCall\("saveProject"[\s\S]*saveResult\.hostReadback\.verified !== true[\s\S]*publishWorkflowPhase\("save",\s*"verified"/, 'visual deliverables must be saved and their file readback verified before completion');
+assert.match(app, /agentSession\.request\).*request\.productionSpec/, 'agent continuations must retain the original request for finalization');
+assert.match(app, /function isDirectLayerIntent\(request,\s*text\)[\s\S]*asksForWholeProduction[\s\S]*!asksForWholeProduction/, 'single explicit layer requests must execute directly instead of waiting for provider planning');
+assert.match(app, /hasBuildIntent\(text\)[\s\S]*!isDirectLayerIntent\(request,\s*text\)/, 'only broader production requests should be routed from simple parsed actions to the agent provider');
+assert.match(app, /function finalizeAgentCompletion\(agentSession,\s*reply\)[\s\S]*hostCall\("summary"[\s\S]*hostCall\("healthReport"[\s\S]*hostCall\("saveProject"[\s\S]*AEBossAgentSession\.complete/, 'agent completion must refresh AE state, save mutations, and only then mark the session complete');
+const planResultHandler = app.slice(app.indexOf('function handlePlanResult(result)'));
+assert.match(planResultHandler, /result\.status === "UNKNOWN"[\s\S]*No automatic retry/i, 'unknown host outcomes must never be blindly retried');
+assert.ok(planResultHandler.indexOf('result.status === "UNKNOWN"') < planResultHandler.indexOf('if (agentStopRequested)'), 'a stop request must not hide an unknown host outcome');
+assert.match(dashboard, /AEBossAgentUI\.readProject/, 'dashboard readback must use the app host adapter');
+assert.match(dashboard, /AEBossAgentUI\.stop/, 'dashboard stop must use the actual agent stop handler');
+assert.match(dashboard, /aeboss:phase/, 'the live dashboard must display real workflow phase events');
+assert.match(dashboard, /aeboss:complete/, 'the live dashboard must report explicit terminal workflow status');
+assert.match(minimalUi, /aeboss:phase/, 'progress must follow observed workflow phases');
+assert.match(minimalUi, /aeboss:complete/, 'final result must come from the workflow completion event');
+assert.doesNotMatch(minimalUi, /setTimeout\(function \(\) \{ setProgress/, 'progress must not advance on display timers');
+assert.doesNotMatch(minimalUi, /MutationObserver/, 'assistant text alone must never be treated as a completed project');
+assert.match(minimalUi, /view === "agent"[\s\S]*setAdvanced\(open\)[\s\S]*scrollIntoView/, 'Agent navigation must open and reveal the live control center');
+assert.doesNotMatch(dashboard, /OMEGA_TEST_01|Pantra 1|liveCreateWithSteps/, 'dashboard must not run a fixed demonstration plan');
+
+console.log('Live agent UI integration tests passed');
+
