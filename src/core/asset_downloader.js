@@ -33,7 +33,15 @@ class AssetDownloader {
   // deterministic file name for a URL or id
   filenameForId(id) {
     const h = crypto.createHash("sha256").update(String(id), "utf8").digest("hex");
-    return path.join(this.cacheReal, h);
+    let ext = "";
+    try {
+      const parsed = new URL(String(id));
+      ext = path.extname(parsed.pathname || "");
+    } catch (e) {
+      ext = path.extname(String(id));
+    }
+    if (!ext) ext = ".bin";
+    return path.join(this.cacheReal, h + ext);
   }
 
   _metaPathFor(fp) {
