@@ -1,6 +1,8 @@
 "use strict";
 
 const assert = require("assert");
+const fs = require('fs');
+const path = require('path');
 
 // Adapter semantics:
 // sendCommand(command, payload, opts) => Promise<envelope>
@@ -12,10 +14,35 @@ class AEAdapter {
     this.host = host;
     this.timeoutMs = opts.timeoutMs || 15000;
     this.retryOnTransport = opts.retryOnTransport === undefined ? 1 : opts.retryOnTransport;
+    // feature flags
+    try { this.flags = require(path.join(process.cwd(), 'config', 'feature-flags.json')); } catch (e) { this.flags = {}; }
   }
 
   async sendCommand(command, payload = {}, opts = {}) {
     const envelope = { ok: false, message: null, aepipe: { state: "UNKNOWN" } };
+
+    // Defensive: validate runScript manifest if feature-flagged
+    if (command === 'runScript' && this.flags.runScriptManifestValidation) {
+      try {
+        const validator = require('../kernel/manifest/manifest-validator');
+        // expect payload.manifest and payload.source
+        if (!payload || !payload.manifest) return { ok: false, message: 'runScript requires signed manifest', aepipe: { state: 'FAILED' } };
+        // try to load configured public key
+        let publicKeyPem = null;
+        const publicPath = path.join(process.cwd(), 'config', 'manifest-public.pem');
+        if (fs.existsSync(publicPath)) {
+          publicKeyPem = fs.readFileSync(publicPath, 'utf8');
+        } else if (payload.manifest && payload.manifest.publicKey) {
+          publicKeyPem = payload.manifest.publicKey;
+        }
+        if (!publicKeyPem) return { ok: false, message: 'manifest public key not available', aepipe: { state: 'FAILED' } };
+        // verify manifest signature and scriptHash
+        validator.verifyManifest(payload.manifest, publicKeyPem, { scriptContent: payload.source || '' });
+      } catch (manErr) {
+        return { ok: false, message: 'MANIFEST_VALIDATION_FAILED: ' + (manErr && manErr.message || String(manErr)), aepipe: { state: 'FAILED' } };
+      }
+    }
+
     let attempts = 0;
     let lastErr = null;
     while (attempts <= this.retryOnTransport) {
