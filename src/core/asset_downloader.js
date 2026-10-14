@@ -16,6 +16,10 @@ class AssetDownloader {
     this.allowlist = Array.isArray(opts.allowlist) ? opts.allowlist.slice() : [];
     this.fetcher = typeof opts.fetcher === 'function' ? opts.fetcher : null; // async function(url)->{ buffer, contentType }
     this.maxSizeBytes = typeof opts.maxSizeBytes === 'number' ? opts.maxSizeBytes : 20 * 1024 * 1024; // 20MB default
+    this.ttlMs = typeof opts.ttlMs === 'number' ? opts.ttlMs : 24 * 60 * 60 * 1000; // 24h default
+    this.maxFiles = typeof opts.maxFiles === 'number' ? opts.maxFiles : null; // no limit by default
+    this.maxTotalBytes = typeof opts.maxTotalBytes === 'number' ? opts.maxTotalBytes : null; // no total size limit
+    this.allowedContentTypes = Array.isArray(opts.allowedContentTypes) ? opts.allowedContentTypes.slice() : null; // null means allow all
 
     // ensure cache dir exists and is sandboxed inside workspace
     try { fs.mkdirSync(this.cacheDir, { recursive: true }); } catch (e) { /* ignore */ }
@@ -30,6 +34,10 @@ class AssetDownloader {
   filenameForId(id) {
     const h = crypto.createHash("sha256").update(String(id), "utf8").digest("hex");
     return path.join(this.cacheReal, h);
+  }
+
+  _metaPathFor(fp) {
+    return fp + '.meta.json';
   }
 
   _isPathInside(child, parent) {
@@ -47,11 +55,76 @@ class AssetDownloader {
     } catch (e) { return false; }
   }
 
-  // returns { status: 'CACHED'|'OFFLINE_GRACEFUL_SKIP'|'DISALLOWED_DOMAIN'|'FETCH_ERROR'|'STORED', path, message }
+  _readMeta(fp) {
+    try {
+      const metaPath = this._metaPathFor(fp);
+      if (!fs.existsSync(metaPath)) return null;
+      const raw = fs.readFileSync(metaPath, 'utf8');
+      return JSON.parse(raw);
+    } catch (e) { return null; }
+  }
+
+  _writeMeta(fp, meta) {
+    const metaPath = this._metaPathFor(fp);
+    fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2), 'utf8');
+  }
+
+  _removeFile(fp) {
+    try { if (fs.existsSync(fp)) fs.unlinkSync(fp); } catch (e) {}
+    try { const mp = this._metaPathFor(fp); if (fs.existsSync(mp)) fs.unlinkSync(mp); } catch (e) {}
+  }
+
+  async _enforceEviction() {
+    // enforce maxFiles and maxTotalBytes by removing oldest entries
+    const files = fs.readdirSync(this.cacheReal).filter(f => !f.endsWith('.meta.json'));
+    const entries = [];
+    let totalBytes = 0;
+    for (const f of files) {
+      const fp = path.join(this.cacheReal, f);
+      try {
+        const stats = fs.statSync(fp);
+        const meta = this._readMeta(fp) || { at: stats.mtimeMs, size: stats.size };
+        entries.push({ fp, at: meta.at || stats.mtimeMs, size: stats.size || meta.size || 0 });
+        totalBytes += stats.size || 0;
+      } catch (e) { }
+    }
+    // sort by access/creation time (oldest first)
+    entries.sort((a,b) => (a.at||0) - (b.at||0));
+    // Evict by count
+    if (this.maxFiles && entries.length > this.maxFiles) {
+      const toRemove = entries.length - this.maxFiles;
+      for (let i=0;i<toRemove;i++) { this._removeFile(entries[i].fp); totalBytes -= entries[i].size; }
+      entries.splice(0, toRemove);
+    }
+    // Evict by total bytes
+    if (this.maxTotalBytes && totalBytes > this.maxTotalBytes) {
+      for (let i=0;i<entries.length && totalBytes > this.maxTotalBytes;i++) {
+        this._removeFile(entries[i].fp);
+        totalBytes -= entries[i].size;
+      }
+    }
+  }
+
+  // returns { status: 'CACHED'|'OFFLINE_GRACEFUL_SKIP'|'DISALLOWED_DOMAIN'|'FETCH_ERROR'|'STORED'|'EXPIRED', path, message }
   async getAssetById(id) {
     const fp = this.filenameForId(id);
-    if (fs.existsSync(fp)) return { status: "CACHED", path: fp };
+    const meta = this._readMeta(fp);
+    if (fs.existsSync(fp) && meta) {
+      const now = Date.now();
+      const age = now - (meta.at || fs.statSync(fp).mtimeMs);
+      if (this.ttlMs > 0 && age > this.ttlMs) {
+        // expired
+        if (this.offline) return { status: "EXPIRED", message: 'cache expired and offline' };
+        // attempt refresh if fetcher available, otherwise mark expired
+        if (!this.fetcher) return { status: "EXPIRED", message: 'cache expired and no fetcher' };
+        // fallthrough to fetch below
+      } else {
+        return { status: "CACHED", path: fp, meta };
+      }
+    }
+
     if (this.offline) return { status: "OFFLINE_GRACEFUL_SKIP" };
+
     // If id looks like a URL, check allowlist
     if (/^https?:\/\//i.test(String(id))) {
       if (!this._domainAllowed(id)) return { status: "DISALLOWED_DOMAIN", message: "domain is not allowlisted" };
@@ -59,8 +132,16 @@ class AssetDownloader {
       try {
         const fetched = await this.fetcher(String(id));
         if (!fetched || !fetched.buffer) return { status: "FETCH_ERROR", message: "empty response" };
+        // content-type validation
+        if (this.allowedContentTypes && fetched.contentType) {
+          const ct = String(fetched.contentType||'').split(';')[0].trim().toLowerCase();
+          const allowed = this.allowedContentTypes.map(s=>s.toLowerCase());
+          if (!allowed.includes(ct)) return { status: 'DISALLOWED_CONTENT_TYPE', message: 'content-type not allowed', contentType: fetched.contentType };
+        }
+        // size checks
         if (Buffer.byteLength(fetched.buffer) > this.maxSizeBytes) return { status: "FETCH_ERROR", message: "asset exceeds maxSizeBytes" };
-        const stored = await this.storeAsset(id, fetched.buffer);
+        const stored = await this.storeAsset(id, fetched.buffer, { contentType: fetched.contentType });
+        // return stored (STORED)
         return stored;
       } catch (err) {
         return { status: "FETCH_ERROR", message: String(err && err.message || err) };
@@ -70,11 +151,11 @@ class AssetDownloader {
   }
 
   // store buffer deterministically and protect against symlink traversal
-  async storeAsset(id, buffer) {
+  async storeAsset(id, buffer, opts = {}) {
     const fp = this.filenameForId(id);
     const dir = path.dirname(fp);
     try { fs.mkdirSync(dir, { recursive: true }); } catch (e) { }
-    // write to temp then fsync rename
+    // write to temp then rename
     const tmp = fp + '.tmp';
     fs.writeFileSync(tmp, buffer);
     // verify size
@@ -85,7 +166,12 @@ class AssetDownloader {
     const realRoot = this.cacheReal; // real workspace/cache root
     if (!this._isPathInside(realTargetDir, realRoot)) { fs.unlinkSync(tmp); throw new Error('cache path is outside workspace (symlink?)'); }
     fs.renameSync(tmp, fp);
-    return { status: 'STORED', path: fp };
+    // write metadata
+    const meta = { id: String(id), at: Date.now(), size: stats.size, contentType: opts.contentType || null };
+    this._writeMeta(fp, meta);
+    // enforce eviction
+    try { await this._enforceEviction(); } catch (e) { /* best-effort */ }
+    return { status: 'STORED', path: fp, meta };
   }
 }
 
