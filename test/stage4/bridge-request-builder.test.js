@@ -21,26 +21,35 @@ function makeValidJob(overrides = {}) {
   return {
     jobId,
     opId: 'op-stage4-001',
-    stage: 'stage4-poc',
+    stage: 'verify',
+    createdAt: new Date().toISOString(),
+    issuer: 'stage4-test-runner',
+    manifestRef: 'manifests/test-manifest.json',
     inputs: { testKey: 'val' },
     inputHash: 'sha256:abcd1234efgh5678',
+    expectedState: { status: 'verified' },
     steps: [
       {
-        stepId: 'step-1-create-comp',
+        id: 'step-1-create-comp',
+        name: 'create-comp',
         type: 'script',
         runScript: { path: 'scripts/make_comp.jsx' },
         expectedState: { status: 'verified' }
       },
       {
-        stepId: 'step-2-add-layer',
+        id: 'step-2-add-layer',
+        name: 'add-layer',
         type: 'script',
         runScript: { path: 'scripts/add_layer.jsx' },
         expectedState: { layerCount: 1 }
       }
     ],
     policy: {
-      timeoutMs: 30000,
-      retries: 0
+      retries: 0,
+      timeouts: {
+        stepMs: 15000,
+        verificationMs: 5000
+      }
     },
     evidencePath: `evidence/ae/${jobId}/receipt.json`,
     ...overrides
@@ -50,7 +59,7 @@ function makeValidJob(overrides = {}) {
 cleanTmpDir();
 
 try {
-  // Test 1: valid job becomes request; order preserved; file written
+  // Test 1: تبدیل جاب معتبر و حفظ ترتیب اکشنها
   const validJob = makeValidJob();
   const res = buildBridgeRequest({ job: validJob, repoRoot: TMP_TEST_DIR });
 
@@ -69,7 +78,7 @@ try {
 
   console.log('✓ Test 1: valid job transforms and preserves order');
 
-  // Test 2: invalid job rejected (Stage 3 validation)
+  // Test 2: رد جاب فاقد فیلدهای الزامی
   const invalidJob = makeValidJob({ opId: '' });
   assert.throws(
     () => buildBridgeRequest({ job: invalidJob, repoRoot: TMP_TEST_DIR }),
@@ -78,7 +87,7 @@ try {
   );
   console.log('✓ Test 2: invalid job rejected');
 
-  // Test 8: evidence sandbox (must stay within evidence/ae/<jobId>/)
+  // Test 3: اعمال سندباکس دایرکتوری شواهد
   const escapingJob = makeValidJob({
     jobId: 'job-escape-01',
     evidencePath: 'contracts/stolen-receipt.json'
@@ -101,8 +110,8 @@ try {
     'Should reject traversal evidencePath'
   );
 
-  console.log('✓ Test 8: sandbox containment verified');
-  console.log('ALL bridge_request_builder tests passed.');
+  console.log('✓ Test 3: sandbox containment verified');
+  console.log('\n>>> ALL bridge_request_builder tests passed! <<<');
 } finally {
   cleanTmpDir();
 }
