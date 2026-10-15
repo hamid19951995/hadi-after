@@ -321,3 +321,4 @@ node_modules/
 
 # Local keystore for manifest private keys (do not commit)
 .keystore/
+bridge/
