@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE_7_LIVE_HOST_TEXT",
+  "host": "After Effects",
+  "version": "26.2.1x2",
+  "timestamp": "Thu Oct 15 2026 06:17:13 GMT-0700",
+  "status": "SUCCESS",
+  "verified": true,
+  "error": "",
+  "readback": {
+    "compName": "STAGE7_TEXT_VERIFICATION",
+    "layerCount": 1,
+    "textLayerName": "STAGE7_VERIFIED_TEXT",
+    "textSourceText": "STAGE7_VERIFIED_TEXT",
+    "keyframeCount": 3
+  }
+}
