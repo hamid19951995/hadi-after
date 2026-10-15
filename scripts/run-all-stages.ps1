@@ -12,17 +12,35 @@ function run-step($name, $script, $args) {
   $entry = [ordered]@{}
   $entry.name = $name
   $entry.startTime = (Get-Date).ToString('o')
+
+  # Ensure logs directory exists
+  $logsDir = Join-Path (Join-Path $repoRoot 'evidence') 'pipeline'
+  if (!(Test-Path $logsDir)) { New-Item -ItemType Directory -Path $logsDir | Out-Null }
+  $stdoutLog = Join-Path $logsDir ("$name.stdout.log")
+  $stderrLog = Join-Path $logsDir ("$name.stderr.log")
+
   try {
     Write-Host "[pipeline] Running $name..."
-    & $script @args
+    $psi = @{
+      FilePath = $script
+      ArgumentList = $args
+      RedirectStandardOutput = $stdoutLog
+      RedirectStandardError = $stderrLog
+      NoNewWindow = $true
+      Wait = $true
+    }
+    Start-Process @psi | Out-Null
     $entry.status = 'passed'
     $entry.error = $null
   } catch {
     $entry.status = 'failed'
     $entry.error = $_.Exception.Message
   }
+
   $entry.endTime = (Get-Date).ToString('o')
   $entry.durationMs = ([int]((Get-Date $entry.endTime) - (Get-Date $entry.startTime)).TotalMilliseconds)
+  $entry.stdout = (Get-Content $stdoutLog -Raw -ErrorAction SilentlyContinue)
+  $entry.stderr = (Get-Content $stderrLog -Raw -ErrorAction SilentlyContinue)
   return $entry
 }
 
