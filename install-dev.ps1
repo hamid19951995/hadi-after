@@ -1,5 +1,5 @@
 param(
-    [string]$Destination = "$env:APPDATA\Adobe\CEP\extensions\com.cepresources.aechat"
+    [string]$Destination = "$env:APPDATA\Adobe\CEP\extensions\com.aeboss.omega"
 )
 
 $source = (Resolve-Path (Join-Path $PSScriptRoot ".")).Path
@@ -17,6 +17,8 @@ Copy-Item -Path (Join-Path $source "css") -Destination $Destination -Recurse -Fo
 Copy-Item -Path (Join-Path $source "html") -Destination $Destination -Recurse -Force
 Copy-Item -Path (Join-Path $source "js") -Destination $Destination -Recurse -Force
 Copy-Item -Path (Join-Path $source "jsx") -Destination $Destination -Recurse -Force
+Copy-Item -Path (Join-Path $source "runtime") -Destination $Destination -Recurse -Force
+Copy-Item -Path (Join-Path $source "offline-runtime") -Destination $Destination -Recurse -Force
 foreach ($optionalDirectory in @("assets", "host", "test")) {
     $optionalPath = Join-Path $source $optionalDirectory
     if (Test-Path $optionalPath) {

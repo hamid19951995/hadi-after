@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Canonical Job Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "jobId",
+    "opId",
+    "stage",
+    "createdAt",
+    "issuer",
+    "policy",
+    "manifestRef",
+    "inputs",
+    "inputHash",
+    "steps",
+    "expectedState",
+    "evidencePath"
+  ],
+  "properties": {
+    "jobId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "opId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "issuer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["retries", "timeouts"],
+      "properties": {
+        "retries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "timeouts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["stepMs", "verificationMs"],
+          "properties": {
+            "stepMs": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "verificationMs": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "manifestRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "inputHash": {
+      "type": "string",
+      "minLength": 1
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["id", "name", "type"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runScript": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "additionalProperties": true,
+                "required": ["path"],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "args": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cwd": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            ]
+          },
+          "manifestRef": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expectedState": {
+            "type": ["object", "string", "number", "boolean", "array", "null"]
+          },
+          "verify": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "expectedState": {
+      "type": ["object", "string", "number", "boolean", "array", "null"]
+    },
+    "evidencePath": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

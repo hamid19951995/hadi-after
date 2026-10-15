@@ -24,6 +24,28 @@ function aeStudioSafeScript(source) {
     return !/(?:system\.callSystem|new\s+Socket|BridgeTalk|XMLHttpRequest|\$\.evalFile|\bapp\.open\s*\(|\beval\s*\()/i.test(value);
 }
 
+function aeStudioRenderStatus(status) {
+    var names = ["WILL_CONTINUE", "NEEDS_OUTPUT", "UNQUEUED", "QUEUED", "RENDERING", "USER_STOPPED", "ERR_STOPPED", "DONE"];
+    for (var statusIndex = 0; statusIndex < names.length; statusIndex++) {
+        var name = names[statusIndex];
+        if (typeof RQItemStatus !== "undefined" && RQItemStatus[name] !== undefined && status === RQItemStatus[name]) return name;
+        if (String(status) === name || String(status) === "RQItemStatus." + name) return name;
+    }
+    return String(status);
+}
+
+function aeStudioFileEvidence(path) {
+    var evidence = { file: path || null, exists: false, bytes: 0 };
+    try {
+        if (path && aeStudioSafePath(path)) {
+            var outputFile = new File(path);
+            evidence.exists = outputFile.exists === true;
+            evidence.bytes = evidence.exists ? Number(outputFile.length) || 0 : 0;
+        }
+    } catch (fileEvidenceError) { evidence.exists = false; evidence.bytes = 0; }
+    return evidence;
+}
+
 function getProjectSummary() {
     var project = app.project;
     if (!project) return { project: null, message: "No project is open." };
@@ -49,12 +71,21 @@ function getProjectSummary() {
                 try {
                     var transformGroup = layer.property("ADBE Transform Group");
                     var positionProperty = transformGroup && transformGroup.property("ADBE Position");
+                    var scaleProperty = transformGroup && transformGroup.property("ADBE Scale");
+                    var rotationProperty = transformGroup && transformGroup.property("ADBE Rotate Z");
                     var opacityProperty = transformGroup && transformGroup.property("ADBE Opacity");
                     layerInfo.keyframes = { position: positionProperty ? positionProperty.numKeys : 0, opacity: opacityProperty ? opacityProperty.numKeys : 0 };
+                    layerInfo.properties = { position: positionProperty ? positionProperty.value : null, scale: scaleProperty ? scaleProperty.value : null, rotation: rotationProperty ? rotationProperty.value : null, opacity: opacityProperty ? opacityProperty.value : null };
+                    if (opacityProperty) { layerInfo.opacityExpression = opacityProperty.expression || ""; layerInfo.opacityExpressionError = opacityProperty.expressionError || ""; }
                 } catch (keyframeError) { layerInfo.keyframes = { position: 0, opacity: 0 }; }
                 try {
                     if (layer.property("Source Text")) layerInfo.text = layer.property("Source Text").value.text;
                 } catch (textError) { }
+                try {
+                    var layerEffects = layer.property("ADBE Effect Parade");
+                    layerInfo.effects = [];
+                    if (layerEffects) for (var effectIndex = 1; effectIndex <= layerEffects.numProperties; effectIndex++) layerInfo.effects.push(layerEffects.property(effectIndex).name);
+                } catch (layerEffectError) { layerInfo.effects = []; }
                 compositionInfo.layerItems.push(layerInfo);
             }
             if (composition.numLayers > maxLayers) compositionInfo.truncated = composition.numLayers - maxLayers;
@@ -78,13 +109,16 @@ function getProjectSummary() {
     if (project.renderQueue) {
         for (var queueIndex = 1; queueIndex <= project.renderQueue.numItems; queueIndex++) {
             var queueItem = project.renderQueue.item(queueIndex);
-            var queueInfo = { index: queueIndex, status: String(queueItem.status), composition: queueItem.comp ? queueItem.comp.name : null, outputModules: [] };
+            var queueInfo = { index: queueIndex, status: aeStudioRenderStatus(queueItem.status), composition: queueItem.comp ? queueItem.comp.name : null, outputModules: [] };
             try {
-                for (var outputIndex = 1; outputIndex <= queueItem.numOutputModules; outputIndex++) {
+                for (var outputIndex = 1; outputIndex <= Math.min(queueItem.numOutputModules, 32); outputIndex++) {
                     var outputModule = queueItem.outputModule(outputIndex);
-                    queueInfo.outputModules.push({ file: outputModule.file ? outputModule.file.fsName : null, template: outputModule.name });
+                    var outputEvidence = aeStudioFileEvidence(outputModule.file ? outputModule.file.fsName : null);
+                    outputEvidence.template = outputModule.name;
+                    queueInfo.outputModules.push(outputEvidence);
                 }
-            } catch (queueOutputError) { }
+                queueInfo.outputModulesTruncated = queueItem.numOutputModules > 32;
+            } catch (queueOutputError) { queueInfo.outputModulesTruncated = true; }
             renderQueueItems.push(queueInfo);
         }
     }
@@ -110,7 +144,7 @@ function getProjectSummary() {
 
 function getProjectHealth() {
     var project = app.project;
-    if (!project) return { ok: false, message: "No project is open.", issues: [] };
+    if (!project) return { ok: false, message: "No project is open.", issueCount: 0, warningCount: 1, issues: [], warnings: ["No project is open."] };
     var issues = [];
     var warnings = [];
     for (var itemIndex = 1; itemIndex <= project.numItems; itemIndex++) {
@@ -133,6 +167,268 @@ function getProjectHealth() {
     }
     if (project.renderQueue && project.renderQueue.numItems === 0) warnings.push("Render Queue is empty.");
     return { ok: issues.length === 0, project: project.file ? project.file.fsName : "Untitled project", issueCount: issues.length, warningCount: warnings.length, issues: issues, warnings: warnings, checkedAt: new Date().toISOString() };
+}
+
+function aeStudioFindComposition(summary, name) {
+    if (!summary || !summary.compositions) return null;
+    for (var index = 0; index < summary.compositions.length; index++) if (summary.compositions[index].name === name) return summary.compositions[index];
+    return null;
+}
+
+function aeStudioCountLayers(summary, compName, layerName, text) {
+    var comp = aeStudioFindComposition(summary, compName), count = 0;
+    if (!comp || !comp.layerItems) return count;
+    for (var index = 0; index < comp.layerItems.length; index++) {
+        var layer = comp.layerItems[index];
+        if (layer.name === layerName && (text === null || layer.text === text)) count++;
+    }
+    return count;
+}
+
+function aeStudioFindLayer(summary, compName, layerName) {
+    var comp = aeStudioFindComposition(summary, compName);
+    if (!comp || !comp.layerItems) return null;
+    for (var index = 0; index < comp.layerItems.length; index++) if (comp.layerItems[index].name === layerName) return comp.layerItems[index];
+    return null;
+}
+
+function aeStudioValueMatches(actual, expected) {
+    if (!(actual instanceof Array) || !(expected instanceof Array) || actual.length !== expected.length) return false;
+    for (var index = 0; index < actual.length; index++) if (Math.abs(Number(actual[index]) - Number(expected[index])) > 0.001) return false;
+    return true;
+}
+
+function aeStudioLayerMatches(summary, compName, layerName, text) {
+    return aeStudioCountLayers(summary, compName, layerName, text) > 0;
+}
+
+function aeStudioVerifyExpectedState(expected, summary) {
+    if (!expected || !summary) return false;
+    var verifiedCount = 0, valid = true;
+    var compositions = expected.compositions || [];
+    var layers = expected.layers || [];
+    var queued = expected.renderQueueCompositions || [];
+    for (var compIndex = 0; compIndex < compositions.length; compIndex++) {
+        var expectedComp = compositions[compIndex];
+        var actualComp = aeStudioFindComposition(summary, expectedComp.name);
+        if (!actualComp) { valid = false; continue; }
+        if (expectedComp.width !== undefined && Number(actualComp.width) !== Number(expectedComp.width)) valid = false;
+        if (expectedComp.height !== undefined && Number(actualComp.height) !== Number(expectedComp.height)) valid = false;
+        if (expectedComp.duration !== undefined && Math.abs(Number(actualComp.duration) - Number(expectedComp.duration)) > 0.0001) valid = false;
+        if (expectedComp.frameRate !== undefined && Math.abs(Number(actualComp.frameRate) - Number(expectedComp.frameRate)) > 0.0001) valid = false;
+        verifiedCount++;
+    }
+    for (var layerIndex = 0; layerIndex < layers.length; layerIndex++) {
+        var expectedLayer = layers[layerIndex];
+        var compName = expectedLayer.composition || summary.activeItem;
+        var actualLayer = aeStudioFindLayer(summary, compName, expectedLayer.name);
+        if (!actualLayer) { valid = false; continue; }
+        if (expectedLayer.text !== undefined && actualLayer.text !== expectedLayer.text) valid = false;
+        if (expectedLayer.type !== undefined && actualLayer.type !== expectedLayer.type) valid = false;
+        if (expectedLayer.minPositionKeyframes !== undefined && (!actualLayer.keyframes || actualLayer.keyframes.position < Number(expectedLayer.minPositionKeyframes))) valid = false;
+        if (expectedLayer.minOpacityKeyframes !== undefined && (!actualLayer.keyframes || actualLayer.keyframes.opacity < Number(expectedLayer.minOpacityKeyframes))) valid = false;
+        verifiedCount++;
+    }
+    var queueItems = summary.renderQueueItems || [];
+    for (var queueIndex = 0; queueIndex < queued.length; queueIndex++) {
+        var found = false;
+        for (var itemIndex = 0; itemIndex < queueItems.length; itemIndex++) if (queueItems[itemIndex].composition === queued[queueIndex]) found = true;
+        if (!found) valid = false;
+        verifiedCount++;
+    }
+    return valid && verifiedCount > 0;
+}
+
+function aeStudioEvidenceSnapshot(summary) {
+    if (!summary) return null;
+    var compositions = [], source = summary.compositions || [];
+    for (var compIndex = 0; compIndex < source.length && compIndex < 32; compIndex++) {
+        var comp = source[compIndex], layerItems = [], sourceLayers = comp.layerItems || [];
+        for (var layerIndex = 0; layerIndex < sourceLayers.length && layerIndex < 100; layerIndex++) {
+            var layer = sourceLayers[layerIndex];
+            layerItems.push({ name: layer.name, type: layer.type, text: layer.text, keyframes: layer.keyframes || {}, properties: layer.properties || {}, effects: layer.effects || [] });
+        }
+        compositions.push({ name: comp.name, width: comp.width, height: comp.height, duration: comp.duration, frameRate: comp.frameRate, layers: comp.layers, layerItems: layerItems });
+    }
+    return { project: summary.project, activeItem: summary.activeItem, activeType: summary.activeType, items: summary.items, layerCount: summary.layerCount, compositions: compositions, selectedLayers: (summary.selectedLayers || []).slice(0, 32), projectItems: (summary.projectItems || []).slice(0, 64), renderQueueCount: summary.renderQueueCount, renderQueueItems: (summary.renderQueueItems || []).slice(0, 32) };
+}
+
+function aeStudioBuildMutationReadback(command, payload, result, before, after) {
+    var verified = false, strategy = "state-delta", expected = null;
+    if (!result || result.ok !== true || !after || !after.project || !after.compositions) return { verified: false, strategy: "invalid-readback", before: before, after: after, expected: expected };
+    if (command === "createProject") {
+        var compName = payload.name || "AE Studio Project";
+        var comp = aeStudioFindComposition(after, compName);
+        var expectedWidth = Math.max(16, Number(payload.width) || 1920);
+        var expectedHeight = Math.max(16, Number(payload.height) || 1080);
+        var expectedDuration = Math.max(0.1, Number(payload.duration) || 10);
+        var expectedFrameRate = Math.max(1, Number(payload.frameRate) || 30);
+        expected = { composition: compName, width: expectedWidth, height: expectedHeight, duration: expectedDuration, frameRate: expectedFrameRate };
+        verified = !!(comp && after.compositions.length > (before && before.compositions ? before.compositions.length : 0) && comp.width === expectedWidth && comp.height === expectedHeight && Math.abs(comp.duration - expectedDuration) < 0.0001 && Math.abs(comp.frameRate - expectedFrameRate) < 0.0001);
+        strategy = "composition-properties";
+    } else if (command === "addTextLayer") {
+        var activeCompName = after.activeItem;
+        var text = payload.text || "AE Studio";
+        var layerName = payload.name || text;
+        expected = { composition: activeCompName, layer: layerName, text: text };
+        verified = aeStudioCountLayers(after, activeCompName, layerName, text) > aeStudioCountLayers(before, activeCompName, layerName, text);
+        strategy = "text-layer-content";
+    } else if (command === "queueComposition") {
+        var queueName = after.activeItem;
+        var queueItems = after.renderQueueItems || [];
+        for (var queueIndex = 0; queueIndex < queueItems.length; queueIndex++) if (queueItems[queueIndex].composition === queueName) verified = true;
+        verified = verified && after.renderQueueCount > (before ? before.renderQueueCount : 0);
+        expected = { renderQueueComposition: queueName };
+        strategy = "render-queue-membership";
+    } else if (["addSolidLayer", "addRectangleShape", "addEllipseShape", "addCamera", "addLight"].indexOf(command) >= 0) {
+        var visualComp = after.activeItem;
+        var visualName = payload.name || ({ addSolidLayer: "AE Studio Solid", addRectangleShape: "AE Studio Rectangle", addEllipseShape: "AE Studio Ellipse", addCamera: "AE Studio Camera", addLight: "AE Studio Light" })[command];
+        var visualLayer = aeStudioFindLayer(after, visualComp, visualName);
+        var beforeVisualCount = aeStudioCountLayers(before, visualComp, visualName, null);
+        expected = { composition: visualComp, layer: visualName, type: command === "addSolidLayer" ? "ADBE AV Layer" : command === "addCamera" ? "ADBE Camera Layer" : command === "addLight" ? "ADBE Light Layer" : "ADBE Vector Layer" };
+        verified = !!(visualLayer && visualLayer.type === expected.type && aeStudioCountLayers(after, visualComp, visualName, null) > beforeVisualCount);
+        strategy = "typed-layer-created";
+    } else if (command === "animateSelectedPosition" || command === "animateSelectedOpacity") {
+        var selectedName = before && before.selectedLayers && before.selectedLayers.length ? before.selectedLayers[0].name : null;
+        var animatedLayer = selectedName ? aeStudioFindLayer(after, after.activeItem, selectedName) : null;
+        var animatedBefore = selectedName ? aeStudioFindLayer(before, before.activeItem, selectedName) : null;
+        var keyName = command === "animateSelectedPosition" ? "position" : "opacity";
+        expected = { composition: after.activeItem, layer: selectedName, keyframes: keyName, minimum: 2 };
+        verified = !!(animatedLayer && animatedLayer.keyframes && animatedLayer.keyframes[keyName] >= 2 && (!animatedBefore || animatedLayer.keyframes[keyName] > animatedBefore.keyframes[keyName]));
+        strategy = "keyframe-count-increased";
+    } else if (command === "transformSelectedLayer" || command === "updateSelectedLayer" || command === "editLayer") {
+        var targetName = payload.newName || payload.name || (before && before.selectedLayers && before.selectedLayers[0] && before.selectedLayers[0].name);
+        var editedLayer = targetName ? aeStudioFindLayer(after, after.activeItem, targetName) : null;
+        var priorLayer = targetName ? aeStudioFindLayer(before, before.activeItem, targetName) : null;
+        var propertyChecks = [];
+        if (payload.position) propertyChecks.push(aeStudioValueMatches(editedLayer && editedLayer.properties && editedLayer.properties.position, payload.position));
+        if (payload.scale) propertyChecks.push(aeStudioValueMatches(editedLayer && editedLayer.properties && editedLayer.properties.scale, payload.scale));
+        if (payload.rotation !== undefined) propertyChecks.push(!!(editedLayer && Math.abs(Number(editedLayer.properties.rotation) - Number(payload.rotation)) <= 0.001));
+        if (payload.opacity !== undefined) propertyChecks.push(!!(editedLayer && Math.abs(Number(editedLayer.properties.opacity) - Number(payload.opacity)) <= 0.001));
+        if (payload.newName) propertyChecks.push(!!editedLayer);
+        if (payload.name && !payload.newName && command === "updateSelectedLayer") propertyChecks.push(!!editedLayer);
+        expected = { composition: after.activeItem, layer: targetName, propertiesVerified: propertyChecks.length };
+        verified = !!(editedLayer && propertyChecks.length > 0 && propertyChecks.every(function (value) { return value; }) && (JSON.stringify(priorLayer) !== JSON.stringify(editedLayer) || command === "transformSelectedLayer"));
+        strategy = "layer-properties-match";
+    } else if (command === "addDropShadow" || command === "addGaussianBlur") {
+        var effectTarget = before && before.selectedLayers && before.selectedLayers.length ? before.selectedLayers[0].name : null;
+        var effectLayer = effectTarget ? aeStudioFindLayer(after, after.activeItem, effectTarget) : null;
+        var expectedEffect = command === "addDropShadow" ? "drop shadow" : "gaussian blur";
+        expected = { composition: after.activeItem, layer: effectTarget, effect: expectedEffect };
+        verified = !!(effectLayer && effectLayer.effects && effectLayer.effects.some(function (name) { return String(name).toLowerCase().indexOf(expectedEffect) >= 0; }));
+        strategy = "effect-present";
+    } else if (command === "removeSelectedLayers") {
+        var removedNames = before && before.selectedLayers ? before.selectedLayers.map(function (layer) { return layer.name; }) : [];
+        var remaining = after.compositions.filter(function (comp) { return comp.name === before.activeItem; })[0];
+        var allRemoved = !!(remaining && before.layerCount > after.layerCount);
+        for (var removedIndex = 0; removedIndex < removedNames.length; removedIndex++) if (aeStudioFindLayer(after, before.activeItem, removedNames[removedIndex])) allRemoved = false;
+        expected = { composition: before.activeItem, removedLayers: removedNames };
+        verified = allRemoved;
+        strategy = "selected-layers-absent";
+    } else if (command === "updateComposition") {
+        var updatedComp = aeStudioFindComposition(after, after.activeItem);
+        expected = { composition: after.activeItem, width: payload.width, height: payload.height, duration: payload.duration, frameRate: payload.frameRate };
+        verified = !!updatedComp && (payload.width === undefined || updatedComp.width === Number(payload.width)) && (payload.height === undefined || updatedComp.height === Number(payload.height)) && (payload.duration === undefined || Math.abs(updatedComp.duration - Number(payload.duration)) < 0.0001) && (payload.frameRate === undefined || Math.abs(updatedComp.frameRate - Number(payload.frameRate)) < 0.0001);
+        strategy = "composition-properties";
+    } else if (command === "openComposition") {
+        expected = { activeComposition: payload.name || null };
+        verified = !!(after.activeType === "Composition" && after.activeItem === payload.name && aeStudioFindComposition(after, payload.name));
+        strategy = "active-composition";
+    } else if (command === "renderQueue") {
+        var beforeQueue = before && before.renderQueueItems || [];
+        var afterQueue = after.renderQueueItems || [];
+        var targetedQueue = beforeQueue.filter(function (item) { return aeStudioRenderStatus(item.status) === "QUEUED"; });
+        verified = targetedQueue.length > 0 && targetedQueue.every(function (target) {
+            var renderedItem = afterQueue.filter(function (item) { return item.index === target.index && item.composition === target.composition; })[0];
+            if (!renderedItem || aeStudioRenderStatus(renderedItem.status) !== "DONE" || renderedItem.outputModulesTruncated) return false;
+            var outputs = renderedItem.outputModules || [];
+            var expectedOutputs = target.outputModules || [];
+            if (!outputs.length || expectedOutputs.length !== outputs.length) return false;
+            return outputs.every(function (output, outputIndex) {
+                return !!(output.file && output.file === expectedOutputs[outputIndex].file && output.exists === true && Number(output.bytes) > 0);
+            });
+        });
+        expected = { renderQueueCompleted: true, items: targetedQueue.length, outputFilesVerified: verified };
+        strategy = "render-queue-completed";
+    } else if (command === "importFootage") {
+        var importComp = after.activeItem;
+        var importedName = payload.name || null;
+        var projectItemAdded = (after.projectItems || []).length > (before && before.projectItems ? before.projectItems.length : 0);
+        var importLayerAdded = after.layerCount > (before ? before.layerCount : 0);
+        var namedImportLayer = !importedName || !!aeStudioFindLayer(after, importComp, importedName);
+        verified = !!(projectItemAdded && importLayerAdded && namedImportLayer);
+        expected = { composition: importComp, footage: importedName || payload.path, layerCountIncreased: true };
+        strategy = "footage-and-layer-imported";
+    } else if (command === "buildAudioTeaser") {
+        var teaserName = payload.name || "Audio Teaser";
+        var teaser = aeStudioFindComposition(after, teaserName);
+        var titleName = "Audio Teaser Title", subtitleName = "Audio Teaser Subtitle";
+        var titleLayer = aeStudioFindLayer(after, teaserName, titleName);
+        var subtitleLayer = aeStudioFindLayer(after, teaserName, subtitleName);
+        expected = { composition: teaserName, title: payload.title || "AUDIO TEASER", subtitle: payload.subtitle || "Sound tells the story", dimensions: [Number(payload.width) || 1920, Number(payload.height) || 1080] };
+        verified = !!(teaser && after.compositions.length > (before && before.compositions ? before.compositions.length : 0) && teaser.width === expected.dimensions[0] && teaser.height === expected.dimensions[1] && titleLayer && titleLayer.text === expected.title && subtitleLayer && subtitleLayer.text === expected.subtitle);
+        strategy = "audio-teaser-composition-and-text";
+    } else if (command === "buildAntiTheftTeaser") {
+        var previousCompositions = before && before.compositions || [];
+        var antiTheftComposition = null;
+        for (var antiTheftIndex = 0; antiTheftIndex < after.compositions.length; antiTheftIndex++) {
+            var candidate = after.compositions[antiTheftIndex];
+            var existedBefore = previousCompositions.some(function (item) { return item.name === candidate.name; });
+            if (!existedBefore && candidate.name.indexOf("Anti-Theft Awareness Teaser") === 0) { antiTheftComposition = candidate; break; }
+        }
+        var antiTheftTitle = antiTheftComposition && aeStudioFindLayer(after, antiTheftComposition.name, "Title - Protect What Matters");
+        var antiTheftMessage = antiTheftComposition && aeStudioFindLayer(after, antiTheftComposition.name, "Message - Learn Secure Prevent");
+        var antiTheftCta = antiTheftComposition && aeStudioFindLayer(after, antiTheftComposition.name, "CTA - Stay Alert");
+        expected = { composition: antiTheftComposition && antiTheftComposition.name || "Anti-Theft Awareness Teaser", dimensions: [1920, 1080], title: "PROTECT WHAT MATTERS", animatedTextLayers: 3 };
+        verified = !!(antiTheftComposition && antiTheftComposition.width === 1920 && antiTheftComposition.height === 1080 && antiTheftComposition.duration === 15 && antiTheftComposition.frameRate === 30 && antiTheftTitle && antiTheftTitle.text === expected.title && antiTheftTitle.keyframes.opacity >= 2 && antiTheftMessage && antiTheftMessage.text === "Learn the signs. Secure your space. Prevent theft." && antiTheftMessage.keyframes.opacity >= 2 && antiTheftCta && antiTheftCta.text === "STAY ALERT  |  REPORT SUSPICIOUS ACTIVITY" && antiTheftCta.keyframes.opacity >= 2);
+        strategy = "anti-theft-teaser-composition-and-animation";
+    } else if (command === "duplicateSelectedLayer") {
+        var duplicateCompName = before && before.activeItem;
+        var duplicateCompBefore = aeStudioFindComposition(before, duplicateCompName);
+        var duplicateCompAfter = aeStudioFindComposition(after, duplicateCompName);
+        var duplicateSourceName = before && before.selectedLayers && before.selectedLayers.length ? before.selectedLayers[0].name : null;
+        var duplicateCountBefore = duplicateSourceName ? aeStudioCountLayers(before, duplicateCompName, duplicateSourceName, null) : 0;
+        var duplicateCountAfter = duplicateSourceName ? aeStudioCountLayers(after, duplicateCompName, duplicateSourceName, null) : 0;
+        expected = { composition: duplicateCompName, duplicatedLayer: duplicateSourceName, layerCountIncrease: 1 };
+        verified = !!(duplicateCompBefore && duplicateCompAfter && duplicateSourceName && duplicateCompAfter.layers === duplicateCompBefore.layers + 1 && duplicateCountAfter > duplicateCountBefore);
+        strategy = "selected-layer-duplicate-count";
+    } else if (command === "setOpacityExpression") {
+        var expressionTarget = before && before.selectedLayers && before.selectedLayers.length ? before.selectedLayers[0].name : null;
+        var expressionLayer = expressionTarget ? aeStudioFindLayer(after, after.activeItem, expressionTarget) : null;
+        expected = { composition: after.activeItem, layer: expressionTarget, expression: payload.source };
+        verified = !!(expressionLayer && expressionLayer.opacityExpression === payload.source && !expressionLayer.opacityExpressionError);
+        strategy = "expression-content-and-health";
+    } else if (command === "openProject" || command === "restoreSnapshot") {
+        var requestedProject = String(payload.path || "").replace(/\\/g, "/").toLowerCase();
+        var actualProject = String(after.project || "").replace(/\\/g, "/").toLowerCase();
+        expected = { project: payload.path || null };
+        verified = !!(requestedProject && actualProject === requestedProject);
+        strategy = "active-project-path";
+    } else if (command === "saveProject") {
+        var savedFile = aeStudioFileEvidence(after.project);
+        var requestedSavePath = payload.path ? new File(payload.path).fsName : null;
+        expected = { projectFileExists: savedFile.exists, projectFile: savedFile, requestedPath: requestedSavePath };
+        verified = !!(after.project !== "Untitled project" && savedFile.exists && savedFile.bytes > 0 && (!requestedSavePath || after.project === requestedSavePath));
+        strategy = "project-file-exists";
+    } else if (command === "snapshotProject") {
+        expected = { snapshotPath: result.path || null };
+        try { verified = !!(result.path && new File(result.path).exists); } catch (snapshotError) { verified = false; }
+        strategy = "snapshot-file-exists";
+    } else if (command === "runScript") {
+        expected = payload && payload.expectedState ? payload.expectedState : null;
+        // Host-side defensive check: require a signed manifest to be present as an additional safety layer.
+        var manifest = payload && payload.manifest ? payload.manifest : null;
+        if (manifest && manifest.signature && manifest.scriptHash) {
+            result = runExtendScript(payload && payload.source ? payload.source : "");
+        }
+        verified = !!aeStudioVerifyExpectedState(expected, after);
+        strategy = "declared-expected-state";
+    } else {
+        verified = false;
+        expected = { semanticVerifier: "unavailable" };
+        strategy = "semantic-verifier-unavailable";
+    }
+    return { verified: verified, strategy: strategy, expected: expected, before: aeStudioEvidenceSnapshot(before), after: aeStudioEvidenceSnapshot(after) };
 }
 
 function createProject(payload) {
@@ -467,7 +763,7 @@ function renderQueue() {
     if (!app.project || !app.project.renderQueue || app.project.renderQueue.numItems < 1) return { ok: false, message: "The Render Queue is empty." };
     try {
         app.project.renderQueue.render();
-        return { ok: true, message: "Render Queue completed." };
+        return { ok: true, message: "Render Queue returned; output file verification is required." };
     } catch (error) {
         return { ok: false, message: error.toString() };
     }
@@ -830,8 +1126,13 @@ function getAEBossHeartbeat() {
 }
 
 function aeStudioCommand(command, payload) {
+    try {
     var result;
     var requestId = payload && payload.requestId ? String(payload.requestId) : null;
+    var mutationCommands = ["createProject", "addTextLayer", "addSolidLayer", "addRectangleShape", "addEllipseShape", "addCamera", "addLight", "addDropShadow", "duplicateSelectedLayer", "addGaussianBlur", "buildAntiTheftTeaser", "setOpacityExpression", "removeSelectedLayers", "renderQueue", "queueComposition", "saveProject", "snapshotProject", "restoreSnapshot", "importFootage", "buildAudioTeaser", "updateSelectedLayer", "editLayer", "animateSelectedOpacity", "animateSelectedPosition", "transformSelectedLayer", "updateComposition", "openComposition", "openProject", "runScript"];
+    var isMutation = false;
+    for (var mutationIndex = 0; mutationIndex < mutationCommands.length; mutationIndex++) if (mutationCommands[mutationIndex] === command) isMutation = true;
+    var beforeState = isMutation ? getProjectSummary() : null;
     if (command === "summary") result = getProjectSummary();
     else if (command === "healthReport") result = getProjectHealth();
     else if (command === "capabilities") result = getAEBossCapabilities();
@@ -887,18 +1188,39 @@ function aeStudioCommand(command, payload) {
     else if (command === "buildAudioTeaser") result = buildAudioTeaser(payload);
     else if (command === "updateSelectedLayer") result = updateSelectedLayer(payload);
     else if (command === "editLayer") result = editLayer(payload);
-    else if (command === "animateSelectedOpacity") result = animateSelectedOpacity(payload);
+    else if (command === "animateSelectedOpacity" ) result = animateSelectedOpacity(payload);
     else if (command === "animateSelectedPosition") result = animateSelectedPosition(payload);
     else if (command === "transformSelectedLayer") result = transformSelectedLayer(payload);
     else if (command === "updateComposition") result = updateComposition(payload);
     else if (command === "openComposition") result = openComposition(payload);
     else if (command === "openProject") result = openProject(payload);
-    else if (command === "runScript") result = runExtendScript(payload && payload.source ? payload.source : "");
-    else result = { ok: false, message: "Unknown AE Studio command: " + command };
+    else if (command === "runScript") {
+        var manifest = payload && payload.manifest ? payload.manifest : null;
+        if (!(manifest && manifest.signature && manifest.scriptHash)) {
+            result = { ok: false, message: "runScript requires a signed manifest.", code: "MANIFEST_REQUIRED" };
+        } else {
+            result = runExtendScript(payload && payload.source ? payload.source : "");
+        }
+    } else {
+        result = { ok: false, message: "Unknown AE Studio command: " + command };
+    }
+    if (isMutation && result && typeof result === "object") {
+        var afterState = getProjectSummary();
+        result.hostReadback = aeStudioBuildMutationReadback(command, payload || {}, result, beforeState, afterState);
+    }
     if (result && typeof result === "object") {
         result.requestId = requestId;
         result.contractVersion = "ae-bridge-response.v1";
         if (result.ok === false) result.error = { code: result.code || "HOST_COMMAND_FAILED", message: result.message || "Host command failed.", stage: "jsx-host" };
     }
     return JSON.stringify(result);
+    } catch (hostError) {
+        var errorMessage = "ExtendScript host command failed.";
+        var errorLine = null;
+        try { errorMessage = String(hostError && hostError.message ? hostError.message : hostError); } catch (messageError) { }
+        try { if (hostError && hostError.line !== undefined) errorLine = parseInt(hostError.line, 10); } catch (lineError) { }
+        var quotedMessage = '"' + errorMessage.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/\r/g, "\\r").replace(/\n/g, "\\n").replace(/\t/g, "\\t") + '"';
+        var quotedRequestId = requestId === null ? "null" : '"' + String(requestId).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"';
+        return '{"ok":false,"code":"AE_HOST_EXCEPTION","message":' + quotedMessage + ',"requestId":' + quotedRequestId + ',"contractVersion":"ae-bridge-response.v1","error":{"code":"AE_HOST_EXCEPTION","message":' + quotedMessage + ',"stage":"jsx-host","line":' + (errorLine === null || isNaN(errorLine) ? "null" : errorLine) + '}}';
+    }
 }

@@ -3,6 +3,13 @@
 ###############################################################################
 * text=auto
 
+# Keep packaging artifacts deterministic across Windows checkouts.
+# These files are consumed as build output and must remain byte-stable.
+runtime/*.js text eol=lf
+dist/**/*.js text eol=lf
+dist/**/*.jsx text eol=lf
+**/BUILD-MANIFEST*.json text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #

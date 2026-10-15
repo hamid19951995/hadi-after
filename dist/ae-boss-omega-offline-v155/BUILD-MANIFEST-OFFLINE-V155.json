@@ -1,7 +1,7 @@
 {
   "product": "AE BOSS OMEGA",
   "version": "v155-offline-core-production-spec",
-  "generatedAt": "2026-09-12T19:42:59.4122969Z",
+  "generatedAt": "2026-10-11T20:26:11.998Z",
   "offlineStrict": true,
   "files": [
     {
@@ -51,8 +51,8 @@
     },
     {
       "path": "css/panel.css",
-      "sha256": "5dc8bd3c991d59ff005e74b41c58789a09a90d76a9ea8e0a690007b824afb921",
-      "bytes": 28325
+      "sha256": "c3bb15f369408c260ad5559e3f1edb8856f554ed3d9b99c400c2fd63c0fce26f",
+      "bytes": 31696
     },
     {
       "path": "CSXS/manifest.xml",
@@ -201,23 +201,23 @@
     },
     {
       "path": "docs/OFFLINE_CORE_CONTRACTS.md",
-      "sha256": "8efb5d2dd016f678f169607c647786f3602a8bff18f7e48572afefa0ed9a6886",
-      "bytes": 2229
+      "sha256": "461704fe6c1b4608c2eb03dae3e9e041314e4f53bc3f17982635137658dcdd49",
+      "bytes": 4826
     },
     {
       "path": "html/index.html",
-      "sha256": "9a757fe2994af77de2e6b3ecec8dead4fdf0f17631db0586145b4e337b813848",
-      "bytes": 18160
+      "sha256": "67e8d718190fca19ae0b2608dbb16c84615c0d4fb03a0b992e7665226118c6ea",
+      "bytes": 17207
     },
     {
       "path": "js/aepipe.js",
-      "sha256": "fa6846ef298af9e54d76d96562a3b5dce7adaa817885c8ab67fddaa04fb1d892",
-      "bytes": 4094
+      "sha256": "60be60672178691aebdbf0738e0a1251311ac596c35398fad1852906b6de83e4",
+      "bytes": 8983
     },
     {
       "path": "js/app.js",
-      "sha256": "78b4d1aa436892f17d1607eca0ca8d7506a662e3a2e3b1563043e87790877301",
-      "bytes": 135304
+      "sha256": "868c165a5e926e4cb02fb96540ecb91855c60b381a2134df6e57e2cf9740d2ac",
+      "bytes": 219656
     },
     {
       "path": "js/CSInterface.js",
@@ -226,8 +226,8 @@
     },
     {
       "path": "js/minimal-ui.js",
-      "sha256": "f74246a47eb1494b955863bc14f084242f46bf04f8fccb61107fbd7d8b63af3d",
-      "bytes": 4952
+      "sha256": "517d233ef15a239787b5e0732f23fac10d27327d7aebb54e56f7f2c1a680cdef",
+      "bytes": 8643
     },
     {
       "path": "js/offline-engine.js",
@@ -241,8 +241,8 @@
     },
     {
       "path": "js/production-dashboard.js",
-      "sha256": "05df490dff1fe4d64dafb9fa1ab7f1553879324ef9d205ca8b18ce5bb667d12b",
-      "bytes": 12850
+      "sha256": "cd3defa2fb0c085e286072d13a7990bc93c7bd047e2d6e16605b81c4925ca4fc",
+      "bytes": 10225
     },
     {
       "path": "js/production-engine.js",
@@ -256,8 +256,8 @@
     },
     {
       "path": "jsx/host.jsx",
-      "sha256": "a5234fef6b8215cd330cab34a932636afcfbd395dbc99d8af0f6b03dcb1f7d45",
-      "bytes": 49299
+      "sha256": "9cf2a0aa9ddc3cfa6fbb5d941f3547b66f8ab56072b6d55a49feaa85165da164",
+      "bytes": 76379
     },
     {
       "path": "offline-runtime/__pycache__/offline_engine_v32.cpython-313.pyc",
@@ -360,6 +360,11 @@
       "bytes": 1157
     },
     {
+      "path": "runtime/agent-session.js",
+      "sha256": "0ad5a8078c12be01caa0055a35247c0b9a78f4248147db3292278c4216919d3e",
+      "bytes": 14071
+    },
+    {
       "path": "runtime/control/admission-policy-v7.js",
       "sha256": "60d41ea15dd1b95cb6ec5f8b76ded965412b84b40b0fe5de6b6297fdbd72e63e",
       "bytes": 771
@@ -413,6 +418,11 @@
       "path": "runtime/production-spec.js",
       "sha256": "6c39a98fc9f91120b46d5457d085559f4196b7ef28b1a0449d61955455ca0f07",
       "bytes": 5385
+    },
+    {
+      "path": "runtime/workflow-run.js",
+      "bytes": 3102,
+      "sha256": "7679cc69008f55546b6775f061db4726176b4b17227688e37c7bd124b7b9693d"
     }
   ]
 }

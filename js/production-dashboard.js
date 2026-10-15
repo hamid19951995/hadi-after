@@ -1,51 +1,196 @@
-(function(){'use strict';
- var liveStopped=false,liveRunning=false;
- var liveEvents=document.getElementById('liveEvents'),liveOutput=document.getElementById('liveReadbackOutput');
- function liveLog(text){if(!liveEvents)return;var item=document.createElement('p');item.textContent=new Date().toLocaleTimeString()+' '+text;liveEvents.insertBefore(item,liveEvents.firstChild);}
- var liveCheckpointKey='aeBossOmegaV155Checkpoint';
- function liveCheckpoint(value){if(value)window.localStorage.setItem(liveCheckpointKey,JSON.stringify(value));return JSON.parse(window.localStorage.getItem(liveCheckpointKey)||'null');}
- function governedHost(command,payload,callback){var envelope=window.AEPipe&&AEPipe.dryRun(command,payload,'live-control-center');if(envelope&&AEPipe.isMutation(command)){if(!window.confirm('Permission Required\n\nOperation: '+command+'\n\nAllow this After Effects change?')){envelope.state=AEPipe.STATES.CANCELLED;AEPipe.append(envelope);callback({ok:false,status:'CANCELLED',message:'Permission denied by user.'});return;}AEPipe.approve(envelope);}host(command,payload,function(result){if(!envelope){callback(result);return;}AEPipe.recordResult(envelope,result);if(!AEPipe.isMutation(command)){callback(result);return;}host('summary',{},function(summary){host('healthReport',{},function(health){AEPipe.verify(envelope,summary,health,result);callback(result);});});});}
- function livePreflight(callback){liveLog('Preflight started: no AE changes will be performed');var checks={summary:false,health:false,capabilities:false};function done(){if(checks.summary&&checks.health&&checks.capabilities){liveLog('Preflight passed: bridge, permissions and project state valid');callback(true);}}host('summary',{},function(result){checks.summary=!!(result&&result.ok!==false);if(result&&result.ok!==false)liveSummary(result);done();});host('healthReport',{},function(result){checks.health=!!(result&&result.ok!==false);done();});host('capabilities',{},function(result){checks.capabilities=!!(result&&result.ok!==false);done();});}
- function liveMark(index,status){var items=document.querySelectorAll('#livePlanList li');if(items[index])items[index].className=status;}
- function liveSummary(summary){if(!summary)return;var project=summary.project?String(summary.project).split(/[\\/]/).pop():'Untitled Project';var comp=summary.activeItem||'None';document.getElementById('liveProjectName').textContent=project;document.getElementById('liveActiveComp').textContent=comp;document.getElementById('liveHostStatus').textContent='Connected';document.getElementById('liveBridgeStatus').textContent='Healthy';liveOutput.textContent=JSON.stringify({project:{name:project},activeComposition:summary.compositions&&summary.compositions.filter(function(item){return item.name===comp;})[0]||null,selectedLayers:summary.selectedLayers||[],renderQueue:{count:summary.renderQueueCount||0,items:summary.renderQueueItems||[]}},null,2);}
- function liveReadback(){host('summary',{},function(result){if(!result||result.ok===false){document.getElementById('liveHostStatus').textContent='Not Connected';document.getElementById('liveBridgeStatus').textContent=result&&result.message||'Unavailable';liveLog('Readback failed: '+(result&&result.message||'host unavailable'));return;}liveSummary(result);liveLog('Readback verified');});}
- function liveCreate(){if(liveRunning)return;liveRunning=true;liveStopped=false;liveMark(0,'running');liveLog('AE command started: create composition');governedHost('createProject',{name:'OMEGA_TEST_01',width:1920,height:1080,duration:10,frameRate:30},function(result){if(!result||result.ok===false){liveMark(0,'failed');liveLog('Create failed: '+(result&&result.message||'unknown'));liveRunning=false;return;}liveMark(0,'done');liveCheckpoint({step:1,status:'RUNNING',updatedAt:new Date().toISOString()});liveLog('Composition created in AE: OMEGA_TEST_01');liveRunning=false;liveReadback();});}
- function liveAddText(next){if(liveStopped)return;liveMark(1,'running');liveLog('AE command started: add text layer');governedHost('addTextLayer',{text:'AE BOSS OMEGA TEST',name:'OMEGA_TEST_TEXT'},function(result){if(!result||result.ok===false){liveMark(1,'failed');liveLog('Add text failed: '+(result&&result.message||'unknown'));return;}liveMark(1,'done');liveCheckpoint({step:2,status:'RUNNING',updatedAt:new Date().toISOString()});liveLog('Text layer created in AE');if(next)next();});}
- function liveAnimate(next){if(liveStopped)return;liveMark(2,'running');liveLog('AE command started: animate position');governedHost('animateSelectedPosition',{from:[200,540],to:[1600,540],duration:5},function(result){if(!result||result.ok===false){liveMark(2,'failed');liveLog('Animation failed: '+(result&&result.message||'unknown'));return;}liveMark(2,'done');liveCheckpoint({step:3,status:'RUNNING',updatedAt:new Date().toISOString()});liveLog('Position keyframes created in AE');if(next)next();});}
- function liveRender(){if(liveRunning)return;liveRunning=true;liveLog('Render Queue: adding active composition');governedHost('queueComposition',{},function(queued){if(!queued||queued.ok===false){liveRunning=false;liveLog('Render queue failed: '+(queued&&queued.message||'unknown'));return;}liveLog('Render Queue: render started');governedHost('renderQueue',{},function(result){liveRunning=false;if(!result||result.ok===false){liveLog('Render failed: '+(result&&result.message||'unknown'));return;}liveLog('Render completed; output verification requested');liveReadback();});});}
- function livePlan(){livePreflight(function(ok){if(ok)liveCreateWithSteps();else liveLog('Preflight failed; execution stopped');});}
- function liveCreateWithSteps(){if(liveRunning)return;liveRunning=true;liveStopped=false;var checkpoint=liveCheckpoint();var start=checkpoint&&checkpoint.status==='CANCELLED'?checkpoint.step:0;liveLog(start?'Resuming from checkpoint step '+(start+1):'Starting new production plan');function finish(){liveRunning=false;liveMark(3,'done');liveCheckpoint({step:4,status:'COMPLETED',updatedAt:new Date().toISOString()});liveReadback();}if(start>=3){finish();return;}if(start<1){liveMark(0,'running');governedHost('createProject',{name:'OMEGA_TEST_01',width:1920,height:1080,duration:10,frameRate:30},function(result){if(!result||result.ok===false){liveMark(0,'failed');liveRunning=false;liveLog('Create failed: '+(result&&result.message||'unknown'));return;}liveMark(0,'done');liveCheckpoint({step:1,status:'RUNNING',updatedAt:new Date().toISOString()});liveAddText(function(){liveAnimate(finish);});});}else if(start<2)liveAddText(function(){liveAnimate(finish);});else liveAnimate(finish);}
- function liveDryRun(){liveStopped=false;livePreflight(function(ok){if(!ok){liveLog('DRY RUN failed: preflight rejected');return;}[0,1,2,3].forEach(function(index){liveMark(index,'done');});liveLog('DRY RUN: Plan valid; no AE changes performed');});}
- function liveStop(){if(!liveRunning){liveLog('No active job to cancel');return;}liveStopped=true;liveRunning=false;var checkpoint=liveCheckpoint()||{};checkpoint.status='CANCELLED';checkpoint.updatedAt=new Date().toISOString();liveCheckpoint(checkpoint);liveLog('Job cancellation requested; checkpoint saved');}
- document.querySelectorAll('[data-live-command]').forEach(function(button){button.addEventListener('click',function(){var command=button.getAttribute('data-live-command');if(command==='create')liveCreate();else if(command==='text')liveAddText(liveReadback);else if(command==='animate')liveAnimate(liveReadback);else if(command==='import')liveLog('Import requires a local file selection.');else if(command==='render')liveRender();});});
- if(document.getElementById('liveRunPlan'))document.getElementById('liveRunPlan').addEventListener('click',livePlan);
- if(document.getElementById('liveResume'))document.getElementById('liveResume').addEventListener('click',function(){var checkpoint=liveCheckpoint();if(!checkpoint||checkpoint.status!=='CANCELLED'){liveLog('No cancelled checkpoint is available');return;}livePlan();});
- if(document.getElementById('liveDryRun'))document.getElementById('liveDryRun').addEventListener('click',liveDryRun);
- if(document.getElementById('liveReadback'))document.getElementById('liveReadback').addEventListener('click',liveReadback);
- if(document.getElementById('liveStop'))document.getElementById('liveStop').addEventListener('click',liveStop);
- if(typeof CSInterface!=='undefined'&&window.__adobe_cep__)liveReadback();else{document.getElementById('liveHostStatus').textContent='Not Connected';document.getElementById('liveBridgeStatus').textContent='CEP unavailable';liveLog('Panel preview mode: CEP host unavailable');}
- var plan=null,running=false;
- var out=document.getElementById('omegaTerminalOutput'), request=document.getElementById('omegaRequest');
- var progressBar=document.getElementById('omegaProgressBar'), progressText=document.getElementById('omegaProgressText');
- var state=document.getElementById('omegaTerminalState'), summary=document.getElementById('omegaPlanSummary');
- function log(line){if(out){out.textContent+='\n>> '+line;out.scrollTop=out.scrollHeight;}}
- function setProgress(done,total){var pct=total?Math.round(done*100/total):0;progressBar.style.width=pct+'%';progressText.textContent=pct+'%';document.getElementById('omegaProgressMeta').textContent=done+'/'+total+' operations';}
- function host(command,payload,cb){if(typeof CSInterface==='undefined'||!window.__adobe_cep__){cb({ok:false,message:'CEP_HOST_UNAVAILABLE'});return;}var src="aeStudioCommand('"+String(command).replace(/'/g,"\\'")+"',"+JSON.stringify(payload||{}).replace(/\\/g,'\\\\').replace(/'/g,"\\'")+')';new CSInterface().evalScript(src,function(raw){try{cb(JSON.parse(raw));}catch(e){cb({ok:false,message:raw||e.message});}});}
- function mark(i,status){var items=document.querySelectorAll('#omegaPlanList li');if(items[i]){items[i].className=status;}}
- function buildPlan(prompt){var name='Pantra 1'; if(/(?:composition|کامپوزیشن).*?(?:named|نام)?\s*["']?([\w -]{3,40})/i.test(prompt)){try{name=RegExp.$1.trim();}catch(e){}}
-  plan=[
-   {command:'createProject',payload:{name:name,width:1920,height:1080,duration:10,frameRate:25},label:'Create Composition'},
-   {command:'addSolidLayer',payload:{name:'Background',color:[0.025,0.05,0.12]},label:'Add Background'},
-   {command:'addTextLayer',payload:{text:'DATA PROTECTION',name:'Title'},label:'Create Text / Shapes'},
-   {command:'addRectangleShape',payload:{name:'Cyber Accent',width:620,height:8,color:[0.1,0.85,0.95]},label:'Set Transform'},
-   {command:'animateSelectedOpacity',payload:{from:0,to:100,duration:1},label:'Animate'},
-   {command:'healthReport',payload:{},label:'Verify'},
-   {command:'queueComposition',payload:{},label:'Queue Render'}
-  ];
-  summary.textContent='Plan compiled for '+name+'. '+plan.length+' governed operations are ready.';state.textContent='PLANNED';log('[AI] Production plan compiled: '+name);setProgress(0,plan.length);document.querySelectorAll('#omegaPlanList li').forEach(function(x){x.className='pending';});
- }
- function preview(){var text=(document.getElementById('promptInput')||{}).value||request.textContent||'Create a motion graphic';request.textContent=text;buildPlan(text);}
- function execute(){if(running)return;if(!plan)preview();if(!plan)return;if(!window.confirm('Execute this production plan in Adobe After Effects?'))return;running=true;state.textContent='EXECUTING';log('[PERMISSION] User confirmation granted');var i=0;function next(){if(i>=plan.length){running=false;state.textContent='COMPLETED';document.getElementById('omegaOutputName').textContent='Plan completed';document.getElementById('omegaOutputMeta').textContent='AE DOM readback and health verification completed';log('[COMPLETE] Production plan completed');return;}var op=plan[i];mark(i,'running');log('[EXECUTE] '+op.label+'...');host(op.command,op.payload,function(r){if(!r||r.ok===false){mark(i,'failed');state.textContent='FAILED';running=false;log('[FAILED] '+(r&&r.message||op.label));document.getElementById('omegaOutputMeta').textContent='Failed at: '+op.label;return;}mark(i,'done');log('[OK] '+(r.message||op.label));i++;setProgress(i,plan.length);next();});}next();}
- document.getElementById('omegaPreview').addEventListener('click',preview);document.getElementById('omegaExecute').addEventListener('click',execute);document.getElementById('omegaEdit').addEventListener('click',function(){var el=document.getElementById('promptInput');if(el){el.focus();el.value=request.textContent==='Describe a production request to generate a governed AE plan.'?'':request.textContent;}});
- document.querySelectorAll('.omega-tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.omega-tab').forEach(function(t){t.classList.remove('active');});tab.classList.add('active');log('[VIEW] '+tab.textContent+' selected');});});
+(function () {
+    "use strict";
+
+    var events = document.getElementById("liveEvents");
+    var output = document.getElementById("liveReadbackOutput");
+    var planList = document.getElementById("livePlanList");
+
+    var activeRunId = null;
+    var lastReceipt = null;
+
+    function acceptEvent(detail, allowStart) {
+        if (allowStart && detail.phase === "request" && detail.status === "received") activeRunId = detail.runId || null;
+        return !activeRunId || detail.runId === activeRunId;
+    }
+
+    function showReceipt(detail) {
+        if (detail.receipt) lastReceipt = detail.receipt;
+        if (output) output.textContent = JSON.stringify({
+            runId: detail.runId || activeRunId,
+            status: detail.status,
+            message: detail.message || "",
+            receipt: detail.receipt || null
+        }, null, 2);
+    }
+
+    function restoreRun() {
+        if (!window.AEBossAgentUI || typeof window.AEBossAgentUI.getRun !== "function") return;
+        var run = window.AEBossAgentUI.getRun();
+        if (!run) return;
+        activeRunId = run.id;
+        (run.events || []).slice(-40).forEach(function (event) {
+            var detail = event.detail || {};
+            log("Recovered " + event.type + (detail.phase ? " / " + detail.phase : "") + (detail.status ? " — " + detail.status : "") + (detail.message ? ": " + detail.message : ""), { sequence: event.sequence, at: event.at });
+        });
+        log(run.status === "interrupted" ? "Previous workflow was interrupted. No operations were replayed; inspect the live project before starting a new request." : "Recovered workflow status: " + run.status);
+        showReceipt({ runId: run.id, status: run.status, message: run.message, receipt: run.receipt });
+    }
+
+    function log(message, detail) {
+        if (!events) return;
+        var item = document.createElement("p");
+        item.textContent = (detail && detail.at ? String(detail.at) : new Date().toLocaleTimeString()) + (detail && detail.sequence != null ? " #" + detail.sequence : "") + " " + message;
+        events.insertBefore(item, events.firstChild);
+        while (events.children.length > 40) events.removeChild(events.lastChild);
+    }
+
+    function setHostState(host, bridge) {
+        var hostStatus = document.getElementById("liveHostStatus");
+        var bridgeStatus = document.getElementById("liveBridgeStatus");
+        var readyStatus = document.getElementById("liveReadyStatus");
+        if (hostStatus) hostStatus.textContent = host;
+        if (bridgeStatus) bridgeStatus.textContent = bridge;
+        if (readyStatus) {
+            readyStatus.lastChild.textContent = host === "Connected" && bridge === "Healthy" ? " READY" : " CHECK";
+            readyStatus.classList.toggle("error", host !== "Connected" || bridge !== "Healthy");
+        }
+    }
+
+    function showSummary(summary, health) {
+        var projectName = summary.project ? String(summary.project).split(/[\\/]/).pop() : "Untitled Project";
+        var activeName = summary.activeItem || "None";
+        var project = document.getElementById("liveProjectName");
+        var composition = document.getElementById("liveActiveComp");
+        if (project) project.textContent = projectName;
+        if (composition) composition.textContent = activeName;
+        setHostState("Connected", health && health.ok ? "Healthy" : "Needs attention");
+        var activeComposition = (summary.compositions || []).filter(function (item) { return item.name === activeName; })[0] || null;
+        if (output) output.textContent = JSON.stringify({
+            readbackAt: new Date().toISOString(),
+            project: projectName,
+            activeComposition: activeComposition,
+            selectedLayers: summary.selectedLayers || [],
+            projectItems: summary.projectItems || [],
+            renderQueue: { count: summary.renderQueueCount || 0, items: summary.renderQueueItems || [] },
+            health: health || null,
+            workflowReceipt: lastReceipt
+        }, null, 2);
+    }
+
+    function readProjectState() {
+        if (!window.AEBossAgentUI || typeof window.AEBossAgentUI.readProject !== "function") {
+            setHostState("Unavailable", "Agent adapter unavailable");
+            log("Live project readback is unavailable in this panel.");
+            return;
+        }
+        setHostState("Checking...", "Reading project state...");
+        log("Reading project state and health directly from After Effects.");
+        window.AEBossAgentUI.readProject(function (result) {
+            if (!result || !result.summary || result.summary.ok === false) {
+                setHostState("Not connected", result && result.summary && result.summary.message || "CEP host unavailable");
+                log("Project readback failed: " + (result && result.summary && result.summary.message || "After Effects returned no project summary."));
+                if (output) output.textContent = JSON.stringify(result || { ok: false, message: "No host response." }, null, 2);
+                return;
+            }
+            showSummary(result.summary, result.health);
+            if (!result.health || result.health.ok !== true) {
+                log("Project state was read, but the health check reported issues.");
+                return;
+            }
+            log("Project state and health were read from After Effects.");
+        });
+    }
+
+    function renderPlan(detail) {
+        if (!planList) return;
+        planList.textContent = "";
+        (detail.commands || []).forEach(function (command, index) {
+            var item = document.createElement("li");
+            item.className = "pending";
+            item.setAttribute("data-plan-index", String(index));
+            var payload = command.payload || {};
+            var target = payload.name || payload.text || payload.path || payload.composition || "";
+            item.textContent = (index + 1) + ". " + command.command + (target ? " — " + String(target).slice(0, 100) : "");
+            planList.appendChild(item);
+        });
+        if (!planList.children.length) {
+            var empty = document.createElement("li");
+            empty.className = "pending";
+            empty.textContent = "No executable operations were proposed.";
+            planList.appendChild(empty);
+        }
+        log(detail.status === "approved" ? "The user approved this plan for execution." : detail.status === "proposed" ? "Execution plan is ready for approval." : "Production plan updated.");
+    }
+
+    function updateStep(detail) {
+        var item = planList && planList.querySelector('[data-plan-index="' + detail.index + '"]');
+        if (item) item.className = detail.status === "verified" ? "done" : detail.status;
+        var message = "Step " + (detail.index + 1) + "/" + detail.total + ": " + detail.command + " — " + detail.status;
+        if (detail.verification) message += " (" + detail.verification + ")";
+        if (detail.message) message += ": " + detail.message;
+        log(message);
+    }
+
+    document.addEventListener("aeboss:plan", function (event) { if (acceptEvent(event.detail || {})) renderPlan(event.detail || {}); });
+    document.addEventListener("aeboss:step", function (event) { if (acceptEvent(event.detail || {})) updateStep(event.detail || {}); });
+    document.addEventListener("aeboss:phase", function (event) {
+        var detail = event.detail || {};
+        if (!acceptEvent(detail, true)) return;
+        if (detail.phase === "request" && detail.status === "received") lastReceipt = null;
+        var messages = {
+            request: "Request received",
+            inspect: "Live After Effects inspection",
+            plan: "Production plan",
+            approval: "User approval",
+            execute: "After Effects execution",
+            repair: "Step repair",
+            verify: "Final readback and health check",
+            save: "Project file save"
+        };
+        if (detail.phase === "save" && detail.path) log("Project file saved and verified: " + detail.path, detail);
+        else if (messages[detail.phase]) log(messages[detail.phase] + " — " + detail.status + (detail.healthStatus ? " (health: " + detail.healthStatus + ")" : "") + (detail.message ? ": " + detail.message : ""), detail);
+    });
+    document.addEventListener("aeboss:complete", function (event) {
+        var detail = event.detail || {};
+        if (!acceptEvent(detail)) return;
+        log((detail.status === "verified" ? "Workflow verified" : "Workflow not complete") + (detail.message ? ": " + detail.message : ""), detail);
+        showReceipt(detail);
+    });
+    document.addEventListener("aeboss:activity", function (event) {
+        var detail = event.detail || {};
+        if (acceptEvent(detail) && detail.message) log(detail.message, detail);
+    });
+
+    document.querySelectorAll("[data-live-prompt]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            if (!window.AEBossAgentUI || !window.AEBossAgentUI.sendPrompt(button.getAttribute("data-live-prompt"))) {
+                log("The Agent request interface is unavailable.");
+            }
+        });
+    });
+
+    var openAgent = document.getElementById("liveOpenAgent");
+    if (openAgent) openAgent.addEventListener("click", function () {
+        if (window.AEBossAgentUI) window.AEBossAgentUI.focusRequest();
+        var input = document.getElementById("promptInput");
+        if (input) input.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    var readbackButton = document.getElementById("liveReadback");
+    if (readbackButton) readbackButton.addEventListener("click", readProjectState);
+
+    var stopButton = document.getElementById("liveStop");
+    if (stopButton) stopButton.addEventListener("click", function () {
+        if (!window.AEBossAgentUI || !window.AEBossAgentUI.stop || !window.AEBossAgentUI.stop()) {
+            log("There is no active Agent operation to stop.");
+        }
+    });
+
+    restoreRun();
+    if (window.__adobe_cep__) readProjectState();
+    else {
+        setHostState("Not connected", "CEP unavailable");
+        log("Preview mode: live After Effects operations require the installed CEP panel.");
+    }
 })();
+

@@ -28,17 +28,17 @@
                 <div><small>POLICY</small><b>Offline Strict</b></div>
             </div>
             <div class="live-command-row">
-                <button type="button" data-live-command="create" class="live-command primary">CREATE</button>
-                <button type="button" data-live-command="text" class="live-command">ADD TEXT</button>
-                <button type="button" data-live-command="import" class="live-command">IMPORT</button>
-                <button type="button" data-live-command="animate" class="live-command">ANIMATE</button>
-                <button type="button" data-live-command="render" class="live-command">RENDER</button>
+                <button type="button" data-live-prompt="Create a composition suited to my current project and request." class="live-command primary">CREATE</button>
+                <button type="button" data-live-prompt="Add a title layer that fits the active composition." class="live-command">ADD TEXT</button>
+                <button type="button" data-live-prompt="Import a media asset into the active composition." class="live-command">IMPORT</button>
+                <button type="button" data-live-prompt="Animate the selected layer based on the active composition." class="live-command">ANIMATE</button>
+                <button type="button" data-live-prompt="Prepare the active composition for rendering." class="live-command">RENDER</button>
             </div>
             <div class="live-center-body">
-                <div><div class="live-section-title">PRODUCTION PLAN</div><ol id="livePlanList"><li class="pending">Create Composition</li><li class="pending">Add Text Layer</li><li class="pending">Animate Position</li><li class="pending">Read Project State</li></ol></div>
-                <div><div class="live-section-title">RUNTIME EVENTS</div><div id="liveEvents" class="live-events" role="log"><p>Waiting for a live host check...</p></div></div>
+                <div><div class="live-section-title">LIVE EXECUTION PLAN</div><ol id="livePlanList"><li class="pending">Describe the deliverable to create a project-aware plan.</li></ol></div>
+                <div><div class="live-section-title">VERIFIED RUNTIME EVENTS</div><div id="liveEvents" class="live-events" role="log"><p>Waiting for an After Effects host check...</p></div></div>
             </div>
-            <div class="live-actions"><button type="button" id="liveRunPlan" class="live-command primary">RUN PLAN</button><button type="button" id="liveResume" class="live-command">RESUME</button><button type="button" id="liveDryRun" class="live-command">DRY RUN</button><button type="button" id="liveReadback" class="live-command">READ PROJECT STATE</button><button type="button" id="liveStop" class="live-command danger">STOP</button></div>
+            <div class="live-actions"><button type="button" id="liveOpenAgent" class="live-command primary">DESCRIBE A DELIVERABLE</button><button type="button" id="liveReadback" class="live-command">READ PROJECT STATE</button><button type="button" id="liveStop" class="live-command danger">STOP AGENT</button></div>
             <pre id="liveReadbackOutput" class="live-readback" aria-live="polite">No readback yet.</pre>
         </section>
         <div class="studio-layout">
@@ -90,7 +90,7 @@
             <section class="minimal-task" id="minimalTask" aria-live="polite" hidden>
                 <div class="minimal-task-heading"><span id="minimalTaskTitle">Working on your project</span><b id="minimalTaskPercent">0%</b></div>
                 <div class="minimal-progress"><span id="minimalProgressBar"></span></div>
-                <ol class="minimal-steps" id="minimalSteps"><li class="active">Understanding your request</li><li>Building the composition</li><li>Verifying the result</li><li>Preparing output</li></ol>
+                <ol class="minimal-steps" id="minimalSteps"><li data-phase="request">Understanding your request</li><li data-phase="inspect">Reading the live AE project</li><li data-phase="plan">Planning and approval</li><li data-phase="execute">Executing in After Effects</li><li data-phase="verify">Verifying the result</li><li data-phase="save">Saving the project file</li><li data-phase="complete">Final result</li></ol>
                 <button class="advanced-link" id="advancedToggle" type="button">Advanced details</button>
             </section>
             <section class="minimal-result" id="minimalResult" aria-live="polite" hidden>
@@ -99,32 +99,39 @@
             </main>
         </div>
 
-        <section class="omega-production-console" id="omegaProductionConsole" aria-label="AE BOSS production control center">
-          <div class="omega-console-head"><div><span class="omega-logo">Ω</span><strong>AE BOSS OMEGA v48</strong><small>LIVE PRODUCTION CONTROL · READINESS</small></div><span id="omegaLiveStatus" class="omega-live">● Connected</span></div>
-          <nav class="omega-tabs" aria-label="Production navigation"><button class="omega-tab active" data-omega-view="production">Production</button><button class="omega-tab" data-omega-view="assets">Assets</button><button class="omega-tab" data-omega-view="render">Render</button><button class="omega-tab" data-omega-view="ai">AI</button><button class="omega-tab" data-omega-view="settings">Settings</button><button class="omega-tab" data-omega-view="health">Health</button></nav>
-          <div class="omega-grid">
-            <section class="omega-assistant"><div class="omega-section-title">AI Production Assistant</div><div class="omega-request" id="omegaRequest">Describe a production request to generate a governed AE plan.</div><div id="omegaPlanSummary" class="omega-plan-summary">Ready for governed planning, asset health, render validation and production readiness checks.</div><div class="omega-actions"><button id="omegaPreview" class="omega-btn secondary">Preview Plan</button><button id="omegaExecute" class="omega-btn primary">Execute</button><button id="omegaEdit" class="omega-btn secondary">Edit</button></div></section>
-            <aside class="omega-plan"><div class="omega-section-title">Production Plan</div><ol id="omegaPlanList"><li class="pending">Create Composition</li><li class="pending">Add Background</li><li class="pending">Create Text / Shapes</li><li class="pending">Set Transform</li><li class="pending">Animate</li><li class="pending">Verify</li><li class="pending">Queue Render</li></ol></aside>
-          </div>
-          <section class="omega-terminal"><div class="omega-terminal-head"><span>Terminal</span><span id="omegaTerminalState">IDLE</span></div><pre id="omegaTerminalOutput">&gt;&gt; [SYSTEM] AE BOSS OMEGA v48 ready
-&gt;&gt; [BRIDGE] Waiting for production plan...</pre></section>
-          <div class="omega-bottom-grid"><section class="omega-progress"><div><span>Execution Progress</span><b id="omegaProgressText">0%</b></div><div class="omega-progress-track"><span id="omegaProgressBar"></span></div><small id="omegaProgressMeta">No production job running</small></section><section class="omega-output"><span>Output</span><b id="omegaOutputName">Not rendered</b><small id="omegaOutputMeta">Asset · Render · Visual QA · Recovery readiness tracked</small></section></div>
-        </section>
-        <nav class="minimal-nav" aria-label="Main navigation"><button class="active" data-minimal-nav="create">✦ <span>Create</span></button><button data-minimal-nav="projects">Projects</button><button data-minimal-nav="assets">Assets</button><button data-minimal-nav="settings">Settings</button></nav>
+        <nav class="minimal-nav" aria-label="Main navigation"><button class="active" data-minimal-nav="create">✦ <span>Create</span></button><button data-minimal-nav="agent" id="liveAgentNav" aria-controls="liveControlCenter" aria-expanded="false">◈ <span>Agent</span></button><button data-minimal-nav="projects">Projects</button><button data-minimal-nav="assets">Assets</button><button data-minimal-nav="settings">Settings</button></nav>
         <footer class="footer"><span>Local bridge ready</span><span id="modeLabel">LOCAL / LIVE BRIDGE READY</span></footer>
     </div>
     <div id="settingsModal" class="modal-backdrop" hidden>
         <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-            <div class="settings-heading"><div><p class="eyebrow">CONNECTION</p><h2 id="settingsTitle">AI provider</h2></div><button id="closeSettings" class="icon-button" aria-label="Close settings">×</button></div>
-            <label>Provider<select id="providerTypeInput"><option value="offline">Offline Core (Python)</option><option value="auto">Auto detect local AI</option><option value="ollama">Ollama</option><option value="gpt4all">GPT4All</option><option value="lm-studio">LM Studio</option><option value="hadi">HADI (VS Code)</option><option value="copilot">GitHub Copilot (VS Code)</option><option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option><option value="anthropic">Anthropic Claude</option><option value="google">Google Gemini</option><option value="openai-compatible">OpenAI-compatible</option></select></label>
-            <label>Model name<select id="modelInput"><option value="">Loading models...</option></select></label>
-            <label>Chat endpoint<input id="endpointInput" type="url" placeholder="Provider chat endpoint"></label>
-            <label>API key <span class="optional">required for cloud providers</span><input id="apiKeyInput" type="password" placeholder="Stored only in this panel"></label>
-            <label>Offline Core <span class="optional">no network required</span><select id="offlineModeInput"><option value="on">On — local only</option><option value="off">Off — allow providers</option></select></label>
-            <label>Session token budget <span class="optional">optional</span><input id="tokenBudgetInput" type="number" min="0" step="100" placeholder="No limit"></label>
-            <label>Temperature<input id="temperatureInput" type="number" min="0" max="2" step="0.1" placeholder="0.1"></label>
-            <p id="modelHelp" class="settings-note">Only models reported by the selected provider are shown. Cloud providers require an API key.</p>
-            <div class="settings-actions"><button id="refreshModels" class="secondary-button">Refresh models</button><button id="githubCopilotLink" class="secondary-button">Open GitHub Copilot</button><button id="hadiPreset" class="secondary-button">Use HADI</button><button id="copilotPreset" class="secondary-button">Use VS Code Copilot</button><button id="resetSettings" class="secondary-button">Use local commands</button><button id="saveSettings" class="primary-button">Save connection</button></div>
+            <div class="settings-heading">
+                <div><p class="eyebrow">AI CONNECTION</p><h2 id="settingsTitle">Connect your AI provider</h2><p class="settings-intro">Choose a provider, test the connection, then save it for this panel.</p></div>
+                <button id="closeSettings" class="icon-button" type="button" aria-label="Close settings">×</button>
+            </div>
+            <div id="connectionFeedback" class="connection-feedback" data-state="idle" role="status" aria-live="polite">
+                <span class="connection-feedback-indicator" aria-hidden="true"></span>
+                <p id="connectionFeedbackText">Not tested yet. Test the selected provider before saving.</p>
+            </div>
+            <div class="settings-fields">
+                <label>Provider<select id="providerTypeInput"><option value="offline">Offline Core (Python)</option><option value="auto">Auto detect local AI</option><option value="ollama">Ollama</option><option value="gpt4all">GPT4All</option><option value="lm-studio">LM Studio</option><option value="hadi">HADI (VS Code)</option><option value="copilot">GitHub Copilot (VS Code)</option><option value="openai">OpenAI</option><option value="openrouter">OpenRouter</option><option value="anthropic">Anthropic Claude</option><option value="google">Google Gemini</option><option value="openai-compatible">OpenAI-compatible</option></select></label>
+                <label>Model <span class="optional">choose or enter an ID</span><select id="modelInput"><option value="">Select a provider first</option></select><input id="manualModelInput" type="text" placeholder="Enter the exact model ID" autocomplete="off" style="display:none"></label>
+                <label class="settings-field-wide">Chat endpoint<input id="endpointInput" type="url" placeholder="Provider chat endpoint" autocomplete="url"></label>
+                <label class="settings-field-wide">API key <span class="optional">required for cloud providers</span><input id="apiKeyInput" type="password" placeholder="Stored only in this panel" autocomplete="off"></label>
+                <label>Offline Core <span class="optional">no network required</span><select id="offlineModeInput"><option value="on">On — local only</option><option value="off">Off — use selected provider</option></select></label>
+                <label>Session token budget <span class="optional">optional</span><input id="tokenBudgetInput" type="number" min="0" step="100" placeholder="No limit"></label>
+                <label>Temperature<input id="temperatureInput" type="number" min="0" max="2" step="0.1" placeholder="0.1"></label>
+            </div>
+            <p id="modelHelp" class="settings-note">Choose a provider to load its available models. Cloud providers require an API key.</p>
+            <div class="settings-actions">
+                <button id="githubCopilotLink" class="secondary-button" type="button">Open GitHub Copilot</button>
+                <button id="hadiPreset" class="secondary-button" type="button">Use HADI</button>
+                <button id="copilotPreset" class="secondary-button" type="button">Use VS Code Copilot</button>
+                <button id="resetSettings" class="secondary-button" type="button">Use local commands</button>
+                <span class="settings-actions-spacer"></span>
+                <button id="refreshModels" class="secondary-button" type="button">Refresh models</button>
+                <button id="testProviderConnection" class="secondary-button" type="button">Test connection</button>
+                <button id="saveSettings" class="primary-button" type="button" disabled>Save connection</button>
+            </div>
         </section>
     </div>
     <script src="../js/CSInterface.js"></script>
@@ -133,6 +140,8 @@
     <script src="../runtime/offline-core.js"></script>
     <script src="../runtime/production-spec.js"></script>
     <script src="../runtime/execution-core.js"></script>
+    <script src="../runtime/agent-session.js"></script>
+    <script src="../runtime/workflow-run.js"></script>
     <script src="../runtime/offline-cache.js"></script>
     <script src="../js/offline-policy.js"></script>
     <script src="../js/offline-engine.js"></script>
