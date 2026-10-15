@@ -15,6 +15,43 @@ function ensureClean() {
   }
 }
 
+function makeValidJob(overrides = {}) {
+  const jobId = overrides.jobId || 'job-cycle-001';
+  return {
+    jobId,
+    opId: 'op-stage4-001',
+    stage: 'verify',
+    createdAt: new Date().toISOString(),
+    issuer: 'stage4-test-runner',
+    manifestRef: 'manifests/test-manifest.json',
+    inputs: { testKey: 'val' },
+    inputHash: 'sha256:abcd1234efgh5678',
+    expectedState: { status: 'verified' },
+    evidencePath: path.join('evidence', 'ae', jobId, 'evidence.json'),
+    steps: [
+      {
+        id: 'step-1-create-comp',
+        name: 'create-comp',
+        type: 'script',
+        script: {
+          engine: 'aftereffects',
+          entry: 'noop.jsx'
+        },
+        outputs: [],
+        policy: { timeouts: { stepMs: 1000 } }
+      }
+    ],
+    policy: {
+      retries: 0,
+      timeouts: {
+        stepMs: 1000,
+        verificationMs: 1000,
+        totalMs: 10000
+      }
+    }
+  };
+}
+
 test.beforeEach(() => ensureClean());
 test.after(() => ensureClean());
 
@@ -26,29 +63,17 @@ test('BridgeCycleRunner: writes request and returns parsed response', async () =
     consumeResponse: true
   });
 
-  // minimal job that matches the canonical validator expectations in your repo
-  const job = {
-    id: 'job-cycle-001',
-    createdAt: new Date().toISOString(),
-    issuer: { type: 'test', id: 'node-test' },
-    manifestRef: { kind: 'inline', id: 'manifest-test-1' },
-    expectedState: { kind: 'render', version: 1 },
-    policy: { timeouts: { totalMs: 10_000 } },
-    steps: [
-      { id: 's1', name: 'do', action: { type: 'noop' } }
-    ]
-  };
+  const job = makeValidJob({ jobId: 'job-cycle-001' });
 
-  // create a response later (simulating After Effects bridge)
   setTimeout(() => {
     const outboxDir = path.join(TMP_TEST_DIR, 'bridge', 'outbox');
     fs.mkdirSync(outboxDir, { recursive: true });
     const payload = {
       responseVersion: '1.0.0',
-      jobId: job.id,
+      jobId: job.jobId,
       status: 'succeeded',
       durationMs: 12,
-      stepResults: [{ id: 's1', status: 'done' }]
+      stepResults: [{ id: 'step-1-create-comp', status: 'done' }]
     };
     fs.writeFileSync(path.join(outboxDir, 'current.response.json'), JSON.stringify(payload), 'utf8');
   }, 100);
@@ -57,7 +82,6 @@ test('BridgeCycleRunner: writes request and returns parsed response', async () =
   assert.equal(result.ok, true);
   assert.equal(result.response.status, 'succeeded');
 
-  // consumed
   const responsePath = path.join(TMP_TEST_DIR, 'bridge', 'outbox', 'current.response.json');
   assert.equal(fs.existsSync(responsePath), false);
 });
@@ -70,17 +94,7 @@ test('BridgeCycleRunner: times out when no response arrives', async () => {
     consumeResponse: true
   });
 
-  const job = {
-    id: 'job-cycle-timeout',
-    createdAt: new Date().toISOString(),
-    issuer: { type: 'test', id: 'node-test' },
-    manifestRef: { kind: 'inline', id: 'manifest-test-2' },
-    expectedState: { kind: 'render', version: 1 },
-    policy: { timeouts: { totalMs: 10_000 } },
-    steps: [
-      { id: 's1', name: 'do', action: { type: 'noop' } }
-    ]
-  };
+  const job = makeValidJob({ jobId: 'job-cycle-timeout' });
 
   const result = await runner.runOnce(job);
   assert.equal(result.ok, false);
