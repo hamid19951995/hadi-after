@@ -29,23 +29,23 @@ function run-step($name, $script, $args) {
 # Stage 3: Unit tests for job schema and engine (targeted)
 $st3 = run-step 'stage-3-unit-tests' 'node' @('test/job-schema.test.js')
 $report.stages += $st3
-if ($st3.status -ne 'passed') { goto :finalize }
+if ($st3.status -ne 'passed') { goto finalize }
 $st3b = run-step 'stage-3-engine-happy' 'node' @('test/engine-happy-path.test.js')
 $report.stages += $st3b
-if ($st3b.status -ne 'passed') { goto :finalize }
+if ($st3b.status -ne 'passed') { goto finalize }
 $st3c = run-step 'stage-3-engine-negative' 'node' @('test/engine-negative-invalid-job.test.js')
 $report.stages += $st3c
-if ($st3c.status -ne 'passed') { goto :finalize }
+if ($st3c.status -ne 'passed') { goto finalize }
 
 # Stage 10 simulation
 $st10 = run-step 'stage-10-sim' 'node' @('test/simulate-stage10-bridge.js')
 $report.stages += $st10
-if ($st10.status -ne 'passed') { goto :finalize }
+if ($st10.status -ne 'passed') { goto finalize }
 
 # Stage 11 simulation
 $st11 = run-step 'stage-11-sim' 'node' @('test/simulate-stage11-batch.js')
 $report.stages += $st11
-if ($st11.status -ne 'passed') { goto :finalize }
+if ($st11.status -ne 'passed') { goto finalize }
 
 # Optional: live AE runs
 if ($LiveAE) {
