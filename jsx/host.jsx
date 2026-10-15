@@ -404,11 +404,25 @@ function aeStudioBuildMutationReadback(command, payload, result, before, after) 
         expected = { project: payload.path || null };
         verified = !!(requestedProject && actualProject === requestedProject);
         strategy = "active-project-path";
+    } else if (command === "saveProject") {
+        var savedFile = aeStudioFileEvidence(after.project);
+        var requestedSavePath = payload.path ? new File(payload.path).fsName : null;
+        expected = { projectFileExists: savedFile.exists, projectFile: savedFile, requestedPath: requestedSavePath };
+        verified = !!(after.project !== "Untitled project" && savedFile.exists && savedFile.bytes > 0 && (!requestedSavePath || after.project === requestedSavePath));
+        strategy = "project-file-exists";
+    } else if (command === "snapshotProject") {
+        expected = { snapshotPath: result.path || null };
+        try { verified = !!(result.path && new File(result.path).exists); } catch (snapshotError) { verified = false; }
+        strategy = "snapshot-file-exists";
     } else if (command === "runScript") {
+        expected = payload && payload.expectedState ? payload.expectedState : null;
         // Host-side defensive check: require a signed manifest to be present as an additional safety layer.
         var manifest = payload && payload.manifest ? payload.manifest : null;
-        if (!manifest || !manifest.signature || !manifest.scriptHash) return { ok: false, message: "runScript requires a signed manifest.", code: "MANIFEST_REQUIRED" };
-        result = runExtendScript(payload && payload.source ? payload.source : "");
+        if (manifest && manifest.signature && manifest.scriptHash) {
+            result = runExtendScript(payload && payload.source ? payload.source : "");
+        }
+        verified = !!aeStudioVerifyExpectedState(expected, after);
+        strategy = "declared-expected-state";
     } else {
         verified = false;
         expected = { semanticVerifier: "unavailable" };
@@ -1181,14 +1195,14 @@ function aeStudioCommand(command, payload) {
     else if (command === "openComposition") result = openComposition(payload);
     else if (command === "openProject") result = openProject(payload);
     else if (command === "runScript") {
-        // Host-side defensive check: require a signed manifest to be present as an additional safety layer.
         var manifest = payload && payload.manifest ? payload.manifest : null;
-        if (!manifest || !manifest.signature || !manifest.scriptHash) return { ok: false, message: "runScript requires a signed manifest.", code: "MANIFEST_REQUIRED" };
-        result = runExtendScript(payload && payload.source ? payload.source : "");
+        if (!(manifest && manifest.signature && manifest.scriptHash)) {
+            result = { ok: false, message: "runScript requires a signed manifest.", code: "MANIFEST_REQUIRED" };
+        } else {
+            result = runExtendScript(payload && payload.source ? payload.source : "");
+        }
     } else {
-        verified = false;
-        expected = { semanticVerifier: "unavailable" };
-        strategy = "semantic-verifier-unavailable";
+        result = { ok: false, message: "Unknown AE Studio command: " + command };
     }
     if (isMutation && result && typeof result === "object") {
         var afterState = getProjectSummary();
