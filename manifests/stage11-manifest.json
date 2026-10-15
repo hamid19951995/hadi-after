@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "jobId": "job-stage11-batch-001",
+  "description": "Stage 11 Batch Processing - two compositions rendered sequentially",
+  "steps": [
+    {
+      "id": "step-render-comp-a",
+      "name": "Render COMP_A",
+      "type": "bridge",
+      "bridge": {
+        "scriptPath": "scripts/stage11-bridge-batch-runner.jsx",
+        "compName": "COMP_A",
+        "outputPath": "evidence/ae/job-stage11-batch-001/comp_a_output.mp4",
+        "initialDelayMs": 3000,
+        "maxWaitMs": 120000
+      }
+    },
+    {
+      "id": "step-render-comp-b",
+      "name": "Render COMP_B",
+      "type": "bridge",
+      "bridge": {
+        "scriptPath": "scripts/stage11-bridge-batch-runner.jsx",
+        "compName": "COMP_B",
+        "outputPath": "evidence/ae/job-stage11-batch-001/comp_b_output.mp4",
+        "initialDelayMs": 3000,
+        "maxWaitMs": 120000
+      }
+    }
+  ]
+}
