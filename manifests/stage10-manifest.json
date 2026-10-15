@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "jobId": "job-stage10-render-001",
+  "description": "Stage 10 Live E2E Render Queue Automation",
+  "steps": [
+    {
+      "id": "step-render-queue",
+      "name": "Render STAGE9_TITLES Composition",
+      "type": "bridge",
+      "bridge": {
+        "scriptPath": "scripts/stage10-bridge-live-runner.jsx",
+        "compName": "STAGE9_TITLES",
+        "outputPath": "D:\\AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening\\AE_BOSS_OMEGA_Foundation_v155\\evidence\\ae\\job-stage10-render-001\\output.mp4"
+      }
+    }
+  ]
+}
