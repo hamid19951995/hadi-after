@@ -3,9 +3,65 @@ const path = require('path');
 const { spawn } = require('child_process');
 const { runJob } = require('../src/engine/engine');
 
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function waitForFile(filePath, timeoutMs) {
+    return new Promise((resolve, reject) => {
+        const startedAt = Date.now();
+
+        const timer = setInterval(() => {
+            if (fs.existsSync(filePath)) {
+                clearInterval(timer);
+                resolve();
+                return;
+            }
+
+            if (Date.now() - startedAt >= timeoutMs) {
+                clearInterval(timer);
+                reject(new Error(
+                    `Timed out waiting for bridge request: ${filePath}`
+                ));
+            }
+        }, 100);
+    });
+}
+
+function waitForRequestOrJobFailure(requestPath, receiptPromise, timeoutMs) {
+    const requestReady = waitForFile(requestPath, timeoutMs);
+
+    const jobFinishedBeforeRequest = receiptPromise.then(
+        () => {
+            throw new Error(
+                'runJob completed before bridge request was created'
+            );
+        },
+        error => {
+            throw error;
+        }
+    );
+
+    return Promise.race([
+        requestReady,
+        jobFinishedBeforeRequest
+    ]);
+}
+
 async function main() {
     const repoRoot = path.resolve(__dirname, '..');
-    const manifestPath = path.join(repoRoot, 'manifests', 'stage10-manifest.json');
+    const manifestPath = path.join(
+        repoRoot,
+        'manifests',
+        'stage10-manifest.json'
+    );
+
+    const inboxFile = path.join(
+        repoRoot,
+        'bridge',
+        'inbox',
+        'current.request.json'
+    );
 
     console.log('[Stage 10] Loading manifest and starting live render E2E job...');
 
@@ -22,66 +78,136 @@ async function main() {
         policy: {
             mode: 'strict',
             retries: 2,
-            timeouts: { globalMs: 240000, stepMs: 180000, verificationMs: 30000 }
+            timeouts: {
+                globalMs: 240000,
+                stepMs: 180000,
+                verificationMs: 30000
+            }
         },
         inputs: {},
-        inputHash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        inputHash:
+            'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
         description: manifest.description,
         manifestRef: 'manifests/stage10-manifest.json',
         steps: manifest.steps,
         expectedState: null,
-        evidencePath: 'evidence/ae/job-stage10-render-001/receipt.json'
+        evidencePath:
+            'evidence/ae/job-stage10-render-001/receipt.json'
     };
 
-    const evidenceDir = path.join(repoRoot, 'evidence', 'ae', 'job-stage10-render-001');
-    if (!fs.existsSync(evidenceDir)) {
-        fs.mkdirSync(evidenceDir, { recursive: true });
-    }
+    const evidenceDir = path.join(
+        repoRoot,
+        'evidence',
+        'ae',
+        'job-stage10-render-001'
+    );
 
-    const aePath = 'C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe';
-    const runnerJsx = path.join(repoRoot, 'scripts', 'stage10-bridge-live-runner.jsx');
+    fs.mkdirSync(evidenceDir, { recursive: true });
 
-    console.log('[Stage 10] Spawning After Effects bridge runner...');
+    const aePath =
+        'C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe';
+
+    const runnerJsx = path.join(
+        repoRoot,
+        'scripts',
+        'stage10-bridge-live-runner.jsx'
+    );
 
     if (!fs.existsSync(aePath)) {
-        console.error('[Stage 10] After Effects executable not found at', aePath);
-        console.error('[Stage 10] Aborting E2E run - ensure After Effects is installed at the configured path.');
-        process.exit(1);
+        throw new Error(
+            `After Effects executable not found at: ${aePath}`
+        );
     }
 
-    // Spawn AfterFX explicitly. Keep child attached so we observe its lifecycle; capture stdout/stderr to a log file for diagnostics
+    if (!fs.existsSync(runnerJsx)) {
+        throw new Error(`Stage 10 JSX runner not found at: ${runnerJsx}`);
+    }
+
     const spawnLogDir = path.join(repoRoot, 'evidence', 'ae');
-    try { fs.mkdirSync(spawnLogDir, { recursive: true }); } catch (e) {}
+    fs.mkdirSync(spawnLogDir, { recursive: true });
+
     const spawnLogPath = path.join(spawnLogDir, 'ae-spawn.log');
-    const spawnLog = fs.createWriteStream(spawnLogPath, { flags: 'a', encoding: 'utf8' });
-
-    const aeProcess = spawn(aePath, ['-noui', '-r', runnerJsx], {
-        detached: false,
-        stdio: ['ignore', 'pipe', 'pipe']
+    const spawnLog = fs.createWriteStream(spawnLogPath, {
+        flags: 'a',
+        encoding: 'utf8'
     });
 
-    aeProcess.stdout && aeProcess.stdout.on('data', (chunk) => { try { spawnLog.write('[AE STDOUT] ' + String(chunk)); } catch (e) {} });
-    aeProcess.stderr && aeProcess.stderr.on('data', (chunk) => { try { spawnLog.write('[AE STDERR] ' + String(chunk)); } catch (e) {} });
-    aeProcess.on('exit', (code, signal) => { try { spawnLog.write('[AE EXIT] code=' + code + ' signal=' + signal + ' ts=' + new Date().toISOString() + '\n'); } catch (e) {} });
+    let aeProcess = null;
 
-    // Allow a larger initial delay for AE startup before polling the outbox, prefer ready-file waiting
-    const receipt = await runJob(job, {
-        workspaceRoot: repoRoot,
-        bridgeOptions: {
-            repoRoot,
-            maxWaitMs: 180000,
-            initialDelayMs: 2000,
-            waitReadyFileMs: 10000
+    try {
+        console.log('[Stage 10] Starting bridge job and waiting for inbox request...');
+
+        // runJob creates bridge/inbox/current.request.json.
+        // AfterFX must start only after that file exists.
+        const receiptPromise = runJob(job, {
+            workspaceRoot: repoRoot,
+            bridgeOptions: {
+                repoRoot,
+                maxWaitMs: 180000,
+                initialDelayMs: 2000,
+                waitReadyFileMs: 10000
+            }
+        });
+
+        await waitForRequestOrJobFailure(
+            inboxFile,
+            receiptPromise,
+            30000
+        );
+
+        console.log(
+            '[Stage 10] Inbox request detected. Spawning After Effects bridge runner...'
+        );
+
+        aeProcess = spawn(aePath, ['-noui', '-r', runnerJsx], {
+            detached: false,
+            stdio: ['ignore', 'pipe', 'pipe']
+        });
+
+        aeProcess.stdout.on('data', chunk => {
+            spawnLog.write('[AE STDOUT] ' + String(chunk));
+        });
+
+        aeProcess.stderr.on('data', chunk => {
+            spawnLog.write('[AE STDERR] ' + String(chunk));
+        });
+
+        aeProcess.on('error', error => {
+            spawnLog.write(
+                '[AE ERROR] ' +
+                error.message +
+                ' ts=' +
+                new Date().toISOString() +
+                '\n'
+            );
+        });
+
+        aeProcess.on('exit', (code, signal) => {
+            spawnLog.write(
+                '[AE EXIT] code=' +
+                code +
+                ' signal=' +
+                signal +
+                ' ts=' +
+                new Date().toISOString() +
+                '\n'
+            );
+        });
+
+        const receipt = await receiptPromise;
+
+        console.log('[Stage 10] Job completed with status:', receipt.status);
+        console.log(JSON.stringify(receipt, null, 2));
+    } finally {
+        try {
+            spawnLog.end();
+        } catch (error) {
+            // Diagnostic logging must not mask the actual job result.
         }
-    });
-
-    try { spawnLog.end(); } catch (e) {}
-
-    console.log('[Stage 10] Job completed with status:', receipt.status);
-    console.log(JSON.stringify(receipt, null, 2));
+    }
 }
 
-main().catch(err => {
-    console.error('[Stage 10] Fatal error:', err);
+main().catch(error => {
+    console.error('[Stage 10] Fatal error:', error);
     process.exit(1);
 });
