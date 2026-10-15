@@ -62,11 +62,8 @@ function runStep(name, cmd, args, cwd) {
   // Ensure output dir
   const outDir = path.join(repoRoot, 'evidence', 'pipeline');
   fs.mkdirSync(outDir, { recursive: true });
-  const reportPath = path.join(outDir, 'health-report.json');
-  const tmpPath = reportPath + '.' + Date.now() + '.tmp';
-  fs.writeFileSync(tmpPath, JSON.stringify(report, null, 2), 'utf8');
-  try { if (fs.existsSync(reportPath)) fs.unlinkSync(reportPath); } catch (e) {}
-  fs.renameSync(tmpPath, reportPath);
+  const reportPath = path.join(outDir, `health-report-${Date.now()}.json`);
+  fs.writeFileSync(reportPath, JSON.stringify(report, null, 2), 'utf8');
 
   console.log('Health report written to', reportPath);
   for (const s of report.stages) {
