@@ -13,13 +13,13 @@ function run-step($name, $script, $args) {
   $entry.name = $name
   $entry.startTime = (Get-Date).ToString('o')
   try {
-	Write-Host "[pipeline] Running $name..."
-	& $script @args
-	$entry.status = 'passed'
-	$entry.error = $null
+    Write-Host "[pipeline] Running $name..."
+    & $script @args
+    $entry.status = 'passed'
+    $entry.error = $null
   } catch {
-	$entry.status = 'failed'
-	$entry.error = $_.Exception.Message
+    $entry.status = 'failed'
+    $entry.error = $_.Exception.Message
   }
   $entry.endTime = (Get-Date).ToString('o')
   $entry.durationMs = ([int]((Get-Date $entry.endTime) - (Get-Date $entry.startTime)).TotalMilliseconds)
@@ -29,42 +29,63 @@ function run-step($name, $script, $args) {
 # Stage 3: Unit tests for job schema and engine (targeted)
 $st3 = run-step 'stage-3-unit-tests' 'node' @('test/job-schema.test.js')
 $report.stages += $st3
-if ($st3.status -ne 'passed') { goto finalize }
+if ($st3.status -ne 'passed') {
+  Write-Host "stage-3-unit-tests failed; aborting pipeline"
+  goto EndPipeline
+}
 $st3b = run-step 'stage-3-engine-happy' 'node' @('test/engine-happy-path.test.js')
 $report.stages += $st3b
-if ($st3b.status -ne 'passed') { goto finalize }
+if ($st3b.status -ne 'passed') {
+  Write-Host "stage-3-engine-happy failed; aborting pipeline"
+  goto EndPipeline
+}
 $st3c = run-step 'stage-3-engine-negative' 'node' @('test/engine-negative-invalid-job.test.js')
 $report.stages += $st3c
-if ($st3c.status -ne 'passed') { goto finalize }
+if ($st3c.status -ne 'passed') {
+  Write-Host "stage-3-engine-negative failed; aborting pipeline"
+  goto EndPipeline
+}
 
 # Stage 10 simulation
 $st10 = run-step 'stage-10-sim' 'node' @('test/simulate-stage10-bridge.js')
 $report.stages += $st10
-if ($st10.status -ne 'passed') { goto finalize }
+if ($st10.status -ne 'passed') {
+  Write-Host "stage-10-sim failed; aborting pipeline"
+  goto EndPipeline
+}
 
 # Stage 11 simulation
 $st11 = run-step 'stage-11-sim' 'node' @('test/simulate-stage11-batch.js')
 $report.stages += $st11
-if ($st11.status -ne 'passed') { goto finalize }
+if ($st11.status -ne 'passed') {
+  Write-Host "stage-11-sim failed; aborting pipeline"
+  goto EndPipeline
+}
 
 # Optional: live AE runs
 if ($LiveAE) {
   $aePath = 'C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe'
   if (Test-Path $aePath) {
-	$st10live = run-step 'stage-10-live' 'node' @('scripts/run-stage10-live-e2e.js')
-	$report.stages += $st10live
-	if ($st10live.status -ne 'passed') { goto :finalize }
+    $st10live = run-step 'stage-10-live' 'node' @('scripts/run-stage10-live-e2e.js')
+    $report.stages += $st10live
+    if ($st10live.status -ne 'passed') {
+      Write-Host "stage-10-live failed; aborting pipeline"
+      goto EndPipeline
+    }
 
-	$st11live = run-step 'stage-11-live' 'node' @('scripts/run-stage11-batch.js')
-	$report.stages += $st11live
-	if ($st11live.status -ne 'passed') { goto :finalize }
+    $st11live = run-step 'stage-11-live' 'node' @('scripts/run-stage11-batch.js')
+    $report.stages += $st11live
+    if ($st11live.status -ne 'passed') {
+      Write-Host "stage-11-live failed; aborting pipeline"
+      goto EndPipeline
+    }
   } else {
-	$report.stages += ([ordered]@{ name='stage-10-live'; status='skipped'; startTime=(Get-Date).ToString('o'); endTime=(Get-Date).ToString('o'); durationMs=0; error='After Effects not found at expected path' })
-	$report.stages += ([ordered]@{ name='stage-11-live'; status='skipped'; startTime=(Get-Date).ToString('o'); endTime=(Get-Date).ToString('o'); durationMs=0; error='After Effects not found at expected path' })
+    $report.stages += ([ordered]@{ name='stage-10-live'; status='skipped'; startTime=(Get-Date).ToString('o'); endTime=(Get-Date).ToString('o'); durationMs=0; error='After Effects not found at expected path' })
+    $report.stages += ([ordered]@{ name='stage-11-live'; status='skipped'; startTime=(Get-Date).ToString('o'); endTime=(Get-Date).ToString('o'); durationMs=0; error='After Effects not found at expected path' })
   }
 }
 
-:finalize
+:EndPipeline
 $report.completedAt = (Get-Date).ToString('o')
 $report.durationMs = ([int]((Get-Date) - $startTime).TotalMilliseconds)
 
