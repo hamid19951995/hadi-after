@@ -206,8 +206,8 @@
     },
     {
       "path": "html/index.html",
-      "sha256": "9493d073eec02e79d1a9d28557cc955d8b61f11105fb9e82ffa2af1b23cc438d",
-      "bytes": 17152
+      "sha256": "67e8d718190fca19ae0b2608dbb16c84615c0d4fb03a0b992e7665226118c6ea",
+      "bytes": 17207
     },
     {
       "path": "js/aepipe.js",
@@ -216,8 +216,8 @@
     },
     {
       "path": "js/app.js",
-      "sha256": "306129012383f5954a6f9d986a18a4a58be018b4b492c6bc3d22f4e8603c4cd7",
-      "bytes": 211933
+      "sha256": "868c165a5e926e4cb02fb96540ecb91855c60b381a2134df6e57e2cf9740d2ac",
+      "bytes": 219656
     },
     {
       "path": "js/CSInterface.js",
@@ -226,8 +226,8 @@
     },
     {
       "path": "js/minimal-ui.js",
-      "sha256": "ae0d7f43221b847e117ade0351e247b4fbbe41d8d1f71d76159843e3128e1245",
-      "bytes": 7776
+      "sha256": "517d233ef15a239787b5e0732f23fac10d27327d7aebb54e56f7f2c1a680cdef",
+      "bytes": 8643
     },
     {
       "path": "js/offline-engine.js",
@@ -241,8 +241,8 @@
     },
     {
       "path": "js/production-dashboard.js",
-      "sha256": "7813ff229b7140df6b4bc76987c04e446d0d2fa27c67bb911734899ccdd009e0",
-      "bytes": 8315
+      "sha256": "cd3defa2fb0c085e286072d13a7990bc93c7bd047e2d6e16605b81c4925ca4fc",
+      "bytes": 10225
     },
     {
       "path": "js/production-engine.js",
@@ -256,8 +256,8 @@
     },
     {
       "path": "jsx/host.jsx",
-      "sha256": "1d93ad92e032616d8d73b6039410d3c7d0ef6a4c2aff632c422087b6ed0586f1",
-      "bytes": 73361
+      "sha256": "9cf2a0aa9ddc3cfa6fbb5d941f3547b66f8ab56072b6d55a49feaa85165da164",
+      "bytes": 76379
     },
     {
       "path": "offline-runtime/__pycache__/offline_engine_v32.cpython-313.pyc",
@@ -360,6 +360,11 @@
       "bytes": 1157
     },
     {
+      "path": "runtime/agent-session.js",
+      "sha256": "0ad5a8078c12be01caa0055a35247c0b9a78f4248147db3292278c4216919d3e",
+      "bytes": 14071
+    },
+    {
       "path": "runtime/control/admission-policy-v7.js",
       "sha256": "60d41ea15dd1b95cb6ec5f8b76ded965412b84b40b0fe5de6b6297fdbd72e63e",
       "bytes": 771
@@ -390,11 +395,6 @@
       "bytes": 1589
     },
     {
-      "path": "runtime/agent-session.js",
-      "sha256": "4aec8b90480b7e2d237437ba3b03df8931fd43bfd305fed57f7173f27e458baf",
-      "bytes": 11829
-    },
-    {
       "path": "runtime/execution-core.js",
       "sha256": "a2c54672f46a26d088724524fb731784785f41e3f30a58b9a0b46074692fab18",
       "bytes": 4131
@@ -418,6 +418,11 @@
       "path": "runtime/production-spec.js",
       "sha256": "6c39a98fc9f91120b46d5457d085559f4196b7ef28b1a0449d61955455ca0f07",
       "bytes": 5385
+    },
+    {
+      "path": "runtime/workflow-run.js",
+      "bytes": 3102,
+      "sha256": "7679cc69008f55546b6775f061db4726176b4b17227688e37c7bd124b7b9693d"
     }
   ]
 }

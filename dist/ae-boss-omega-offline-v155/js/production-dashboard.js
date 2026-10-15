@@ -193,3 +193,4 @@
         log("Preview mode: live After Effects operations require the installed CEP panel.");
     }
 })();
+
