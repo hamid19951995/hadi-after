@@ -85,14 +85,14 @@ $report.durationMs = ([int]((Get-Date) - $startTime).TotalMilliseconds)
 
 # Collect receipts if present
 $report.receipts = @{}
-$glob = Get-ChildItem -Path (Join-Path $repoRoot 'evidence' 'ae') -Recurse -Filter 'receipt.json' -ErrorAction SilentlyContinue
+$glob = Get-ChildItem -Path (Join-Path (Join-Path $repoRoot 'evidence') 'ae') -Recurse -Filter 'receipt.json' -ErrorAction SilentlyContinue
 foreach ($r in $glob) {
   $rel = $r.FullName.Substring($repoRoot.Length+1)
   $report.receipts[$rel] = (Get-Content $r.FullName -Raw)
 }
 
 # Ensure evidence dir
-$outDir = Join-Path $repoRoot 'evidence' 'pipeline'
+$outDir = Join-Path (Join-Path $repoRoot 'evidence') 'pipeline'
 if (!(Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out-Null }
 $reportPath = Join-Path $outDir 'health-report.json'
 $report | ConvertTo-Json -Depth 10 | Out-File -FilePath $reportPath -Encoding utf8
