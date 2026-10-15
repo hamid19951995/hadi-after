@@ -21,20 +21,15 @@ function run-step($name, $script, $args) {
 
   try {
     Write-Host "[pipeline] Running $name..."
-    $psi = @{
-      FilePath = $script
-      ArgumentList = $args
-      RedirectStandardOutput = $stdoutLog
-      RedirectStandardError = $stderrLog
-      NoNewWindow = $true
-      Wait = $true
+    # Execute the command and redirect stdout/stderr to files
+    try {
+      & $script @args > $stdoutLog 2> $stderrLog
+      $entry.status = 'passed'
+      $entry.error = $null
+    } catch {
+      $entry.status = 'failed'
+      $entry.error = $_.Exception.Message
     }
-    Start-Process @psi | Out-Null
-    $entry.status = 'passed'
-    $entry.error = $null
-  } catch {
-    $entry.status = 'failed'
-    $entry.error = $_.Exception.Message
   }
 
   $entry.endTime = (Get-Date).ToString('o')
