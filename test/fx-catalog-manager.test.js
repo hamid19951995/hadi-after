@@ -1,7 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const FXCatalogManager = require('../src/engine/fx/fx_catalog_manager');
+const { FxCatalogManager } = require('../src/engine/fx/fx_catalog_manager');
 
 (function runTests() {
   const testDir = path.join(__dirname, 'fixtures');
@@ -45,7 +45,7 @@ const FXCatalogManager = require('../src/engine/fx/fx_catalog_manager');
 
   console.log('Catalog fixture written to', catalogPath);
 
-  const mgr = new FXCatalogManager();
+  const mgr = new FxCatalogManager();
   // load
   const loaded = mgr.loadCatalog(catalogPath);
   assert(loaded.effects.length === 3, 'catalog should have 3 effects');
@@ -55,8 +55,8 @@ const FXCatalogManager = require('../src/engine/fx/fx_catalog_manager');
   assert(fb && fb.displayName === 'Fast Blur', 'getEffectByMatchName should return Fast Blur');
 
   // search by displayName
-  const found = mgr.searchByDisplayName('hue');
-  assert(found.length === 1 && found[0].matchName === 'ADBE Hue Saturation', 'searchByDisplayName should find Hue Saturation');
+  const found = mgr.findEffectByDisplayName('hue');
+  assert(found.length === 1 && found[0].matchName === 'ADBE Hue Saturation', 'findEffectByDisplayName should find Hue Saturation');
 
   // validate good payload
   const goodReq = { matchName: 'ADBE Fast Blur', params: { 'ADBE FastBlur-0001': 25, 'ADBE FastBlur-0002': 1 } };

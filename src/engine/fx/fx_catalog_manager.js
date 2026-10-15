@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-class FXCatalogManager {
+class FxCatalogManager {
   constructor() {
     this.catalog = null;
     this.indexByMatch = {};
@@ -35,9 +35,9 @@ class FXCatalogManager {
     return this.indexByMatch[matchName] || null;
   }
 
-  searchByDisplayName(query) {
+  findEffectByDisplayName(displayName) {
     if (!this.catalog) throw new Error('Catalog not loaded');
-    const q = String(query || '').toLowerCase();
+    const q = String(displayName || '').toLowerCase();
     return this.catalog.effects.filter(e => (e.displayName || '').toLowerCase().indexOf(q) !== -1);
   }
 
@@ -59,43 +59,53 @@ class FXCatalogManager {
     props.forEach(p => {
       const key = p.matchName || p.name;
       const val = params[key];
-      const t = (p.type || '').toLowerCase();
+      const t = String((p.type || '')).toLowerCase();
       if (typeof val === 'undefined') return; // not required by schema here
       switch (t) {
         case 'slider':
         case 'one-d':
         case 'oned':
-          if (typeof val !== 'number' || Number.isNaN(val)) errors.push(key + ' must be number');
-          if (typeof p.min !== 'undefined' && val < p.min) errors.push(key + ' < min ' + p.min);
-          if (typeof p.max !== 'undefined' && val > p.max) errors.push(key + ' > max ' + p.max);
+        case 'one d':
+          if (typeof val !== 'number' || Number.isNaN(val)) errors.push(`${key} must be number`);
+          if (typeof p.min !== 'undefined' && val < p.min) errors.push(`${key} < min ${p.min}`);
+          if (typeof p.max !== 'undefined' && val > p.max) errors.push(`${key} > max ${p.max}`);
           break;
         case 'color':
-          if (!Array.isArray(val) || val.length < 3) errors.push(key + ' must be an array [r,g,b] or [r,g,b,a]');
+          if (!Array.isArray(val) || val.length < 3) errors.push(`${key} must be an array [r,g,b] or [r,g,b,a]`);
           else {
             for (let i = 0; i < val.length; i++) {
-              if (typeof val[i] !== 'number' || val[i] < 0 || val[i] > 1) errors.push(key + '[' + i + '] must be number between 0 and 1');
+              if (typeof val[i] !== 'number' || val[i] < 0 || val[i] > 1) errors.push(`${key}[${i}] must be number between 0 and 1`);
             }
           }
+          break;
+        case '2d point':
+        case '2dpoint':
+        case '2d':
+        case 'point':
+          if (!Array.isArray(val) || val.length !== 2) errors.push(`${key} must be [x,y]`);
+          else for (let i = 0; i < 2; i++) if (typeof val[i] !== 'number') errors.push(`${key}[${i}] must be number`);
           break;
         case '3d point':
         case '3dpoint':
         case 'threed':
-          if (!Array.isArray(val) || val.length !== 3) errors.push(key + ' must be [x,y,z]');
-          else for (let i = 0; i < 3; i++) if (typeof val[i] !== 'number') errors.push(key + '[' + i + '] must be number');
+          if (!Array.isArray(val) || val.length !== 3) errors.push(`${key} must be [x,y,z]`);
+          else for (let i = 0; i < 3; i++) if (typeof val[i] !== 'number') errors.push(`${key}[${i}] must be number`);
           break;
         case 'checkbox':
         case 'bool':
-          if (typeof val !== 'boolean' && !(val === 0 || val === 1)) errors.push(key + ' must be boolean or 0/1');
+        case 'boolean':
+          if (typeof val !== 'boolean' && !(val === 0 || val === 1)) errors.push(`${key} must be boolean or 0/1`);
           break;
         case 'layer':
-          if (typeof val !== 'string' && typeof val !== 'number') errors.push(key + ' must be layer name string or layer index');
+          if (typeof val !== 'string' && typeof val !== 'number') errors.push(`${key} must be layer name string or layer index`);
           break;
         case 'popup':
         case 'pop-up':
-          if (typeof val !== 'number') errors.push(key + ' (popup) must be numeric index');
+        case 'enum':
+          if (typeof val !== 'number') errors.push(`${key} (popup) must be numeric index`);
           break;
         default:
-          // unknown type — do light validation
+          // unknown type — accept but note
           break;
       }
     });
@@ -116,4 +126,4 @@ class FXCatalogManager {
   }
 }
 
-module.exports = FXCatalogManager;
+module.exports = { FxCatalogManager };
