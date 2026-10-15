@@ -1,10 +1,11 @@
-"use strict";
+﻿"use strict";
 
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { execFileSync } = require('child_process');
 const { validateJobOrThrow } = require('./job_validate');
+const { BridgeCycleRunner } = require('./bridge_cycle_runner');
 
 function canonicalize(value) {
   if (value === null || value === undefined) return value;
@@ -91,6 +92,36 @@ function runConfiguredScript(step, workspaceRoot) {
   return { output: payload, stdout };
 }
 
+async function executeBridgeStepAsync(job, step, options = {}) {
+  const workspaceRoot = options.workspaceRoot || process.cwd();
+  const bridgeOpts = options.bridgeOptions || {};
+  const stepBridge = typeof step.bridge === 'object' && step.bridge !== null ? step.bridge : {};
+
+  const repoRoot = bridgeOpts.repoRoot || workspaceRoot;
+  const pollIntervalMs = stepBridge.pollIntervalMs || bridgeOpts.pollIntervalMs || 50;
+  const maxWaitMs = stepBridge.maxWaitMs || bridgeOpts.maxWaitMs || 10_000;
+  const consumeResponse = stepBridge.consumeResponse !== undefined ? stepBridge.consumeResponse : (bridgeOpts.consumeResponse !== undefined ? bridgeOpts.consumeResponse : true);
+
+  const runner = new BridgeCycleRunner({
+    repoRoot,
+    pollIntervalMs,
+    maxWaitMs,
+    consumeResponse
+  });
+
+  const correlationId = stepBridge.correlationId || bridgeOpts.correlationId || null;
+  const cycleResult = await runner.runOnce(job, {
+    forceReclaimIfStale: stepBridge.forceReclaimIfStale !== undefined ? stepBridge.forceReclaimIfStale : true,
+    correlationId
+  });
+
+  if (!cycleResult.ok) {
+    throw new Error(`Bridge execution failed with code: ${cycleResult.code}`);
+  }
+
+  return cycleResult;
+}
+
 function buildReceiptBase(job) {
   return {
     opId: job && job.opId ? job.opId : null,
@@ -112,7 +143,132 @@ function createFailedReceipt(job, trace, error) {
   return receipt;
 }
 
+async function runJobAsync(job, options = {}) {
+  const workspaceRoot = options.workspaceRoot || process.cwd();
+  const trace = [];
+
+  try {
+    validateJobOrThrow(job);
+    const receipt = buildReceiptBase(job);
+    receipt.status = 'running';
+
+    const manifestReferences = [];
+    if (job.manifestRef) {
+      const manifestPath = resolvePath(job.manifestRef, workspaceRoot);
+      const manifest = readJsonFile(manifestPath);
+      manifestReferences.push({ ref: job.manifestRef, path: manifestPath, payload: manifest });
+      trace.push({
+        step: 'manifest-root',
+        status: 'verified',
+        manifestRef: job.manifestRef,
+        manifest,
+        ts: new Date().toISOString(),
+      });
+    }
+
+    const stepOutputs = [];
+    for (const step of job.steps) {
+      const startedAt = new Date().toISOString();
+      const stepTrace = {
+        step: step.id || step.name || 'unnamed-step',
+        name: step.name || step.id || 'unnamed-step',
+        type: step.type || (step.bridge ? 'bridge' : 'generic'),
+        status: 'running',
+        startedAt,
+      };
+      trace.push(stepTrace);
+
+      let actualState = null;
+
+      if (step.type === 'bridge' || step.bridge) {
+        const bridgeCycleResult = await executeBridgeStepAsync(job, step, options);
+        actualState = bridgeCycleResult.response ? (bridgeCycleResult.response.payload || bridgeCycleResult.response) : bridgeCycleResult;
+        stepTrace.bridgeResult = bridgeCycleResult;
+        stepOutputs.push({ [step.id]: actualState });
+      } else if (step.runScript) {
+        const result = runConfiguredScript(step, workspaceRoot);
+        actualState = result.output;
+        stepTrace.output = result.output;
+        stepTrace.stdout = result.stdout;
+        stepOutputs.push({ [step.id]: actualState });
+      }
+
+      if (step.manifestRef) {
+        const manifestPath = resolvePath(step.manifestRef, workspaceRoot);
+        const manifest = readJsonFile(manifestPath);
+        actualState = manifest;
+        stepTrace.manifest = manifest;
+        stepTrace.manifestRef = step.manifestRef;
+        stepOutputs.push({ [`${step.id}-manifest`]: manifest });
+      }
+
+      if (step.expectedState !== undefined) {
+        if (!deepEqual(actualState, step.expectedState)) {
+          throw new Error(`Step ${step.id} expected ${JSON.stringify(step.expectedState)} but observed ${JSON.stringify(actualState)}`);
+        }
+      }
+
+      if (step.verify === false) {
+        stepTrace.status = 'skipped';
+      } else {
+        stepTrace.status = 'verified';
+      }
+      stepTrace.completedAt = new Date().toISOString();
+    }
+
+    const finalState = stepOutputs.length > 0 ? stepOutputs[stepOutputs.length - 1] : (manifestReferences.length > 0 ? manifestReferences[manifestReferences.length - 1].payload : {});
+    if (job.expectedState !== undefined && !deepEqual(finalState, job.expectedState)) {
+      throw new Error(`Final expectedState mismatch: expected ${JSON.stringify(job.expectedState)}, observed ${JSON.stringify(finalState)}`);
+    }
+
+    const output = {
+      opId: job.opId,
+      jobId: job.jobId,
+      stage: job.stage,
+      inputs: job.inputs,
+      steps: stepOutputs,
+      manifest: manifestReferences.length > 0 ? manifestReferences[manifestReferences.length - 1].payload : null,
+    };
+
+    receipt.outputHash = stableHash(output);
+    receipt.status = 'verified';
+    receipt.trace = trace;
+    receipt.completedAt = new Date().toISOString();
+
+    if (job.evidencePath) {
+      ensureParentDirectory(job.evidencePath);
+      const evidence = { receipt: { ...receipt }, job };
+      fs.writeFileSync(job.evidencePath, JSON.stringify(evidence, null, 2), 'utf8');
+    }
+
+    return receipt;
+  } catch (error) {
+    const failedReceipt = createFailedReceipt(job, trace.concat([{
+      step: 'error',
+      status: 'failed',
+      error: String(error && error.message ? error.message : error),
+      ts: new Date().toISOString(),
+    }]), error);
+
+    if (job && job.evidencePath) {
+      try {
+        ensureParentDirectory(job.evidencePath);
+        fs.writeFileSync(job.evidencePath, JSON.stringify({ receipt: failedReceipt, job, error: failedReceipt.error }, null, 2), 'utf8');
+      } catch (writeError) {
+        // best effort
+      }
+    }
+
+    return failedReceipt;
+  }
+}
+
 function runJob(job, options = {}) {
+  const hasBridgeStep = job && Array.isArray(job.steps) && job.steps.some((s) => s && (s.type === 'bridge' || s.bridge));
+  if (hasBridgeStep) {
+    return runJobAsync(job, options);
+  }
+
   const workspaceRoot = options.workspaceRoot || process.cwd();
   const trace = [];
 
@@ -148,6 +304,7 @@ function runJob(job, options = {}) {
       trace.push(stepTrace);
 
       let actualState = null;
+
       if (step.runScript) {
         const result = runConfiguredScript(step, workspaceRoot);
         actualState = result.output;
@@ -218,7 +375,7 @@ function runJob(job, options = {}) {
         ensureParentDirectory(job.evidencePath);
         fs.writeFileSync(job.evidencePath, JSON.stringify({ receipt: failedReceipt, job, error: failedReceipt.error }, null, 2), 'utf8');
       } catch (writeError) {
-        // best effort: evidence writing must not break the refund state
+        // best effort
       }
     }
 
@@ -230,5 +387,7 @@ module.exports = {
   canonicalize,
   stableHash,
   runJob,
+  runJobAsync,
   executeJob: runJob,
+  executeJobAsync: runJobAsync,
 };
