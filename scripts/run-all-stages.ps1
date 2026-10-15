@@ -19,17 +19,15 @@ function run-step($name, $script, $args) {
   $stdoutLog = Join-Path $logsDir ("$name.stdout.log")
   $stderrLog = Join-Path $logsDir ("$name.stderr.log")
 
+  Write-Host "[pipeline] Running $name..."
+  # Execute the command and redirect stdout/stderr to files
   try {
-    Write-Host "[pipeline] Running $name..."
-    # Execute the command and redirect stdout/stderr to files
-    try {
-      & $script @args > $stdoutLog 2> $stderrLog
-      $entry.status = 'passed'
-      $entry.error = $null
-    } catch {
-      $entry.status = 'failed'
-      $entry.error = $_.Exception.Message
-    }
+    & $script @args > $stdoutLog 2> $stderrLog
+    $entry.status = 'passed'
+    $entry.error = $null
+  } catch {
+    $entry.status = 'failed'
+    $entry.error = $_.Exception.Message
   }
 
   $entry.endTime = (Get-Date).ToString('o')
