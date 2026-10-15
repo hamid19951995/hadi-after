@@ -324,3 +324,7 @@ node_modules/
 bridge/
 
 evidence/ae/job-stage5-*
+
+# AE diagnostics and generated evidence (do not commit runtime artifacts)
+evidence/
+**/evidence/

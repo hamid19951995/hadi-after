@@ -1,428 +1,428 @@
 {
-  "product": "AE BOSS OMEGA",
-  "version": "v155-offline-core-production-spec",
-  "generatedAt": "2026-10-11T20:26:11.998Z",
-  "offlineStrict": true,
-  "files": [
-    {
-      "path": "contracts/action-envelope.schema.json",
-      "sha256": "0d36348c96cb73163be97f32dd19c9da50215135c39ad72b150ced85c52f3c3f",
-      "bytes": 916
-    },
-    {
-      "path": "contracts/action-envelope.v2.schema.json",
-      "sha256": "d0bcfac7e0c38a36b449a83c3964a93fb40605e38237f7b398d6991320de2e67",
-      "bytes": 2691
-    },
-    {
-      "path": "contracts/ae-boss-envelope.v2.schema.json",
-      "sha256": "f16a9fb3cfe46dec65e9f481c6232601da5c4c51eec19ffbca35de4e27080d35",
-      "bytes": 1769
-    },
-    {
-      "path": "contracts/ae-bridge-envelope.v1.schema.json",
-      "sha256": "4dd4656a7bbc12a43348823ed8ec66cbf2d6d1592ccef63f93acda20a87c5dab",
-      "bytes": 1208
-    },
-    {
-      "path": "contracts/ae-runtime.v1.schema.json",
-      "sha256": "fe658397e895284f5b572af07b139764a02eefb00b31cb881903414c103abc0d",
-      "bytes": 1031
-    },
-    {
-      "path": "contracts/character-interaction-plan.v1.schema.json",
-      "sha256": "42b19f4ab51951462f5d724805566f833cdaac9c1bcb87f1360454cf5fc0cdc8",
-      "bytes": 738
-    },
-    {
-      "path": "contracts/character-prop-intelligence-plan.v1.schema.json",
-      "sha256": "cd7bc8a6a39d59d2d4a4a2eef490abb2c5ef6a5eb8f00c4b719838190c08f851",
-      "bytes": 1212
-    },
-    {
-      "path": "contracts/offline-production-plan.v1.schema.json",
-      "sha256": "fc3ce9192b98cd679b6f7e7a4208d375a6a6b0d5f688b48a5bfa8825f5ff0259",
-      "bytes": 699
-    },
-    {
-      "path": "contracts/README.md",
-      "sha256": "f47fefba30772c9c76b5d19fb73b9fda8de15a1806082796545a069aea600dd4",
-      "bytes": 307
-    },
-    {
-      "path": "css/panel.css",
-      "sha256": "c3bb15f369408c260ad5559e3f1edb8856f554ed3d9b99c400c2fd63c0fce26f",
-      "bytes": 31696
-    },
-    {
-      "path": "CSXS/manifest.xml",
-      "sha256": "bd1f6df53b903662950bb1af7d8a13d38763723a4315729dc6a393ed7780b60a",
-      "bytes": 1716
-    },
-    {
-      "path": "docs/AE_TITAN_PROJECT_AUDIT.md",
-      "sha256": "0609accd9d063a0fac2e48156c69e9b0b2fe3388f61acdb6f8eba65bed42e6d2",
-      "bytes": 16881
-    },
-    {
-      "path": "docs/FOUNDATION_V10.md",
-      "sha256": "af4be6fa21a48d1541cde05465868adb203584b1f8386a3e6b7d20d40d6c5a52",
-      "bytes": 757
-    },
-    {
-      "path": "docs/FOUNDATION_V11.md",
-      "sha256": "928e74ebd2df3074c165f6ac52a2dc5cd3334cbb9b6ac4c6e7cc30e0ad463842",
-      "bytes": 684
-    },
-    {
-      "path": "docs/FOUNDATION_V2_1.md",
-      "sha256": "7a4fa457365f5b2ba80d2ae7dcbadacf1d7c3f753ca68aa04b09f0d58daf4310",
-      "bytes": 609
-    },
-    {
-      "path": "docs/FOUNDATION_V2.md",
-      "sha256": "d5cc962fb91144c77087748859469c0bdf62df99ac384873e9cddde38f2557ae",
-      "bytes": 1325
-    },
-    {
-      "path": "docs/FOUNDATION_V21.md",
-      "sha256": "d6bdf0ab289ae9ba9fc8c63431fb7ab1ba84a20b284f30577e484c76cc49b856",
-      "bytes": 270
-    },
-    {
-      "path": "docs/FOUNDATION_V22.md",
-      "sha256": "40ac4c5ddcb13839498995cf99e6148194cf9c3275f935ed1e1f6b82529c17a3",
-      "bytes": 398
-    },
-    {
-      "path": "docs/FOUNDATION_V23_VOICE.md",
-      "sha256": "3ad3ea574704631961baab3fb4c36ab969ace3f6137280ac580e9e3f14302e6c",
-      "bytes": 590
-    },
-    {
-      "path": "docs/FOUNDATION_V26.md",
-      "sha256": "aa291d79c60e1cd6f1160be9a57b61a648878c6982290fd83db221c77e3bc2ba",
-      "bytes": 527
-    },
-    {
-      "path": "docs/FOUNDATION_V3_AE_RUNTIME.md",
-      "sha256": "fd65e437d560cf1517c558d95094b343f06a942248d4f9a18b11c7896812ba4a",
-      "bytes": 1176
-    },
-    {
-      "path": "docs/FOUNDATION_V30.md",
-      "sha256": "dee123861c5a3e05d847612dfbb88631dfd72ef537b01208b141aa9ecce29521",
-      "bytes": 941
-    },
-    {
-      "path": "docs/FOUNDATION_V31.md",
-      "sha256": "d8702d9786a0662d398b949ad96df572bbd6bc3d6c5656964b9c026c83e55848",
-      "bytes": 1301
-    },
-    {
-      "path": "docs/FOUNDATION_V32.md",
-      "sha256": "44de7e4b8fbe2464a298e45ca406d25d596c73b199931f5e12629c85f3b98f94",
-      "bytes": 824
-    },
-    {
-      "path": "docs/FOUNDATION_V4_REAL_AE_BRIDGE.md",
-      "sha256": "871ef7626c7e1de8e74ee701b364fc27707bb986c848dd6fe218372cf4cb1349",
-      "bytes": 1708
-    },
-    {
-      "path": "docs/FOUNDATION_V5_CONTROL_PLANE.md",
-      "sha256": "c088eae31f67e90f9cc22220c20a8118510da1dd974294472711df25dd512db6",
-      "bytes": 1274
-    },
-    {
-      "path": "docs/FOUNDATION_V57.md",
-      "sha256": "b76f661818bcfda7f2b7cf10ab6807eeb35349cbeaa75f72f79498da45ac6c8a",
-      "bytes": 509
-    },
-    {
-      "path": "docs/FOUNDATION_V58.md",
-      "sha256": "7b4e71e3265b4c81636dc068ffb86d811d25ca050d4d6502e9772aaef275acd1",
-      "bytes": 554
-    },
-    {
-      "path": "docs/FOUNDATION_V6_ORCHESTRATION.md",
-      "sha256": "2ca4b5639c4a4d14362287e65a59a45e706de7fdc25c6e8cf55b63bce92c95ae",
-      "bytes": 949
-    },
-    {
-      "path": "docs/FOUNDATION_V64.md",
-      "sha256": "3865d52f74f60bfda9f0df6a1c9c68b3f3812fb399c157fd4d6f21828d963435",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V65.md",
-      "sha256": "8c49094b6eb13ab6f4e564ae47e87f20d3b049d78faaabf3284a5b9d1eadd07a",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V66.md",
-      "sha256": "5e7c23258042b34bdf777fa50565f4cdf9ca5730dd562395a7ab5875a281549d",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V67.md",
-      "sha256": "b8222253683d26f569dddda46013787674d93652751bb21de96ee7d6d3582b82",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V68.md",
-      "sha256": "8e519a1fd7e7104184af9787443ce8e55b07c40656e620ec378b9c0ff24462fb",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V69.md",
-      "sha256": "b443cb8aad81add717938118a6552bc81f9424a73bd165868f7a695cf8584ff9",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V7_UPGRADE_GUIDE.md",
-      "sha256": "6282bb47559dbdbeeb3c272cfb8ddf2c86e79c9e1a98633aaf3bb115da2814c2",
-      "bytes": 1196
-    },
-    {
-      "path": "docs/FOUNDATION_V70.md",
-      "sha256": "89b6d6653aa9465a8753c0a855fd0e22533acf9a6ce8ee82b275bfccf2b2ef78",
-      "bytes": 59
-    },
-    {
-      "path": "docs/FOUNDATION_V8.md",
-      "sha256": "68aa5a9e39799579101abc55a99da378339514251aa323b78319944777b5e1ab",
-      "bytes": 969
-    },
-    {
-      "path": "docs/FOUNDATION_V9.md",
-      "sha256": "d7d7edf13a5a4c3e662bdfd12f53c2a410dab1f90edae4c90423461a590b3458",
-      "bytes": 402
-    },
-    {
-      "path": "docs/OFFLINE_CORE_CONTRACTS.md",
-      "sha256": "461704fe6c1b4608c2eb03dae3e9e041314e4f53bc3f17982635137658dcdd49",
-      "bytes": 4826
-    },
-    {
-      "path": "html/index.html",
-      "sha256": "67e8d718190fca19ae0b2608dbb16c84615c0d4fb03a0b992e7665226118c6ea",
-      "bytes": 17207
-    },
-    {
-      "path": "js/aepipe.js",
-      "sha256": "60be60672178691aebdbf0738e0a1251311ac596c35398fad1852906b6de83e4",
-      "bytes": 8983
-    },
-    {
-      "path": "js/app.js",
-      "sha256": "868c165a5e926e4cb02fb96540ecb91855c60b381a2134df6e57e2cf9740d2ac",
-      "bytes": 219656
-    },
-    {
-      "path": "js/CSInterface.js",
-      "sha256": "3c45400984772b88cdf4604b4763a29219f8071fdedb9a1fa19d997349003783",
-      "bytes": 42759
-    },
-    {
-      "path": "js/minimal-ui.js",
-      "sha256": "517d233ef15a239787b5e0732f23fac10d27327d7aebb54e56f7f2c1a680cdef",
-      "bytes": 8643
-    },
-    {
-      "path": "js/offline-engine.js",
-      "sha256": "1c5645b0b41c4caf926b5f03a661f234c1a1ac6b1550d7b827c0c66b5017f756",
-      "bytes": 5417
-    },
-    {
-      "path": "js/offline-policy.js",
-      "sha256": "d1d703a4b6ceabd1e1c14d7f7c2c61bb5f8777581ae1405757c63cdf8f0f6182",
-      "bytes": 2891
-    },
-    {
-      "path": "js/production-dashboard.js",
-      "sha256": "cd3defa2fb0c085e286072d13a7990bc93c7bd047e2d6e16605b81c4925ca4fc",
-      "bytes": 10225
-    },
-    {
-      "path": "js/production-engine.js",
-      "sha256": "cc77efe46f1d922d342972c633315cf0042b974790ebf83f5cf08db73e173416",
-      "bytes": 1009
-    },
-    {
-      "path": "js/voice.js",
-      "sha256": "e4292434d909d50954f9ebcbe22f26edd43b66a9fda975f9689e2560ae199670",
-      "bytes": 2444
-    },
-    {
-      "path": "jsx/host.jsx",
-      "sha256": "9cf2a0aa9ddc3cfa6fbb5d941f3547b66f8ab56072b6d55a49feaa85165da164",
-      "bytes": 76379
-    },
-    {
-      "path": "offline-runtime/__pycache__/offline_engine_v32.cpython-313.pyc",
-      "sha256": "36c5cb911a3fdbdfb6e411d868755cd685a2bb0fb4a666207f78956b5379894a",
-      "bytes": 4694
-    },
-    {
-      "path": "offline-runtime/__pycache__/offline_engine.cpython-313.pyc",
-      "sha256": "ee345b22f1151f0cec524d3f96a0fc363db70f9827006b80146111e1293b56e4",
-      "bytes": 14502
-    },
-    {
-      "path": "offline-runtime/__pycache__/offline_engine.cpython-314.pyc",
-      "sha256": "6a05ac43dcd63da3cdfe80a91fe4ff46c9365c55569a8296089bd915fddf1842",
-      "bytes": 15180
-    },
-    {
-      "path": "offline-runtime/offline_engine_v32.py",
-      "sha256": "a5f3b2f81615bcb983b6c00ef7319e8e1c643e93cea3ab00aabe857975298a8a",
-      "bytes": 2216
-    },
-    {
-      "path": "offline-runtime/offline_engine.py",
-      "sha256": "f181a4624bbdf81b8e6de732f6e4965926f86b605aa72f9449c9f5a1eca6cbb4",
-      "bytes": 9417
-    },
-    {
-      "path": "offline-runtime/PYTHON_OFFLINE_RUNTIME.md",
-      "sha256": "fa084a0342e2d9a675c59ee1e4edfa5ea0f2cee61eb16434da7e74026bbbc09f",
-      "bytes": 411
-    },
-    {
-      "path": "offline-runtime/README.md",
-      "sha256": "24a5b7f77a03e16e06f3a42a89e424471be2ade5e26053fa08cc015d27f1a4be",
-      "bytes": 640
-    },
-    {
-      "path": "offline-runtime/requirements-offline.txt",
-      "sha256": "97eb4e63131dc1ca7834bad00f28b16a5a2c79a8e6011f79996bbfbbed5ef55c",
-      "bytes": 124
-    },
-    {
-      "path": "offline-runtime/requirements.txt",
-      "sha256": "07589854f2e4ef0e7fe445e5514a6c55cb5aa317d43fefbfb6850372ad7c59a6",
-      "bytes": 146
-    },
-    {
-      "path": "offline-runtime/runtime-policy.json",
-      "sha256": "cafe34155d296e02339d5e389cd020a69ac669b5ba97e49d07efafe72af9edd5",
-      "bytes": 366
-    },
-    {
-      "path": "runtime/ae/ae-runtime-v3.js",
-      "sha256": "24c3e016d85d0225bd0617e52ce8002415a4edb5e504495320025eb1d20b5be4",
-      "bytes": 5619
-    },
-    {
-      "path": "runtime/ae/bridge/ae-production-runtime.jsx",
-      "sha256": "9235226431703650151def92f41fc1e4ec06f33e4e8928023d407014c035c3e4",
-      "bytes": 2318
-    },
-    {
-      "path": "runtime/ae/bridge/bridge-protocol-v1.js",
-      "sha256": "87a3437d0cbf702582063098a55dc6ae4c49a4f2bfd87dd81aec06207af5beba",
-      "bytes": 2497
-    },
-    {
-      "path": "runtime/ae/bridge/governed-ae-adapter.js",
-      "sha256": "b02a80f81852196bdeec8af8cdc9c367976e1036eb092cc8d7071071f0f0fe25",
-      "bytes": 1480
-    },
-    {
-      "path": "runtime/ae/bridge/host-governor.jsx",
-      "sha256": "bd77634c4cda16655bc3a3c94d3d2d77a1fbc01f128dfbe7bdfbc0a7274fb9c1",
-      "bytes": 2327
-    },
-    {
-      "path": "runtime/ae/commands/command-registry.json",
-      "sha256": "b637ef4f295e61816a32e41896c79f39d9e50cf2b907a5499c835e1d52e5a739",
-      "bytes": 1187
-    },
-    {
-      "path": "runtime/ae/readback/ae-readback.jsx",
-      "sha256": "ff7cacfefd5f35c70a19df696ce9c07a6c434c5cbf8ccc4c2c58b26bbd70c0e3",
-      "bytes": 1700
-    },
-    {
-      "path": "runtime/ae/recovery/recovery-manager.js",
-      "sha256": "9236f2b76f77e0c91e33e0abe1cdbf7c5476d508bf4049f0832e13efa5915b42",
-      "bytes": 428
-    },
-    {
-      "path": "runtime/ae/recovery/transaction-v1.js",
-      "sha256": "2172b05defdc6d1fdf4287484037e6aa081083894fc1a41b8fe73c642b74ff0d",
-      "bytes": 1821
-    },
-    {
-      "path": "runtime/ae/twin/digital-twin-v2.js",
-      "sha256": "cc4dfac45e8cf1b2e403e63c81bcbd65d6eb5656b7d1d830cb47571d39365ceb",
-      "bytes": 1157
-    },
-    {
-      "path": "runtime/agent-session.js",
-      "sha256": "0ad5a8078c12be01caa0055a35247c0b9a78f4248147db3292278c4216919d3e",
-      "bytes": 14071
-    },
-    {
-      "path": "runtime/control/admission-policy-v7.js",
-      "sha256": "60d41ea15dd1b95cb6ec5f8b76ded965412b84b40b0fe5de6b6297fdbd72e63e",
-      "bytes": 771
-    },
-    {
-      "path": "runtime/control/command-authorizer-v2.js",
-      "sha256": "738754b9dc2a02e7785b954e020f2e445ca5f1df65068f82facefe0eea60560f",
-      "bytes": 650
-    },
-    {
-      "path": "runtime/control/evidence-ledger-v2.js",
-      "sha256": "29b62d4236cb138a845879800c2d73b77d65660bc6845af3b9b745926f012058",
-      "bytes": 1089
-    },
-    {
-      "path": "runtime/control/governed-controller-v5.js",
-      "sha256": "da86ae966ac0cd050e079f6206c5bf363601e078a8d1064e0e563115c8bfff08",
-      "bytes": 2752
-    },
-    {
-      "path": "runtime/control/lease-manager-v2.js",
-      "sha256": "64f0a8d0eaae69b5b41ee8d2ba5b472dfee73c28b7807100d43bd5258899f253",
-      "bytes": 1665
-    },
-    {
-      "path": "runtime/control/transaction-v2.js",
-      "sha256": "8ffe9704731e680e4bbbf617bcb0cfb9d0dd2941af0362ae1f1f96fb6a628626",
-      "bytes": 1589
-    },
-    {
-      "path": "runtime/execution-core.js",
-      "sha256": "a2c54672f46a26d088724524fb731784785f41e3f30a58b9a0b46074692fab18",
-      "bytes": 4131
-    },
-    {
-      "path": "runtime/network-audit.js",
-      "sha256": "0200cf021f7143a376df5250ff796c6b196e34a3eb62967dd62924905f72c8ef",
-      "bytes": 1726
-    },
-    {
-      "path": "runtime/offline-cache.js",
-      "sha256": "e44cee0e854fd620a30c5d75a4e80a9aec6d3b7ba135d03945eef078b15956a0",
-      "bytes": 1844
-    },
-    {
-      "path": "runtime/offline-core.js",
-      "sha256": "ea37be3f53a3d0dd25c7032925090c14a37e7a5230a2560f92d7a71a48d6b74c",
-      "bytes": 12321
-    },
-    {
-      "path": "runtime/production-spec.js",
-      "sha256": "6c39a98fc9f91120b46d5457d085559f4196b7ef28b1a0449d61955455ca0f07",
-      "bytes": 5385
-    },
-    {
-      "path": "runtime/workflow-run.js",
-      "bytes": 3102,
-      "sha256": "7679cc69008f55546b6775f061db4726176b4b17227688e37c7bd124b7b9693d"
-    }
-  ]
+    "product":  "AE BOSS OMEGA",
+    "version":  "v155-offline-core-production-spec",
+    "generatedAt":  "2026-10-11T20:26:11.998Z",
+    "offlineStrict":  true,
+    "files":  [
+                  {
+                      "path":  "contracts/action-envelope.schema.json",
+                      "sha256":  "0d36348c96cb73163be97f32dd19c9da50215135c39ad72b150ced85c52f3c3f",
+                      "bytes":  916
+                  },
+                  {
+                      "path":  "contracts/action-envelope.v2.schema.json",
+                      "sha256":  "d0bcfac7e0c38a36b449a83c3964a93fb40605e38237f7b398d6991320de2e67",
+                      "bytes":  2691
+                  },
+                  {
+                      "path":  "contracts/ae-boss-envelope.v2.schema.json",
+                      "sha256":  "f16a9fb3cfe46dec65e9f481c6232601da5c4c51eec19ffbca35de4e27080d35",
+                      "bytes":  1769
+                  },
+                  {
+                      "path":  "contracts/ae-bridge-envelope.v1.schema.json",
+                      "sha256":  "4dd4656a7bbc12a43348823ed8ec66cbf2d6d1592ccef63f93acda20a87c5dab",
+                      "bytes":  1208
+                  },
+                  {
+                      "path":  "contracts/ae-runtime.v1.schema.json",
+                      "sha256":  "fe658397e895284f5b572af07b139764a02eefb00b31cb881903414c103abc0d",
+                      "bytes":  1031
+                  },
+                  {
+                      "path":  "contracts/character-interaction-plan.v1.schema.json",
+                      "sha256":  "42b19f4ab51951462f5d724805566f833cdaac9c1bcb87f1360454cf5fc0cdc8",
+                      "bytes":  738
+                  },
+                  {
+                      "path":  "contracts/character-prop-intelligence-plan.v1.schema.json",
+                      "sha256":  "cd7bc8a6a39d59d2d4a4a2eef490abb2c5ef6a5eb8f00c4b719838190c08f851",
+                      "bytes":  1212
+                  },
+                  {
+                      "path":  "contracts/offline-production-plan.v1.schema.json",
+                      "sha256":  "fc3ce9192b98cd679b6f7e7a4208d375a6a6b0d5f688b48a5bfa8825f5ff0259",
+                      "bytes":  699
+                  },
+                  {
+                      "path":  "contracts/README.md",
+                      "sha256":  "f47fefba30772c9c76b5d19fb73b9fda8de15a1806082796545a069aea600dd4",
+                      "bytes":  307
+                  },
+                  {
+                      "path":  "css/panel.css",
+                      "sha256":  "c3bb15f369408c260ad5559e3f1edb8856f554ed3d9b99c400c2fd63c0fce26f",
+                      "bytes":  31696
+                  },
+                  {
+                      "path":  "CSXS/manifest.xml",
+                      "sha256":  "bd1f6df53b903662950bb1af7d8a13d38763723a4315729dc6a393ed7780b60a",
+                      "bytes":  1716
+                  },
+                  {
+                      "path":  "docs/AE_TITAN_PROJECT_AUDIT.md",
+                      "sha256":  "0609accd9d063a0fac2e48156c69e9b0b2fe3388f61acdb6f8eba65bed42e6d2",
+                      "bytes":  16881
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V10.md",
+                      "sha256":  "af4be6fa21a48d1541cde05465868adb203584b1f8386a3e6b7d20d40d6c5a52",
+                      "bytes":  757
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V11.md",
+                      "sha256":  "928e74ebd2df3074c165f6ac52a2dc5cd3334cbb9b6ac4c6e7cc30e0ad463842",
+                      "bytes":  684
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V2_1.md",
+                      "sha256":  "7a4fa457365f5b2ba80d2ae7dcbadacf1d7c3f753ca68aa04b09f0d58daf4310",
+                      "bytes":  609
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V2.md",
+                      "sha256":  "d5cc962fb91144c77087748859469c0bdf62df99ac384873e9cddde38f2557ae",
+                      "bytes":  1325
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V21.md",
+                      "sha256":  "d6bdf0ab289ae9ba9fc8c63431fb7ab1ba84a20b284f30577e484c76cc49b856",
+                      "bytes":  270
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V22.md",
+                      "sha256":  "40ac4c5ddcb13839498995cf99e6148194cf9c3275f935ed1e1f6b82529c17a3",
+                      "bytes":  398
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V23_VOICE.md",
+                      "sha256":  "3ad3ea574704631961baab3fb4c36ab969ace3f6137280ac580e9e3f14302e6c",
+                      "bytes":  590
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V26.md",
+                      "sha256":  "aa291d79c60e1cd6f1160be9a57b61a648878c6982290fd83db221c77e3bc2ba",
+                      "bytes":  527
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V3_AE_RUNTIME.md",
+                      "sha256":  "fd65e437d560cf1517c558d95094b343f06a942248d4f9a18b11c7896812ba4a",
+                      "bytes":  1176
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V30.md",
+                      "sha256":  "dee123861c5a3e05d847612dfbb88631dfd72ef537b01208b141aa9ecce29521",
+                      "bytes":  941
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V31.md",
+                      "sha256":  "d8702d9786a0662d398b949ad96df572bbd6bc3d6c5656964b9c026c83e55848",
+                      "bytes":  1301
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V32.md",
+                      "sha256":  "44de7e4b8fbe2464a298e45ca406d25d596c73b199931f5e12629c85f3b98f94",
+                      "bytes":  824
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V4_REAL_AE_BRIDGE.md",
+                      "sha256":  "871ef7626c7e1de8e74ee701b364fc27707bb986c848dd6fe218372cf4cb1349",
+                      "bytes":  1708
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V5_CONTROL_PLANE.md",
+                      "sha256":  "c088eae31f67e90f9cc22220c20a8118510da1dd974294472711df25dd512db6",
+                      "bytes":  1274
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V57.md",
+                      "sha256":  "b76f661818bcfda7f2b7cf10ab6807eeb35349cbeaa75f72f79498da45ac6c8a",
+                      "bytes":  509
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V58.md",
+                      "sha256":  "7b4e71e3265b4c81636dc068ffb86d811d25ca050d4d6502e9772aaef275acd1",
+                      "bytes":  554
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V6_ORCHESTRATION.md",
+                      "sha256":  "2ca4b5639c4a4d14362287e65a59a45e706de7fdc25c6e8cf55b63bce92c95ae",
+                      "bytes":  949
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V64.md",
+                      "sha256":  "3865d52f74f60bfda9f0df6a1c9c68b3f3812fb399c157fd4d6f21828d963435",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V65.md",
+                      "sha256":  "8c49094b6eb13ab6f4e564ae47e87f20d3b049d78faaabf3284a5b9d1eadd07a",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V66.md",
+                      "sha256":  "5e7c23258042b34bdf777fa50565f4cdf9ca5730dd562395a7ab5875a281549d",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V67.md",
+                      "sha256":  "b8222253683d26f569dddda46013787674d93652751bb21de96ee7d6d3582b82",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V68.md",
+                      "sha256":  "8e519a1fd7e7104184af9787443ce8e55b07c40656e620ec378b9c0ff24462fb",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V69.md",
+                      "sha256":  "b443cb8aad81add717938118a6552bc81f9424a73bd165868f7a695cf8584ff9",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V7_UPGRADE_GUIDE.md",
+                      "sha256":  "6282bb47559dbdbeeb3c272cfb8ddf2c86e79c9e1a98633aaf3bb115da2814c2",
+                      "bytes":  1196
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V70.md",
+                      "sha256":  "89b6d6653aa9465a8753c0a855fd0e22533acf9a6ce8ee82b275bfccf2b2ef78",
+                      "bytes":  59
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V8.md",
+                      "sha256":  "68aa5a9e39799579101abc55a99da378339514251aa323b78319944777b5e1ab",
+                      "bytes":  969
+                  },
+                  {
+                      "path":  "docs/FOUNDATION_V9.md",
+                      "sha256":  "d7d7edf13a5a4c3e662bdfd12f53c2a410dab1f90edae4c90423461a590b3458",
+                      "bytes":  402
+                  },
+                  {
+                      "path":  "docs/OFFLINE_CORE_CONTRACTS.md",
+                      "sha256":  "461704fe6c1b4608c2eb03dae3e9e041314e4f53bc3f17982635137658dcdd49",
+                      "bytes":  4826
+                  },
+                  {
+                      "path":  "html/index.html",
+                      "sha256":  "6f42c7b241b7a7601441e84b8dc3eb727838ebfdbea87b651ca3c0804f85edd5",
+                      "bytes":  17360
+                  },
+                  {
+                      "path":  "js/aepipe.js",
+                      "sha256":  "60be60672178691aebdbf0738e0a1251311ac596c35398fad1852906b6de83e4",
+                      "bytes":  8983
+                  },
+                  {
+                      "path":  "js/app.js",
+                      "sha256":  "a9337feb86231a7db4982006933f50d29cda8d6f80fcaa385e7a0abbe2e22df7",
+                      "bytes":  222097
+                  },
+                  {
+                      "path":  "js/CSInterface.js",
+                      "sha256":  "3c45400984772b88cdf4604b4763a29219f8071fdedb9a1fa19d997349003783",
+                      "bytes":  42759
+                  },
+                  {
+                      "path":  "js/minimal-ui.js",
+                      "sha256":  "f402d0703ca585eeb90aa931e988a2a1e7a6a3cae509f7ebbb926dbc91aadeb4",
+                      "bytes":  8797
+                  },
+                  {
+                      "path":  "js/offline-engine.js",
+                      "sha256":  "1c5645b0b41c4caf926b5f03a661f234c1a1ac6b1550d7b827c0c66b5017f756",
+                      "bytes":  5417
+                  },
+                  {
+                      "path":  "js/offline-policy.js",
+                      "sha256":  "d1d703a4b6ceabd1e1c14d7f7c2c61bb5f8777581ae1405757c63cdf8f0f6182",
+                      "bytes":  2891
+                  },
+                  {
+                      "path":  "js/production-dashboard.js",
+                      "sha256":  "21ad018239d141b298f6a2a0456842066b1b3b4b45e2a8a53f10260a13c04c18",
+                      "bytes":  10421
+                  },
+                  {
+                      "path":  "js/production-engine.js",
+                      "sha256":  "cc77efe46f1d922d342972c633315cf0042b974790ebf83f5cf08db73e173416",
+                      "bytes":  1009
+                  },
+                  {
+                      "path":  "js/voice.js",
+                      "sha256":  "e4292434d909d50954f9ebcbe22f26edd43b66a9fda975f9689e2560ae199670",
+                      "bytes":  2444
+                  },
+                  {
+                      "path":  "jsx/host.jsx",
+                      "sha256":  "b9c7fe220fe2e965d1a34f21a1fa3a0af3a6f3315ae1ce6201e57224949894a8",
+                      "bytes":  77605
+                  },
+                  {
+                      "path":  "offline-runtime/__pycache__/offline_engine_v32.cpython-313.pyc",
+                      "sha256":  "36c5cb911a3fdbdfb6e411d868755cd685a2bb0fb4a666207f78956b5379894a",
+                      "bytes":  4694
+                  },
+                  {
+                      "path":  "offline-runtime/__pycache__/offline_engine.cpython-313.pyc",
+                      "sha256":  "ee345b22f1151f0cec524d3f96a0fc363db70f9827006b80146111e1293b56e4",
+                      "bytes":  14502
+                  },
+                  {
+                      "path":  "offline-runtime/__pycache__/offline_engine.cpython-314.pyc",
+                      "sha256":  "6a05ac43dcd63da3cdfe80a91fe4ff46c9365c55569a8296089bd915fddf1842",
+                      "bytes":  15180
+                  },
+                  {
+                      "path":  "offline-runtime/offline_engine_v32.py",
+                      "sha256":  "a5f3b2f81615bcb983b6c00ef7319e8e1c643e93cea3ab00aabe857975298a8a",
+                      "bytes":  2216
+                  },
+                  {
+                      "path":  "offline-runtime/offline_engine.py",
+                      "sha256":  "f181a4624bbdf81b8e6de732f6e4965926f86b605aa72f9449c9f5a1eca6cbb4",
+                      "bytes":  9417
+                  },
+                  {
+                      "path":  "offline-runtime/PYTHON_OFFLINE_RUNTIME.md",
+                      "sha256":  "fa084a0342e2d9a675c59ee1e4edfa5ea0f2cee61eb16434da7e74026bbbc09f",
+                      "bytes":  411
+                  },
+                  {
+                      "path":  "offline-runtime/README.md",
+                      "sha256":  "24a5b7f77a03e16e06f3a42a89e424471be2ade5e26053fa08cc015d27f1a4be",
+                      "bytes":  640
+                  },
+                  {
+                      "path":  "offline-runtime/requirements-offline.txt",
+                      "sha256":  "97eb4e63131dc1ca7834bad00f28b16a5a2c79a8e6011f79996bbfbbed5ef55c",
+                      "bytes":  124
+                  },
+                  {
+                      "path":  "offline-runtime/requirements.txt",
+                      "sha256":  "07589854f2e4ef0e7fe445e5514a6c55cb5aa317d43fefbfb6850372ad7c59a6",
+                      "bytes":  146
+                  },
+                  {
+                      "path":  "offline-runtime/runtime-policy.json",
+                      "sha256":  "cafe34155d296e02339d5e389cd020a69ac669b5ba97e49d07efafe72af9edd5",
+                      "bytes":  366
+                  },
+                  {
+                      "path":  "runtime/ae/ae-runtime-v3.js",
+                      "sha256":  "24c3e016d85d0225bd0617e52ce8002415a4edb5e504495320025eb1d20b5be4",
+                      "bytes":  5619
+                  },
+                  {
+                      "path":  "runtime/ae/bridge/ae-production-runtime.jsx",
+                      "sha256":  "9235226431703650151def92f41fc1e4ec06f33e4e8928023d407014c035c3e4",
+                      "bytes":  2318
+                  },
+                  {
+                      "path":  "runtime/ae/bridge/bridge-protocol-v1.js",
+                      "sha256":  "87a3437d0cbf702582063098a55dc6ae4c49a4f2bfd87dd81aec06207af5beba",
+                      "bytes":  2497
+                  },
+                  {
+                      "path":  "runtime/ae/bridge/governed-ae-adapter.js",
+                      "sha256":  "b02a80f81852196bdeec8af8cdc9c367976e1036eb092cc8d7071071f0f0fe25",
+                      "bytes":  1480
+                  },
+                  {
+                      "path":  "runtime/ae/bridge/host-governor.jsx",
+                      "sha256":  "bd77634c4cda16655bc3a3c94d3d2d77a1fbc01f128dfbe7bdfbc0a7274fb9c1",
+                      "bytes":  2327
+                  },
+                  {
+                      "path":  "runtime/ae/commands/command-registry.json",
+                      "sha256":  "b637ef4f295e61816a32e41896c79f39d9e50cf2b907a5499c835e1d52e5a739",
+                      "bytes":  1187
+                  },
+                  {
+                      "path":  "runtime/ae/readback/ae-readback.jsx",
+                      "sha256":  "ff7cacfefd5f35c70a19df696ce9c07a6c434c5cbf8ccc4c2c58b26bbd70c0e3",
+                      "bytes":  1700
+                  },
+                  {
+                      "path":  "runtime/ae/recovery/recovery-manager.js",
+                      "sha256":  "9236f2b76f77e0c91e33e0abe1cdbf7c5476d508bf4049f0832e13efa5915b42",
+                      "bytes":  428
+                  },
+                  {
+                      "path":  "runtime/ae/recovery/transaction-v1.js",
+                      "sha256":  "2172b05defdc6d1fdf4287484037e6aa081083894fc1a41b8fe73c642b74ff0d",
+                      "bytes":  1821
+                  },
+                  {
+                      "path":  "runtime/ae/twin/digital-twin-v2.js",
+                      "sha256":  "cc4dfac45e8cf1b2e403e63c81bcbd65d6eb5656b7d1d830cb47571d39365ceb",
+                      "bytes":  1157
+                  },
+                  {
+                      "path":  "runtime/agent-session.js",
+                      "sha256":  "0ad5a8078c12be01caa0055a35247c0b9a78f4248147db3292278c4216919d3e",
+                      "bytes":  14071
+                  },
+                  {
+                      "path":  "runtime/control/admission-policy-v7.js",
+                      "sha256":  "60d41ea15dd1b95cb6ec5f8b76ded965412b84b40b0fe5de6b6297fdbd72e63e",
+                      "bytes":  771
+                  },
+                  {
+                      "path":  "runtime/control/command-authorizer-v2.js",
+                      "sha256":  "738754b9dc2a02e7785b954e020f2e445ca5f1df65068f82facefe0eea60560f",
+                      "bytes":  650
+                  },
+                  {
+                      "path":  "runtime/control/evidence-ledger-v2.js",
+                      "sha256":  "29b62d4236cb138a845879800c2d73b77d65660bc6845af3b9b745926f012058",
+                      "bytes":  1089
+                  },
+                  {
+                      "path":  "runtime/control/governed-controller-v5.js",
+                      "sha256":  "da86ae966ac0cd050e079f6206c5bf363601e078a8d1064e0e563115c8bfff08",
+                      "bytes":  2752
+                  },
+                  {
+                      "path":  "runtime/control/lease-manager-v2.js",
+                      "sha256":  "64f0a8d0eaae69b5b41ee8d2ba5b472dfee73c28b7807100d43bd5258899f253",
+                      "bytes":  1665
+                  },
+                  {
+                      "path":  "runtime/control/transaction-v2.js",
+                      "sha256":  "8ffe9704731e680e4bbbf617bcb0cfb9d0dd2941af0362ae1f1f96fb6a628626",
+                      "bytes":  1589
+                  },
+                  {
+                      "path":  "runtime/execution-core.js",
+                      "sha256":  "a2c54672f46a26d088724524fb731784785f41e3f30a58b9a0b46074692fab18",
+                      "bytes":  4131
+                  },
+                  {
+                      "path":  "runtime/network-audit.js",
+                      "sha256":  "0200cf021f7143a376df5250ff796c6b196e34a3eb62967dd62924905f72c8ef",
+                      "bytes":  1726
+                  },
+                  {
+                      "path":  "runtime/offline-cache.js",
+                      "sha256":  "e44cee0e854fd620a30c5d75a4e80a9aec6d3b7ba135d03945eef078b15956a0",
+                      "bytes":  1844
+                  },
+                  {
+                      "path":  "runtime/offline-core.js",
+                      "sha256":  "ea37be3f53a3d0dd25c7032925090c14a37e7a5230a2560f92d7a71a48d6b74c",
+                      "bytes":  12321
+                  },
+                  {
+                      "path":  "runtime/production-spec.js",
+                      "sha256":  "6c39a98fc9f91120b46d5457d085559f4196b7ef28b1a0449d61955455ca0f07",
+                      "bytes":  5385
+                  },
+                  {
+                      "path":  "runtime/workflow-run.js",
+                      "bytes":  3102,
+                      "sha256":  "7679cc69008f55546b6775f061db4726176b4b17227688e37c7bd124b7b9693d"
+                  }
+              ]
 }

@@ -4,15 +4,29 @@
   "description": "Local bridge between the AE Studio CEP panel and GitHub Copilot in VS Code.",
   "version": "0.1.0",
   "publisher": "ae-studio",
-  "engines": { "vscode": "^1.90.0" },
-  "extensionDependencies": ["github.copilot-chat"],
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "extensionDependencies": [
+    "github.copilot-chat"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
-      { "command": "aeStudio.startCopilotBridge", "title": "AE Studio: Start Copilot Bridge" },
-      { "command": "aeStudio.stopCopilotBridge", "title": "AE Studio: Stop Copilot Bridge" }
+      {
+        "command": "aeStudio.startCopilotBridge",
+        "title": "AE Studio: Start Copilot Bridge"
+      },
+      {
+        "command": "aeStudio.stopCopilotBridge",
+        "title": "AE Studio: Stop Copilot Bridge"
+      }
     ],
     "configuration": {
       "properties": {
@@ -30,5 +44,8 @@
         }
       }
     }
+  },
+  "devDependencies": {
+    "eslint": "^10.12.0"
   }
 }

@@ -1,0 +1,58 @@
+{
+  "jobId": "stage13-fx-graph",
+  "layers": [
+    {
+      "id": "bg",
+      "type": "solid",
+      "name": "Background",
+      "fxChains": [
+        {
+          "id": "bgBlur",
+          "matchName": "ADBE Fast Blur",
+          "params": {
+            "ADBE FastBlur-0001": 18,
+            "ADBE FastBlur-0002": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "fg",
+      "type": "solid",
+      "name": "Foreground",
+      "fxChains": [
+        {
+          "id": "fgTint",
+          "matchName": "ADBE Tint",
+          "params": {
+            "ADBE Tint-0001": [0, 255, 128, 255],
+            "ADBE Tint-0002": 0.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "adj",
+      "type": "adjustment",
+      "name": "Adjustment",
+      "fxChains": [
+        {
+          "id": "adjGlow",
+          "matchName": "ADBE Glow",
+          "params": {
+            "ADBE Glow-0001": 16,
+            "ADBE Glow-0002": 1
+          }
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "id": "bind-1",
+      "target": { "layerId": "fg", "effectId": "fgTint", "property": "ADBE Tint-0001" },
+      "source": { "layerId": "bg", "effectId": "bgBlur", "property": "ADBE FastBlur-0001" },
+      "expression": "thisComp.layer(\"Background\").effect(\"Fast Blur\")(\"Blurriness\")"
+    }
+  ]
+}
