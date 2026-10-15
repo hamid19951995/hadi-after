@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-15T17:24:46.327Z",
+  "effects": [
+    {
+      "matchName": "ADBE Fast Blur",
+      "displayName": "Fast Blur",
+      "properties": [
+        {
+          "name": "Blurriness",
+          "matchName": "ADBE FastBlur-0001",
+          "propertyValueType": "Slider",
+          "hasMin": true,
+          "minValue": 0,
+          "hasMax": true,
+          "maxValue": 100
+        },
+        {
+          "name": "Repeat Edge Pixels",
+          "matchName": "ADBE FastBlur-0002",
+          "propertyValueType": "Checkbox",
+          "defaultValue": false
+        }
+      ]
+    },
+    {
+      "matchName": "ADBE Hue Saturation",
+      "displayName": "Hue/Saturation",
+      "properties": [
+        {
+          "name": "Master Hue",
+          "matchName": "ADBE HueHue",
+          "propertyValueType": "Angle",
+          "hasMin": true,
+          "minValue": -180,
+          "hasMax": true,
+          "maxValue": 180
+        },
+        {
+          "name": "Colorize",
+          "matchName": "ADBE HueColorize",
+          "propertyValueType": "Checkbox",
+          "defaultValue": false
+        }
+      ]
+    }
+  ]
+}

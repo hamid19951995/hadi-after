@@ -130,6 +130,7 @@
     "test:completion:v155": "npm run test:completion:v150 && npm run test:v151 && npm run test:v152 && npm run test:v153 && npm run test:v154 && npm run test:v155",
     "test:fingerprint": "node test/fingerprint.test.js",
     "benchmark:realistic": "node scripts/benchmark-realistic.js",
-    "fingerprints:generate": "node scripts/generate-golden-fingerprints.js --force"
+    "fingerprints:generate": "node scripts/generate-golden-fingerprints.js --force",
+    "test:fx-param": "node test/fx-param-validator.test.js"
   }
 }
