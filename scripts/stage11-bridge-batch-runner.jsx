@@ -42,6 +42,18 @@
       }
     }
 
+    // Create ready signal for Node runner
+    try {
+      var readyDir = new Folder('bridge/ready');
+      if (!readyDir.exists) readyDir.create();
+      var readyFile = new File('bridge/ready/ae.ready');
+      if (readyFile.open('w')) {
+        readyFile.encoding = 'UTF-8';
+        readyFile.write(JSON.stringify({ ts: (new Date()).toISOString() }, null, 2));
+        readyFile.close();
+      }
+    } catch (e) {}
+
     // Write outbox atomically: write temp then rename
     var outbox = new File('bridge/outbox/current.response.json.' + (new Date()).getTime() + '.tmp');
     outbox.encoding = 'UTF-8';

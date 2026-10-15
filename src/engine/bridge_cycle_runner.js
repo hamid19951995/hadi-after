@@ -29,9 +29,11 @@ class BridgeCycleRunner {
     this.lockManager = new BridgeLockManager({ repoRoot: this.repoRoot });
     this.responseReader = new BridgeResponseReader({ repoRoot: this.repoRoot });
     this.initialDelayMs = initialDelayMs;
+    this.waitReadyFileMs = waitReadyFileMs;
+    this.readyFileRelativePath = 'bridge/ready/ae.ready';
   }
 
-  async runOnce(job, { forceReclaimIfStale = true, correlationId = null, initialDelayMs = null } = {}) {
+  async runOnce(job, { forceReclaimIfStale = true, correlationId = null, initialDelayMs = null, waitReadyFileMs = null } = {}) {
     if (!job || typeof job !== 'object') throw new Error('job is required');
     if (!job.jobId || typeof job.jobId !== 'string') throw new Error('job.jobId is required');
 
@@ -44,7 +46,20 @@ class BridgeCycleRunner {
       // MUST match Stage4 builder signature
       const requestInfo = buildBridgeRequest({ job, repoRoot: this.repoRoot, correlationId });
 
-      // Allow an initial startup grace period for After Effects to launch and run the JSX
+      // If configured, wait for AE runtime to write a readiness touch-file before proceeding (preferred)
+      const waitReadyMs = waitReadyFileMs !== null ? waitReadyFileMs : this.waitReadyFileMs || 0;
+      if (waitReadyMs > 0) {
+        const readyFile = path.join(this.repoRoot, this.readyFileRelativePath);
+        const waitStarted = Date.now();
+        while (Date.now() - waitStarted < waitReadyMs) {
+          if (require('fs').existsSync(readyFile)) {
+            break;
+          }
+          await sleep(Math.min(500, waitReadyMs));
+        }
+      }
+
+      // Allow an initial startup grace period for After Effects to launch and run the JSX (fallback)
       const startupDelay = initialDelayMs !== null ? initialDelayMs : this.initialDelayMs || 3000;
       if (startupDelay > 0) {
         await sleep(startupDelay);

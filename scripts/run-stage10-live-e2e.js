@@ -49,21 +49,33 @@ async function main() {
         process.exit(1);
     }
 
-    // Spawn AfterFX explicitly. Keep child attached so we observe its lifecycle; do not unref.
+    // Spawn AfterFX explicitly. Keep child attached so we observe its lifecycle; capture stdout/stderr to a log file for diagnostics
+    const spawnLogDir = path.join(repoRoot, 'evidence', 'ae');
+    try { fs.mkdirSync(spawnLogDir, { recursive: true }); } catch (e) {}
+    const spawnLogPath = path.join(spawnLogDir, 'ae-spawn.log');
+    const spawnLog = fs.createWriteStream(spawnLogPath, { flags: 'a', encoding: 'utf8' });
+
     const aeProcess = spawn(aePath, ['-noui', '-r', runnerJsx], {
         detached: false,
-        stdio: 'ignore'
+        stdio: ['ignore', 'pipe', 'pipe']
     });
 
-    // Allow a larger initial delay for AE startup before polling the outbox
+    aeProcess.stdout && aeProcess.stdout.on('data', (chunk) => { try { spawnLog.write('[AE STDOUT] ' + String(chunk)); } catch (e) {} });
+    aeProcess.stderr && aeProcess.stderr.on('data', (chunk) => { try { spawnLog.write('[AE STDERR] ' + String(chunk)); } catch (e) {} });
+    aeProcess.on('exit', (code, signal) => { try { spawnLog.write('[AE EXIT] code=' + code + ' signal=' + signal + ' ts=' + new Date().toISOString() + '\n'); } catch (e) {} });
+
+    // Allow a larger initial delay for AE startup before polling the outbox, prefer ready-file waiting
     const receipt = await runJob(job, {
         workspaceRoot: repoRoot,
         bridgeOptions: {
             repoRoot,
             maxWaitMs: 180000,
-            initialDelayMs: 5000
+            initialDelayMs: 2000,
+            waitReadyFileMs: 10000
         }
     });
+
+    try { spawnLog.end(); } catch (e) {}
 
     console.log('[Stage 10] Job completed with status:', receipt.status);
     console.log(JSON.stringify(receipt, null, 2));
