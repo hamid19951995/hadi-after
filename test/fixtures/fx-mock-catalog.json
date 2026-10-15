@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-10-15T16:03:53.566Z",
+  "effects": [
+    {
+      "matchName": "ADBE CurvesCustom",
+      "displayName": "Curves Custom",
+      "category": "Color Correction",
+      "properties": [
+        {
+          "name": "Master",
+          "matchName": "ADBE CurvesMaster",
+          "index": 1,
+          "type": "Popup"
+        },
+        {
+          "name": "Amount",
+          "matchName": "ADBE CurvesAmount",
+          "index": 2,
+          "type": "Slider",
+          "min": -100,
+          "max": 100
+        }
+      ]
+    },
+    {
+      "matchName": "ADBE Fast Blur",
+      "displayName": "Fast Blur",
+      "category": "Blur & Sharpen",
+      "properties": [
+        {
+          "name": "Blurriness",
+          "matchName": "ADBE FastBlur-0001",
+          "index": 1,
+          "type": "Slider",
+          "min": 0,
+          "max": 100
+        },
+        {
+          "name": "Repeat Edge Pixels",
+          "matchName": "ADBE FastBlur-0002",
+          "index": 2,
+          "type": "Checkbox"
+        }
+      ]
+    },
+    {
+      "matchName": "ADBE Hue Saturation",
+      "displayName": "Hue/Saturation",
+      "category": "Color Correction",
+      "properties": [
+        {
+          "name": "Master Hue",
+          "matchName": "ADBE HueHue",
+          "index": 1,
+          "type": "Slider",
+          "min": -180,
+          "max": 180
+        },
+        {
+          "name": "Colorize",
+          "matchName": "ADBE HueColorize",
+          "index": 2,
+          "type": "Checkbox"
+        }
+      ]
+    }
+  ]
+}
