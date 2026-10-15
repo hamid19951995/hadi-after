@@ -106,7 +106,8 @@ async function executeBridgeStepAsync(job, step, options = {}) {
     repoRoot,
     pollIntervalMs,
     maxWaitMs,
-    consumeResponse
+    consumeResponse,
+    initialDelayMs: stepBridge.initialDelayMs || bridgeOpts.initialDelayMs || 3000
   });
 
   const correlationId = stepBridge.correlationId || bridgeOpts.correlationId || null;

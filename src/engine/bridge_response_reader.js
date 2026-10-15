@@ -77,6 +77,12 @@ class BridgeResponseReader {
     }
 
     const content = fs.readFileSync(this.responseFilePath, 'utf8');
+
+    // If the file exists but is empty (e.g., AE created the file before writing), treat as not-yet-ready
+    if (typeof content !== 'string' || !content.trim()) {
+      return null;
+    }
+
     const parsed = parseBridgeResponse(content, expectedJobId, expectedRequestId);
 
     if (consume) {

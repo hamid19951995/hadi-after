@@ -15,7 +15,8 @@ class BridgeCycleRunner {
     repoRoot,
     pollIntervalMs = 250,
     maxWaitMs = 60_000,
-    consumeResponse = true
+    consumeResponse = true,
+    initialDelayMs = 3000
   } = {}) {
     if (!repoRoot || typeof repoRoot !== 'string') {
       throw new Error('repoRoot is required and must be a string path');
@@ -27,9 +28,10 @@ class BridgeCycleRunner {
 
     this.lockManager = new BridgeLockManager({ repoRoot: this.repoRoot });
     this.responseReader = new BridgeResponseReader({ repoRoot: this.repoRoot });
+    this.initialDelayMs = initialDelayMs;
   }
 
-  async runOnce(job, { forceReclaimIfStale = true, correlationId = null } = {}) {
+  async runOnce(job, { forceReclaimIfStale = true, correlationId = null, initialDelayMs = null } = {}) {
     if (!job || typeof job !== 'object') throw new Error('job is required');
     if (!job.jobId || typeof job.jobId !== 'string') throw new Error('job.jobId is required');
 
@@ -41,6 +43,12 @@ class BridgeCycleRunner {
     try {
       // MUST match Stage4 builder signature
       const requestInfo = buildBridgeRequest({ job, repoRoot: this.repoRoot, correlationId });
+
+      // Allow an initial startup grace period for After Effects to launch and run the JSX
+      const startupDelay = initialDelayMs !== null ? initialDelayMs : this.initialDelayMs || 3000;
+      if (startupDelay > 0) {
+        await sleep(startupDelay);
+      }
 
       const started = Date.now();
       while (Date.now() - started < this.maxWaitMs) {
