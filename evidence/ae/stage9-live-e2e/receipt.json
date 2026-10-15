@@ -1,0 +1,309 @@
+{
+  "receipt": {
+    "opId": "op-stage9-live-e2e",
+    "jobId": "stage9-live-e2e",
+    "stage": "STAGE_9_LIVE_BRIDGE_E2E",
+    "inputHash": "sha256:stage9-live-e2e",
+    "outputHash": "af21aa6dcd84b824ce45da56f49931fe46900364666c60ba778acb154c292bb5",
+    "status": "verified",
+    "evidencePath": "evidence/ae/stage9-live-e2e/receipt.json",
+    "trace": [
+      {
+        "step": "manifest-root",
+        "status": "verified",
+        "manifestRef": "manifests/stage9-manifest.json",
+        "manifest": {
+          "ok": true,
+          "version": 1,
+          "stage": "stage9"
+        },
+        "ts": "2026-10-15T14:37:35.638Z"
+      },
+      {
+        "step": "step-ae-live-titles",
+        "name": "Create Compositions and Text with Motion Keyframes",
+        "type": "bridge",
+        "status": "verified",
+        "startedAt": "2026-10-15T14:37:35.638Z",
+        "bridgeResult": {
+          "ok": true,
+          "request": {
+            "request": {
+              "bridgeVersion": "1.0.0",
+              "correlationId": "589fbe68-aae0-408d-8a92-f993d3e1063b",
+              "jobId": "stage9-live-e2e",
+              "opId": "op-stage9-live-e2e",
+              "stage": "STAGE_9_LIVE_BRIDGE_E2E",
+              "inputHash": "sha256:stage9-live-e2e",
+              "actions": [
+                {
+                  "actionId": "step-ae-live-titles",
+                  "name": "Create Compositions and Text with Motion Keyframes",
+                  "type": "bridge",
+                  "params": {
+                    "host": "aftereffects",
+                    "runtime": "production",
+                    "ops": [
+                      {
+                        "type": "comp.create",
+                        "name": "STAGE9_TITLES",
+                        "width": 1920,
+                        "height": 1080,
+                        "duration": 6,
+                        "frameRate": 30
+                      },
+                      {
+                        "type": "layer.addText",
+                        "comp": "STAGE9_TITLES",
+                        "name": "TitleLayer",
+                        "text": "AE BOSS OMEGA LIVE"
+                      },
+                      {
+                        "type": "property.setKeyframes",
+                        "comp": "STAGE9_TITLES",
+                        "layer": 1,
+                        "property": "Transform/Position",
+                        "keyframes": [
+                          {
+                            "time": 0,
+                            "value": [
+                              200,
+                              540
+                            ]
+                          },
+                          {
+                            "time": 2.5,
+                            "value": [
+                              960,
+                              540
+                            ]
+                          },
+                          {
+                            "time": 5,
+                            "value": [
+                              1720,
+                              540
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "type": "project.snapshot",
+                        "path": "D:/AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening/AE_BOSS_OMEGA_Foundation_v155/evidence/ae/stage9-live-e2e/stage9_verified.aep"
+                      }
+                    ],
+                    "audit": {
+                      "comp": "STAGE9_TITLES",
+                      "layer": "TitleLayer",
+                      "text": "AE BOSS OMEGA LIVE",
+                      "positionKeys": [
+                        [
+                          200,
+                          540
+                        ],
+                        [
+                          960,
+                          540
+                        ],
+                        [
+                          1720,
+                          540
+                        ]
+                      ]
+                    }
+                  }
+                }
+              ],
+              "evidenceDir": "evidence/ae/stage9-live-e2e",
+              "createdAt": "2026-10-15T14:37:35.640Z"
+            },
+            "requestFilePath": "D:\\AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening\\AE_BOSS_OMEGA_Foundation_v155\\bridge\\inbox\\current.request.json",
+            "evidenceDir": "D:\\AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening\\AE_BOSS_OMEGA_Foundation_v155\\evidence\\ae\\stage9-live-e2e"
+          },
+          "response": {
+            "responseVersion": "1.0.0",
+            "jobId": "stage9-live-e2e",
+            "requestId": "589fbe68-aae0-408d-8a92-f993d3e1063b",
+            "status": "succeeded",
+            "completedAt": "2026-10-15T14:37:41.849Z",
+            "durationMs": 80,
+            "stepResults": [
+              {
+                "actionId": "step-ae-live-titles",
+                "name": "Create Compositions and Text with Motion Keyframes",
+                "ok": true,
+                "durationMs": 56,
+                "opResults": [
+                  {
+                    "index": 0,
+                    "type": "comp.create",
+                    "result": {
+                      "compId": 1,
+                      "name": "STAGE9_TITLES"
+                    }
+                  },
+                  {
+                    "index": 1,
+                    "type": "layer.addText",
+                    "result": {
+                      "layerIndex": 1,
+                      "name": "TitleLayer"
+                    }
+                  },
+                  {
+                    "index": 2,
+                    "type": "property.setKeyframes",
+                    "result": {
+                      "ok": true,
+                      "count": 3
+                    }
+                  },
+                  {
+                    "index": 3,
+                    "type": "project.snapshot",
+                    "result": {
+                      "path": "D:\\AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening\\AE_BOSS_OMEGA_Foundation_v155\\evidence\\ae\\stage9-live-e2e\\stage9_verified.aep",
+                      "ok": true
+                    }
+                  }
+                ],
+                "audit": {
+                  "ok": true,
+                  "comp": "STAGE9_TITLES",
+                  "layer": "TitleLayer",
+                  "sourceText": "AE BOSS OMEGA LIVE",
+                  "numKeys": 3,
+                  "keys": [
+                    [
+                      200,
+                      540
+                    ],
+                    [
+                      960,
+                      540
+                    ],
+                    [
+                      1720,
+                      540
+                    ]
+                  ],
+                  "verified": true
+                }
+              }
+            ],
+            "errors": [],
+            "outputFiles": [
+              "D:/AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening/AE_BOSS_OMEGA_Foundation_v155/evidence/ae/stage9-live-e2e/stage9_verified.aep"
+            ]
+          }
+        },
+        "completedAt": "2026-10-15T14:37:42.003Z"
+      }
+    ],
+    "completedAt": "2026-10-15T14:37:42.003Z"
+  },
+  "job": {
+    "jobId": "stage9-live-e2e",
+    "opId": "op-stage9-live-e2e",
+    "stage": "STAGE_9_LIVE_BRIDGE_E2E",
+    "createdAt": "2026-10-15T14:37:35.627Z",
+    "issuer": "ae-omega-live-runner",
+    "policy": {
+      "retries": 0,
+      "timeouts": {
+        "stepMs": 60000,
+        "verificationMs": 60000
+      }
+    },
+    "manifestRef": "manifests/stage9-manifest.json",
+    "inputs": {
+      "liveHost": "AfterEffects 2026"
+    },
+    "inputHash": "sha256:stage9-live-e2e",
+    "steps": [
+      {
+        "id": "step-ae-live-titles",
+        "name": "Create Compositions and Text with Motion Keyframes",
+        "type": "bridge",
+        "bridge": {
+          "pollIntervalMs": 250,
+          "maxWaitMs": 60000
+        },
+        "params": {
+          "host": "aftereffects",
+          "runtime": "production",
+          "ops": [
+            {
+              "type": "comp.create",
+              "name": "STAGE9_TITLES",
+              "width": 1920,
+              "height": 1080,
+              "duration": 6,
+              "frameRate": 30
+            },
+            {
+              "type": "layer.addText",
+              "comp": "STAGE9_TITLES",
+              "name": "TitleLayer",
+              "text": "AE BOSS OMEGA LIVE"
+            },
+            {
+              "type": "property.setKeyframes",
+              "comp": "STAGE9_TITLES",
+              "layer": 1,
+              "property": "Transform/Position",
+              "keyframes": [
+                {
+                  "time": 0,
+                  "value": [
+                    200,
+                    540
+                  ]
+                },
+                {
+                  "time": 2.5,
+                  "value": [
+                    960,
+                    540
+                  ]
+                },
+                {
+                  "time": 5,
+                  "value": [
+                    1720,
+                    540
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "project.snapshot",
+              "path": "D:/AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening/AE_BOSS_OMEGA_Foundation_v155/evidence/ae/stage9-live-e2e/stage9_verified.aep"
+            }
+          ],
+          "audit": {
+            "comp": "STAGE9_TITLES",
+            "layer": "TitleLayer",
+            "text": "AE BOSS OMEGA LIVE",
+            "positionKeys": [
+              [
+                200,
+                540
+              ],
+              [
+                960,
+                540
+              ],
+              [
+                1720,
+                540
+              ]
+            ]
+          }
+        }
+      }
+    ],
+    "expectedState": null,
+    "evidencePath": "evidence/ae/stage9-live-e2e/receipt.json"
+  }
+}

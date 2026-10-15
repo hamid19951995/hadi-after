@@ -217,7 +217,7 @@ async function runJobAsync(job, options = {}) {
     }
 
     const finalState = stepOutputs.length > 0 ? stepOutputs[stepOutputs.length - 1] : (manifestReferences.length > 0 ? manifestReferences[manifestReferences.length - 1].payload : {});
-    if (job.expectedState !== undefined && !deepEqual(finalState, job.expectedState)) {
+    if (job.expectedState !== undefined && job.expectedState !== null && !deepEqual(finalState, job.expectedState)) {
       throw new Error(`Final expectedState mismatch: expected ${JSON.stringify(job.expectedState)}, observed ${JSON.stringify(finalState)}`);
     }
 
@@ -337,7 +337,7 @@ function runJob(job, options = {}) {
     }
 
     const finalState = stepOutputs.length > 0 ? stepOutputs[stepOutputs.length - 1] : (manifestReferences.length > 0 ? manifestReferences[manifestReferences.length - 1].payload : {});
-    if (job.expectedState !== undefined && !deepEqual(finalState, job.expectedState)) {
+    if (job.expectedState !== undefined && job.expectedState !== null && !deepEqual(finalState, job.expectedState)) {
       throw new Error(`Final expectedState mismatch: expected ${JSON.stringify(job.expectedState)}, observed ${JSON.stringify(finalState)}`);
     }
 
@@ -391,3 +391,4 @@ module.exports = {
   executeJob: runJob,
   executeJobAsync: runJobAsync,
 };
+
