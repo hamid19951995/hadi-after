@@ -1,0 +1,126 @@
+{
+  "receipt": {
+    "opId": "op-job-stage5-happy-001",
+    "jobId": "job-stage5-happy-001",
+    "stage": "bridge-verify",
+    "inputHash": "sha256:job-stage5-happy-001",
+    "outputHash": "13a0369cc0cadbaaf64af1d39e79813ab010ac29f56c1a5e2b55cb552d2893d4",
+    "status": "verified",
+    "evidencePath": "evidence/ae/job-stage5-happy-001/receipt.json",
+    "trace": [
+      {
+        "step": "manifest-root",
+        "status": "verified",
+        "manifestRef": "manifests/manifest.json",
+        "manifest": {
+          "ok": true,
+          "version": 1
+        },
+        "ts": "2026-10-15T12:50:35.643Z"
+      },
+      {
+        "step": "step-ae-dispatch",
+        "name": "Dispatch Bridge Payload",
+        "type": "bridge",
+        "status": "verified",
+        "startedAt": "2026-10-15T12:50:35.643Z",
+        "bridgeResult": {
+          "ok": true,
+          "request": {
+            "request": {
+              "bridgeVersion": "1.0.0",
+              "correlationId": "b5d7502f-14fe-425b-9b56-0d24b9b7b25b",
+              "jobId": "job-stage5-happy-001",
+              "opId": "op-job-stage5-happy-001",
+              "stage": "bridge-verify",
+              "inputHash": "sha256:job-stage5-happy-001",
+              "actions": [
+                {
+                  "actionId": "step-ae-dispatch",
+                  "name": "Dispatch Bridge Payload",
+                  "type": "bridge",
+                  "params": {}
+                }
+              ],
+              "evidenceDir": "evidence/ae/job-stage5-happy-001",
+              "createdAt": "2026-10-15T12:50:35.644Z"
+            },
+            "requestFilePath": "C:\\Users\\AORIS\\AppData\\Local\\Temp\\ae-stage5-engine-test-PYisI6\\bridge\\inbox\\current.request.json",
+            "evidenceDir": "C:\\Users\\AORIS\\AppData\\Local\\Temp\\ae-stage5-engine-test-PYisI6\\evidence\\ae\\job-stage5-happy-001"
+          },
+          "response": {
+            "responseVersion": "1.0.0",
+            "jobId": "job-stage5-happy-001",
+            "requestId": null,
+            "status": "succeeded",
+            "completedAt": "2026-10-15T12:00:00.000Z",
+            "durationMs": null,
+            "stepResults": [
+              {
+                "stepId": "step-ae-dispatch",
+                "status": "succeeded"
+              }
+            ],
+            "errors": [],
+            "outputFiles": [
+              "renders/output.mp4"
+            ]
+          }
+        },
+        "completedAt": "2026-10-15T12:50:35.742Z"
+      }
+    ],
+    "completedAt": "2026-10-15T12:50:35.742Z"
+  },
+  "job": {
+    "jobId": "job-stage5-happy-001",
+    "opId": "op-job-stage5-happy-001",
+    "stage": "bridge-verify",
+    "createdAt": "2026-10-15T12:00:00.000Z",
+    "issuer": "stage5-bridge-test",
+    "policy": {
+      "retries": 0,
+      "timeouts": {
+        "stepMs": 5000,
+        "verificationMs": 5000
+      }
+    },
+    "manifestRef": "manifests/manifest.json",
+    "inputs": {
+      "test": true
+    },
+    "inputHash": "sha256:job-stage5-happy-001",
+    "steps": [
+      {
+        "id": "step-ae-dispatch",
+        "name": "Dispatch Bridge Payload",
+        "type": "bridge",
+        "bridge": {
+          "pollIntervalMs": 20,
+          "maxWaitMs": 3000
+        }
+      }
+    ],
+    "expectedState": {
+      "step-ae-dispatch": {
+        "responseVersion": "1.0.0",
+        "jobId": "job-stage5-happy-001",
+        "requestId": null,
+        "status": "succeeded",
+        "completedAt": "2026-10-15T12:00:00.000Z",
+        "durationMs": null,
+        "stepResults": [
+          {
+            "stepId": "step-ae-dispatch",
+            "status": "succeeded"
+          }
+        ],
+        "errors": [],
+        "outputFiles": [
+          "renders/output.mp4"
+        ]
+      }
+    },
+    "evidencePath": "evidence/ae/job-stage5-happy-001/receipt.json"
+  }
+}
