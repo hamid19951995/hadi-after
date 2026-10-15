@@ -1,0 +1,18 @@
+{
+  "stage": "STAGE_8C_ADVANCED_RUNTIME",
+  "host": "After Effects",
+  "version": "26.2.1x2",
+  "timestamp": "Thu Oct 15 2026 06:31:34 GMT-0700",
+  "status": "SUCCESS",
+  "audit": {
+    "comp": "STAGE8C_TITLES",
+    "layer": "TitleLayer",
+    "sourceText": "AE BOSS OMEGA LIVE",
+    "numKeys": 3,
+    "key1": [200, 540],
+    "key2": [960, 540],
+    "key3": [1720, 540],
+    "verified": true,
+    "savedAep": "D:\\AE_BOSS_OMEGA_Foundation_v155_Deterministic_Consistency_Evidence_Quorum_Hardening\\AE_BOSS_OMEGA_Foundation_v155\\evidence\\ae\\stage8c_verified.aep"
+  }
+}

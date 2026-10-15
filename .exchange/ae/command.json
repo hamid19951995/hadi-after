@@ -1,9 +1,19 @@
 ﻿{
-  "id": "stage8a-pr-001",
-  "stage": "STAGE_8A_PRODUCTION_RUNTIME_APPLY",
+  "id": "stage8c-text-keyframes-001",
+  "stage": "STAGE_8C_ADVANCED_RUNTIME",
   "ops": [
-    { "type": "comp.create", "name": "STAGE8A_COMP", "width": 1920, "height": 1080, "duration": 5, "frameRate": 30 },
-    { "type": "layer.addSolid", "comp": "STAGE8A_COMP", "name": "Stage8A_Solid", "color": [1, 0, 0] },
-    { "type": "property.set", "comp": "STAGE8A_COMP", "layer": 1, "property": "Transform/Position", "value": [960, 540] }
+    { "type": "comp.create", "name": "STAGE8C_TITLES", "width": 1920, "height": 1080, "duration": 6, "frameRate": 30 },
+    { "type": "layer.addText", "comp": "STAGE8C_TITLES", "name": "TitleLayer", "text": "AE BOSS OMEGA LIVE" },
+    {
+      "type": "property.setKeyframes",
+      "comp": "STAGE8C_TITLES",
+      "layer": 1,
+      "property": "Transform/Position",
+      "keyframes": [
+        { "time": 0.0, "value": [200, 540] },
+        { "time": 2.5, "value": [960, 540] },
+        { "time": 5.0, "value": [1720, 540] }
+      ]
+    }
   ]
 }
