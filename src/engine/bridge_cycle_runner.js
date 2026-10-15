@@ -16,7 +16,8 @@ class BridgeCycleRunner {
     pollIntervalMs = 250,
     maxWaitMs = 60_000,
     consumeResponse = true,
-    initialDelayMs = 3000
+    initialDelayMs = 3000,
+    waitReadyFileMs = 0
   } = {}) {
     if (!repoRoot || typeof repoRoot !== 'string') {
       throw new Error('repoRoot is required and must be a string path');
