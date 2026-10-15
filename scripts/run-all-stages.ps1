@@ -22,9 +22,17 @@ function run-step($name, $script, $args) {
   Write-Host "[pipeline] Running $name..."
   # Execute the command and redirect stdout/stderr to files
   try {
-    & $script @args > $stdoutLog 2> $stderrLog
-    $entry.status = 'passed'
-    $entry.error = $null
+    $procOutput = & $script @args 2>&1
+    $exitCode = $LASTEXITCODE
+    # Write combined output to stdout log (and stderr log empty)
+    $procOutput | Out-File -FilePath $stdoutLog -Encoding utf8
+    if ($exitCode -eq 0) {
+      $entry.status = 'passed'
+      $entry.error = $null
+    } else {
+      $entry.status = 'failed'
+      $entry.error = "Exit code $exitCode"
+    }
   } catch {
     $entry.status = 'failed'
     $entry.error = $_.Exception.Message
