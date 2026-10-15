@@ -1,0 +1,22 @@
+{
+  "jobId": "stage12-fx-job",
+  "layerType": "solid",
+  "effects": [
+    {
+      "matchName": "ADBE Fast Blur",
+      "customName": "Fast Blur - Stage 12",
+      "params": {
+        "ADBE FastBlur-0001": 18,
+        "ADBE FastBlur-0002": true
+      }
+    },
+    {
+      "matchName": "ADBE Hue Saturation",
+      "customName": "Hue Saturation - Stage 12",
+      "params": {
+        "ADBE HueHue": 45,
+        "ADBE HueColorize": false
+      }
+    }
+  ]
+}

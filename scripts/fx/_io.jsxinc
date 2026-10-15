@@ -1,0 +1,179 @@
+(function () {
+    function safeString(value) {
+        try { return value === null || typeof value === 'undefined' ? '' : String(value); }
+        catch (e) { return ''; }
+    }
+
+    function getEnv(name) {
+        try {
+            if (typeof $ !== 'undefined' && $ && typeof $.getenv === 'function') {
+                return $.getenv(name);
+            }
+        } catch (e) { }
+        return '';
+    }
+
+    function getOutputRoot() {
+        var envOut = getEnv('AE_BOSS_OUTPUT_DIR');
+        if (envOut && String(envOut).trim().length > 0) return String(envOut).trim();
+        try {
+            if (Folder.temp && Folder.temp.fsName) return Folder.temp.fsName + '/ae-boss-omega';
+        } catch (e) { }
+        return 'C:/Temp/ae-boss-omega';
+    }
+
+    function ensureParentFolder(filePath) {
+        try {
+            if (!filePath) return false;
+            var path = String(filePath).replace(/\\/g, '/');
+            var idx = path.lastIndexOf('/');
+            if (idx <= 0) return true;
+            var folder = new Folder(path.substring(0, idx));
+            if (!folder.exists) folder.create();
+            return folder.exists;
+        } catch (e) { return false; }
+    }
+
+    function writeTextAtomic(targetPath, text) {
+        var targetFile = new File(String(targetPath));
+        var targetDir = targetFile.parent;
+        if (targetDir && !targetDir.exists) targetDir.create();
+
+        var tmpPath = targetFile.fsName + '.tmp';
+        var tmpFile = new File(tmpPath);
+        try { if (tmpFile.exists) tmpFile.remove(); } catch (e) { }
+
+        tmpFile.encoding = 'UTF-8';
+        if (!tmpFile.open('w')) {
+            throw new Error('Unable to open temp file for write: ' + tmpPath);
+        }
+        tmpFile.write(String(text));
+        if (typeof tmpFile.flush !== 'undefined') { try { tmpFile.flush(); } catch (e) { } }
+        tmpFile.close();
+
+        try {
+            var verify = new File(tmpPath);
+            verify.encoding = 'UTF-8';
+            if (verify.open('r')) {
+                var content = verify.read();
+                verify.close();
+                if (!content || content.length === 0) {
+                    if (tmpFile.open('w')) {
+                        tmpFile.write(String(text));
+                        if (typeof tmpFile.flush !== 'undefined') { try { tmpFile.flush(); } catch (e) { } }
+                        tmpFile.close();
+                    }
+                }
+            }
+        } catch (e) { }
+
+        try {
+            tmpFile.rename(targetFile.name);
+        } catch (e) {
+            try {
+                if (tmpFile.copy(targetFile.fsName)) tmpFile.remove();
+            } catch (e2) {
+                throw new Error('Atomic rename/copy fallback failed: ' + String(e2));
+            }
+        }
+
+        var finalFile = new File(targetFile.fsName);
+        if (!finalFile.exists || finalFile.length <= 0) {
+            throw new Error('Validation failed: target file is empty or not created: ' + targetFile.fsName);
+        }
+        return finalFile;
+    }
+
+    function writeJSONAtomic(targetPath, obj) {
+        return writeTextAtomic(String(targetPath), JSON.stringify(obj, null, 2));
+    }
+
+    function copyFileIfAllowed(sourcePath, destPath) {
+        try {
+            var source = new File(String(sourcePath));
+            var dest = new File(String(destPath));
+            if (dest.parent && !dest.parent.exists) dest.parent.create();
+            if (dest.exists) dest.remove();
+            return source.exists ? !!source.copy(dest.fsName) : false;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function resolveRepoRoot() {
+        var envRoot = getEnv('AE_BOSS_REPO_ROOT');
+        if (envRoot && String(envRoot).trim().length > 0) return String(envRoot).trim();
+        try {
+            var scriptFile = new File($.fileName || '');
+            if (scriptFile && scriptFile.parent && scriptFile.parent.parent) {
+                return scriptFile.parent.parent.fsName;
+            }
+        } catch (e) { }
+        return null;
+    }
+
+    function resolveOutputDir() {
+        return getOutputRoot();
+    }
+
+    function writeArtifactWithFallback(fileName, obj) {
+        var outputDir = resolveOutputDir();
+        var tempTarget = outputDir + '/' + fileName;
+        var repoDir = null;
+        var repoRoot = resolveRepoRoot();
+        if (repoRoot) repoDir = repoRoot + '/evidence/fx';
+        var repoTarget = repoDir ? repoDir + '/' + fileName : null;
+
+        writeJSONAtomic(tempTarget, obj);
+        if (repoTarget) {
+            var copyBack = getEnv('AE_BOSS_COPY_BACK_TO_REPO');
+            if (copyBack && (String(copyBack).toLowerCase() === '1' || String(copyBack).toLowerCase() === 'true' || String(copyBack).toLowerCase() === 'yes')) {
+                var repoFolder = new Folder(repoDir);
+                if (!repoFolder.exists) repoFolder.create();
+                copyFileIfAllowed(tempTarget, repoTarget);
+            }
+        }
+        return tempTarget;
+    }
+
+    function logStep(msg) {
+        var line = '[' + new Date().toISOString() + '] ' + String(msg) + '\n';
+        var candidates = [];
+        var outDir = getOutputRoot();
+        candidates.push(outDir + '/diag.log');
+        try { if (Folder.temp && Folder.temp.fsName) candidates.push(Folder.temp.fsName + '/ae-boss-omega/diag.log'); } catch (e) { }
+        try { candidates.push('C:/Temp/ae-boss-omega/diag.log'); } catch (e) { }
+        var seen = {};
+        for (var i = 0; i < candidates.length; i++) {
+            var candidate = candidates[i];
+            if (!candidate || seen[candidate]) continue;
+            seen[candidate] = true;
+            try {
+                var file = new File(String(candidate));
+                if (file.parent && !file.parent.exists) file.parent.create();
+                file.encoding = 'UTF-8';
+                if (!file.open('a')) continue;
+                file.write(line);
+                if (typeof file.flush !== 'undefined') { try { file.flush(); } catch (e2) { } }
+                file.close();
+                return true;
+            } catch (e) { }
+        }
+        return false;
+    }
+
+    var io = {
+        getOutputRoot: getOutputRoot,
+        resolveOutputDir: resolveOutputDir,
+        resolveRepoRoot: resolveRepoRoot,
+        writeTextAtomic: writeTextAtomic,
+        writeJSONAtomic: writeJSONAtomic,
+        writeArtifactWithFallback: writeArtifactWithFallback,
+        logStep: logStep,
+        copyFileIfAllowed: copyFileIfAllowed
+    };
+
+    if (typeof this !== 'undefined') this.FX_IO = io;
+    if (typeof $ !== 'undefined') $._fx_io = io;
+    return io;
+})();

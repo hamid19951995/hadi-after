@@ -1,0 +1,126 @@
+(function () {
+    function safeString(value) {
+        try { return value === null || typeof value === 'undefined' ? '' : String(value); }
+        catch (e) { return ''; }
+    }
+
+    function findPropertyByNameOrMatch(group, targetName) {
+        if (!group || !targetName) return null;
+        try {
+            if (group.property(targetName)) return group.property(targetName);
+        } catch (e) { }
+        var count = group.numProperties || 0;
+        for (var i = 1; i <= count; i++) {
+            try {
+                var prop = group.property(i);
+                if (!prop) continue;
+                if (safeString(prop.name) === safeString(targetName) || safeString(prop.matchName) === safeString(targetName)) {
+                    return prop;
+                }
+            } catch (e) { }
+        }
+        return null;
+    }
+
+    function applyStaticValue(property, value) {
+        if (!property) return false;
+        try {
+            property.setValue(value);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function applyKeyframes(property, frames) {
+        if (!property || !frames || !frames.length) return false;
+        try {
+            for (var i = 0; i < frames.length; i++) {
+                var frame = frames[i];
+                if (!frame || typeof frame.time === 'undefined' || typeof frame.value === 'undefined') continue;
+                property.setValueAtTime(frame.time, frame.value);
+                var keyIndex = property.numKeys;
+                if (frame.inEase || frame.outEase || typeof frame.inSpeed !== 'undefined' || typeof frame.outSpeed !== 'undefined') {
+                    var inEase = frame.inEase || { speed: frame.inSpeed || 0, influence: frame.inInfluence || 65 };
+                    var outEase = frame.outEase || { speed: frame.outSpeed || 0, influence: frame.outInfluence || 65 };
+                    try {
+                        var easeIn = new KeyframeEase(Number(inEase.speed || 0), Number(inEase.influence || 65));
+                        var easeOut = new KeyframeEase(Number(outEase.speed || 0), Number(outEase.influence || 65));
+                        property.setTemporalEaseAtKey(keyIndex, [easeIn], [easeOut]);
+                        property.setInterpolationTypeAtKey(keyIndex, KeyframeInterpolationType.BEZIER, KeyframeInterpolationType.BEZIER);
+                    } catch (e) { }
+                }
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function applyParameters(effect, params) {
+        if (!effect || !params || typeof params !== 'object') return { applied: 0, errors: [] };
+        var errors = [];
+        var applied = 0;
+        var keys = Object.keys(params);
+        for (var i = 0; i < keys.length; i++) {
+            var key = keys[i];
+            var value = params[key];
+            try {
+                var prop = findPropertyByNameOrMatch(effect, key);
+                if (!prop) {
+                    errors.push('Parameter not found: ' + key);
+                    continue;
+                }
+                if (value && typeof value === 'object' && Array.isArray(value.keyframes)) {
+                    if (applyKeyframes(prop, value.keyframes)) applied++;
+                    else errors.push('Keyframe assignment failed for: ' + key);
+                } else if (applyStaticValue(prop, value)) {
+                    applied++;
+                } else {
+                    errors.push('Static value assignment failed for: ' + key);
+                }
+            } catch (e) {
+                errors.push('Parameter error for ' + key + ': ' + String(e));
+            }
+        }
+        return { applied: applied, errors: errors };
+    }
+
+    function applyEffectToLayer(layer, fxSpec) {
+        if (!layer || !fxSpec) throw new Error('Layer and effect spec are required');
+        var parade = layer.property('ADBE Effect Parade');
+        if (!parade) throw new Error('ADBE Effect Parade is not available on this layer');
+
+        var candidates = [];
+        if (fxSpec.matchName) candidates.push(fxSpec.matchName);
+        if (fxSpec.name) candidates.push(fxSpec.name);
+        if (fxSpec.fallbackMatchName) candidates.push(fxSpec.fallbackMatchName);
+
+        var unique = [];
+        for (var i = 0; i < candidates.length; i++) {
+            var candidate = candidates[i];
+            if (!candidate || unique.indexOf(candidate) !== -1) continue;
+            unique.push(candidate);
+        }
+
+        var lastError = null;
+        for (var j = 0; j < unique.length; j++) {
+            try {
+                var added = parade.addProperty(unique[j]);
+                if (fxSpec.customName) {
+                    try { added.name = fxSpec.customName; } catch (e) { }
+                }
+                return { effect: added, appliedMatchName: unique[j] };
+            } catch (e) {
+                lastError = e;
+            }
+        }
+
+        throw lastError || new Error('Unable to add effect: ' + safeString(fxSpec.matchName || fxSpec.name || 'unknown'));
+    }
+
+    var api = { applyEffectToLayer: applyEffectToLayer, applyParameters: applyParameters };
+    if (typeof this !== 'undefined') this.FX_APPLY = api;
+    if (typeof $ !== 'undefined') $._fx_apply = api;
+    return api;
+})();
