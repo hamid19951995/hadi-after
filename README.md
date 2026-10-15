@@ -39,3 +39,35 @@ Requests are validated as complete batches before execution. Each accepted reque
 Repairs require approval, consume the agent budget, resolve a specific failed step only after host verification, and resume the original remaining steps. Unknown outcomes and cancellation are never automatically retried. Final delivery checks the live project against its pre-save contents and the saved-path witness, including projects without an active composition. The receipt distinguishes saved projects from render-queue state: queued work is not rendered output. Render completion requires exact DONE status and matching nonempty files for the queued targets. Image-sequence templates currently fail closed because sequence-aware file verification is not implemented.
 
 Run `npm test` for local behavioral and regression checks. These tests use controlled host fixtures, not a live Adobe process. Installation and real request → approval → execution → save/render validation must still be performed in the CEP panel inside After Effects.
+
+## Pipeline: Run all stages (Simulation and Live)
+
+This repository provides an orchestrated pipeline to validate the engine, bridge, and live AE execution path.
+
+- Simulation / CI (Node-only):
+  - PowerShell: `powershell -File scripts/run-all-stages.ps1`
+  - Node: `node scripts/run-all-stages.js`
+  - These run the Stage 3 unit tests, Stage 10 simulation and Stage 11 batch simulation. They do NOT require After Effects installed.
+
+- Live AE execution (Windows host with After Effects):
+  - Prepare AE path (default used by scripts): `C:\\Program Files\\Adobe\\Adobe After Effects 2026\\Support Files\\AfterFX.exe`
+  - Run PowerShell orchestrator with Live AE enabled:
+    `powershell -File scripts/run-all-stages.ps1 -LiveAE`
+  - The orchestrator will spawn AfterFX, capture stdout/stderr to `evidence/ae/ae-spawn.log`, wait for the host ready-file (`bridge/ready/ae.ready`) then poll `bridge/outbox/current.response.json`.
+
+### Environment variables / configuration
+- AE_PATH (optional): Set the AfterFX.exe path if not at the default location. Example (PowerShell):
+  `$env:AE_PATH = 'C:\\\\Program Files\\\\Adobe\\\\Adobe After Effects 2026\\\\Support Files\\\\AfterFX.exe'`
+- waitReadyFileMs: Number of milliseconds the Node runner will wait for AE to write the ready-file before falling back to initialDelayMs. Can be supplied via code-level bridgeOptions (per-step) or environment when integrating.
+- initialDelayMs: Milliseconds to wait as a fallback cold-start grace period before polling the outbox. Configurable per bridge step and as a global bridge option.
+
+### Evidence & receipts
+- Health report: `evidence/pipeline/health-report.json` (or timestamped `health-report-<ts>.json`) summarises each stage result and contains copies of per-job receipts.
+- Job receipts: `evidence/ae/<jobId>/receipt.json` — authoritative job receipts written by the Node engine after verification.
+
+### Notes & troubleshooting
+- If `health-report.json` is locked by a process on Windows, the orchestrator writes a timestamped report (`health-report-<ts>.json`) to avoid failures. Copy or rename the latest timestamped report to `health-report.json` if needed.
+- For debugging AE runs, inspect `evidence/ae/ae-spawn.log` and `evidence/pipeline/*.{stdout,stderr}.log` for step-by-step outputs.
+
+---
+
