@@ -95,7 +95,11 @@ foreach ($r in $glob) {
 $outDir = Join-Path (Join-Path $repoRoot 'evidence') 'pipeline'
 if (!(Test-Path $outDir)) { New-Item -ItemType Directory -Path $outDir | Out-Null }
 $reportPath = Join-Path $outDir 'health-report.json'
-$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $reportPath -Encoding utf8
+# Write report atomically: write to temp then move
+$tempPath = "$reportPath.$((Get-Date).ToFileTimeUtc()).tmp"
+$report | ConvertTo-Json -Depth 10 | Out-File -FilePath $tempPath -Encoding utf8
+if (Test-Path $reportPath) { Remove-Item -Path $reportPath -Force -ErrorAction SilentlyContinue }
+Move-Item -Path $tempPath -Destination $reportPath -Force
 Write-Host "Health report written to $reportPath"
 
 if ($report.stages | Where-Object { $_.status -eq 'failed' }) { exit 2 } else { exit 0 }
