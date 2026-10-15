@@ -26,7 +26,7 @@ const { runJob } = require('../src/engine/engine');
     inputs: {},
     inputHash: 'sim-batch-input',
     steps: manifest.steps,
-    expectedState: {},
+    expectedState: null,
     evidencePath: path.join('evidence','ae', manifest.jobId, 'receipt.json')
   };
 
