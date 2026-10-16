@@ -111,7 +111,13 @@ async function executeBridgeStepAsync(job, step, options = {}) {
   });
 
   const correlationId = stepBridge.correlationId || bridgeOpts.correlationId || null;
-  const cycleResult = await runner.runOnce(job, {
+    // Stage11+: scope to a single step per bridge cycle to avoid sending all manifest steps each time.
+  // Also merge step.bridge into step.params because bridge_request_builder only forwards step.params into actions[].params.
+  const mergedParams = Object.assign({}, (step && step.params ? step.params : {}), (stepBridge && typeof stepBridge === 'object' ? stepBridge : {}));
+  const scopedStep = Object.assign({}, step, { params: mergedParams });
+  const scopedJob = Object.assign({}, job, { steps: [ scopedStep ] });
+
+  const cycleResult = await runner.runOnce(scopedJob, {
     forceReclaimIfStale: stepBridge.forceReclaimIfStale !== undefined ? stepBridge.forceReclaimIfStale : true,
     correlationId
   });
@@ -392,4 +398,5 @@ module.exports = {
   executeJob: runJob,
   executeJobAsync: runJobAsync,
 };
+
 
